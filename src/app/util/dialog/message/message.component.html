@@ -1,0 +1,17 @@
+<mat-card class="message-dialog">
+  <mat-card-title>{{data.heading}}</mat-card-title>
+  <mat-card-content [ngClass]="{'single-message' : lines.length === 1}">
+    @for (line of lines; track lines; let i = $index) {
+      <ng-container>
+        @if (i > 0) {
+          <li>{{ line }}</li>
+        } @else {
+          {{ line }}
+        }
+      </ng-container>
+    }
+  </mat-card-content>
+  <mat-dialog-actions>
+    <button mat-raised-button color="primary" (click)="onYesClick()">OK</button>
+  </mat-dialog-actions>
+</mat-card>

@@ -1,0 +1,492 @@
+<mat-grid-list [cols]="12" rowHeight="4rem">
+
+  <!--=================================================Navigation====================================================-->
+  <mat-grid-tile [colspan]="12" [rowspan]="0.5">
+    <mat-card class="breadCrumbCard">
+      <mat-card-content [innerHTML]="breadcrumb"></mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+  <!--===============================================================================================================-->
+
+  <!--==============================================Header===========================================================-->
+  <mat-grid-tile [colspan]="12" [rowspan]="1" style="margin-top: 15px;">
+    <mat-card class="full-width-card">
+      <mat-card-header>
+        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+          <mat-card-title class="title">Setup details</mat-card-title>
+          <mat-card-subtitle style="margin: 0; color: #2c3e50;">Configure all the master data</mat-card-subtitle>
+        </div>
+      </mat-card-header>
+    </mat-card>
+  </mat-grid-tile>
+
+  <!--==============================================Tab Menu=========================================================-->
+  <mat-grid-tile [colspan]="12" [rowspan]="9" style="margin-top: 20px;">
+    <mat-card>
+      <mat-card-content class="main-tab-container">
+        <mat-tab-group>
+          <!--===================================================Room Conf=====================================================-->
+          <mat-tab label="Room Configuration">
+            <div class="grid-container">
+              <mat-card class="configuration-card">
+                <mat-card-header>
+                  <mat-card-title class="card-sub-title">Room Types</mat-card-title>
+                  <div class="header-actions">
+                    @if (enableAddBtns['roomType']) {
+                      <button mat-raised-button color="primary" (click)="addNew('roomType')"><mat-icon>add</mat-icon>Add New</button>
+                    } @else {
+                      <button mat-raised-button color="primary" (click)="close('roomType')"><mat-icon>clear</mat-icon>Close</button>
+                    }
+                  </div>
+                </mat-card-header>
+                <mat-divider></mat-divider>
+                <mat-card-content>
+                  @if (enableForms['roomType']) {
+                    <div class="form-container">
+                      <form [formGroup]="roomTypeForm">
+                        <mat-form-field appearance="outline">
+                          <mat-label>Room type</mat-label>
+                          <input matInput formControlName="name">
+                        </mat-form-field>
+<!--                        <button mat-raised-button (click)="!isUpdate ? saveRoomType() : updateRoomType()"><mat-icon>add</mat-icon>{{!isUpdate ? 'Save' : 'Update'}}</button>-->
+                        <button mat-raised-button (click)="!isUpdate ? saveRoomType() : updateRoomType()"><mat-icon>add</mat-icon>Save</button>
+                      </form>
+                    </div>
+                  } @else {
+                    <mat-form-field appearance="outline">
+                      <mat-label>Search room types</mat-label>
+                      <input matInput (keyup)="filterRoomTypes($event)">
+                      <mat-icon matSuffix>search</mat-icon>
+                    </mat-form-field>
+                  }
+
+                  <mat-table [dataSource]="roomTypesData">
+                    @for (column of roomTypeColumns; track roomTypeColumns; let i = $index){
+                      <ng-container [matColumnDef]="column">
+                        <mat-header-cell *matHeaderCellDef>{{ roomTypeHeaders[i] }}</mat-header-cell>
+                        <mat-cell *matCellDef="let element">
+                          @if (column === 'action'){
+                            <div class="tbl-btn-container">
+                              <button mat-icon-button class="delete-btn" (click)="deleteRoomType(element)"><mat-icon>delete_forever</mat-icon></button>
+                              <button mat-icon-button class="modify-btn" (click)="fillRoomType(element)"><mat-icon>border_color</mat-icon></button>
+                            </div>
+                          } @else {
+                            {{element[column]}}
+                          }
+                        </mat-cell>
+                      </ng-container>
+                    }
+                    <mat-header-row *matHeaderRowDef="roomTypeColumns"></mat-header-row>
+                    <mat-row *matRowDef="let row; columns: roomTypeColumns;" (click)="selectRow(row)"
+                             [ngClass]="{'selected-row': row === selectedRow}">
+                    </mat-row>
+                    <tr class="mat-row" *matNoDataRow>
+                      <td class="mat-cell" colspan="4">No data matching the filter</td>
+                    </tr>
+                  </mat-table>
+                  <mat-paginator #roomTypePaginator class="profile-table-paginator" [length]="20" [pageSize]="5" [pageSizeOptions]="[3,5,10,20]"
+                                 showFirstLastButtons></mat-paginator>
+
+                </mat-card-content>
+              </mat-card>
+
+
+              <mat-card class="configuration-card">
+                <mat-card-header>
+                  <mat-card-title class="card-sub-title">Room Facilities</mat-card-title>
+                  <div class="header-actions">
+                    @if (enableAddBtns['roomFacility']) {
+                      <button mat-raised-button color="primary" (click)="addNew('roomFacility')"><mat-icon>add</mat-icon>Add New</button>
+                    } @else {
+                      <button mat-raised-button color="primary" (click)="close('roomFacility')"><mat-icon>clear</mat-icon>Close</button>
+                    }
+                  </div>
+                </mat-card-header>
+                <mat-divider></mat-divider>
+                <mat-card-content>
+                  @if (enableForms['roomFacility']) {
+                    <div class="form-container">
+                      <form [formGroup]="roomFacilityForm">
+                        <mat-form-field appearance="outline">
+                          <mat-label>Room Facility</mat-label>
+                          <input matInput formControlName="name">
+                        </mat-form-field>
+                        <button mat-raised-button (click)="!isUpdate ? saveRoomFacility() : updateRoomFacility()"><mat-icon>add</mat-icon>save</button>
+                      </form>
+                    </div>
+                  } @else {
+                    <mat-form-field appearance="outline">
+                      <mat-label>Search room facilities</mat-label>
+                      <input matInput (keyup)="filterRoomFacility($event)">
+                      <mat-icon matSuffix>search</mat-icon>
+                    </mat-form-field>
+                  }
+                  <mat-table [dataSource]="roomFacilitiesData">
+                    @for (column of roomFacilityColumns; track roomFacilityColumns; let i = $index){
+                      <ng-container [matColumnDef]="column">
+                        <mat-header-cell *matHeaderCellDef>{{ roomFacilityHeaders[i] }}</mat-header-cell>
+                        <mat-cell *matCellDef="let element">
+                          @if (column === 'action'){
+                            <div class="tbl-btn-container">
+                              <button mat-icon-button class="delete-btn" (click)="deleteRoomFacility(element)"><mat-icon>delete_forever</mat-icon></button>
+                              <button mat-icon-button class="modify-btn" (click)="fillRoomFacility(element)"><mat-icon>border_color</mat-icon></button>
+                            </div>
+                          } @else {
+                            {{element[column]}}
+                          }
+                        </mat-cell>
+                      </ng-container>
+                    }
+                    <mat-header-row *matHeaderRowDef="roomFacilityColumns"></mat-header-row>
+                    <mat-row *matRowDef="let row; columns: roomFacilityColumns;" (click)="selectRow(row)"
+                             [ngClass]="{'selected-row': row === selectedRow}">
+                    </mat-row>
+                    <tr class="mat-row" *matNoDataRow>
+                      <td class="mat-cell" colspan="4">No data matching the filter</td>
+                    </tr>
+                  </mat-table>
+                  <mat-paginator #roomFacilityPaginator class="profile-table-paginator" [length]="20" [pageSize]="5" [pageSizeOptions]="[3,5,10,20]"
+                                 showFirstLastButtons></mat-paginator>
+                </mat-card-content>
+              </mat-card>
+            </div>
+          </mat-tab>
+
+          <!--==================================================Guest Conf=====================================================-->
+
+          <mat-tab label="Guest Configuration">
+            <div class="grid-container">
+              <mat-card class="configuration-card">
+                <mat-card-header>
+                  <mat-card-title class="card-sub-title">Pax Types</mat-card-title>
+                  <div class="header-actions">
+                    <div class="header-actions">
+                      @if (enableAddBtns['paxType']) {
+                        <button mat-raised-button color="primary" (click)="addNew('paxType')"><mat-icon>add</mat-icon>Add New</button>
+                      } @else {
+                        <button mat-raised-button color="primary" (click)="close('paxType')"><mat-icon>clear</mat-icon>Close</button>
+                      }
+                    </div>
+                  </div>
+                </mat-card-header>
+                <mat-divider></mat-divider>
+                <mat-card-content>
+                  @if (enableForms['paxType']) {
+                    <div class="form-container">
+                      <form [formGroup]="paxTypeForm">
+                        <mat-form-field appearance="outline">
+                          <mat-label>Pax type</mat-label>
+                          <input matInput formControlName="name">
+                        </mat-form-field>
+                        <button mat-raised-button (click)="!isUpdate ? savePaxType() : updatePaxType()">
+                          <mat-icon>add</mat-icon>
+                          save
+                        </button>
+                      </form>
+                    </div>
+                  } @else {
+                    <mat-form-field appearance="outline">
+                      <mat-label>Search pax types</mat-label>
+                      <input matInput (keyup)="filterPaxType($event)">
+                      <mat-icon matSuffix>search</mat-icon>
+                    </mat-form-field>
+                  }
+                  <mat-table [dataSource]="paxTypeData">
+                    @for (column of paxTypeColumns; track paxTypeColumns; let i = $index){
+                      <ng-container [matColumnDef]="column">
+                        <mat-header-cell *matHeaderCellDef>{{ paxTypeHeaders[i] }}</mat-header-cell>
+                        <mat-cell *matCellDef="let element">
+                          @if (column === 'action'){
+                            <div class="tbl-btn-container">
+                              <button mat-icon-button class="delete-btn" (click)="deletePaxType(element)"><mat-icon>delete_forever</mat-icon></button>
+                              <button mat-icon-button class="modify-btn" (click)="fillPaxType(element)"><mat-icon>border_color</mat-icon></button>
+                            </div>
+                          } @else {
+                            {{element[column]}}
+                          }
+                        </mat-cell>
+                      </ng-container>
+                    }
+                    <mat-header-row *matHeaderRowDef="paxTypeColumns"></mat-header-row>
+                    <mat-row *matRowDef="let row; columns: paxTypeColumns;" (click)="selectRow(row)"
+                             [ngClass]="{'selected-row': row === selectedRow}">
+                    </mat-row>
+                    <tr class="mat-row" *matNoDataRow>
+                      <td class="mat-cell" colspan="4">No data matching the filter</td>
+                    </tr>
+                  </mat-table>
+                  <mat-paginator #paxTypePaginator class="profile-table-paginator" [length]="20" [pageSize]="5" [pageSizeOptions]="[3,5,10,20]"
+                                 showFirstLastButtons></mat-paginator>
+                </mat-card-content>
+              </mat-card>
+
+              <mat-card class="configuration-card">
+                <mat-card-header>
+                  <mat-card-title class="card-sub-title">Resident Types</mat-card-title>
+                  <div class="header-actions">
+                    @if (enableAddBtns['residentType']) {
+                      <button mat-raised-button color="primary" (click)="addNew('residentType')"><mat-icon>add</mat-icon>Add New</button>
+                    } @else {
+                      <button mat-raised-button color="primary" (click)="close('residentType')"><mat-icon>clear</mat-icon>Close</button>
+                    }
+                  </div>
+                </mat-card-header>
+                <mat-divider></mat-divider>
+                <mat-card-content>
+                  @if (enableForms['residentType']) {
+                    <div class="form-container">
+                      <form [formGroup]="residentTypeForm">
+                        <mat-form-field appearance="outline">
+                          <mat-label>Resident type</mat-label>
+                          <input matInput formControlName="name">
+                        </mat-form-field>
+                        <button mat-raised-button (click)="!isUpdate ? saveResidentType() : updateResidentType()">
+                          <mat-icon>add</mat-icon>
+                          save
+                        </button>
+                      </form>
+                    </div>
+                  } @else {
+                    <mat-form-field appearance="outline">
+                      <mat-label>Search resident types</mat-label>
+                      <input matInput (keyup)="filterResidentType($event)">
+                      <mat-icon matSuffix>search</mat-icon>
+                    </mat-form-field>
+                  }
+                  <mat-table [dataSource]="residentTypeData">
+                    @for (column of residentTypeColumns; track residentTypeColumns; let i = $index){
+                      <ng-container [matColumnDef]="column">
+                        <mat-header-cell *matHeaderCellDef>{{ residentTypeHeaders[i] }}</mat-header-cell>
+                        <mat-cell *matCellDef="let element">
+                          @if (column === 'action'){
+                            <div class="tbl-btn-container">
+                              <button mat-icon-button class="delete-btn" (click)="deleteResidentType(element)"><mat-icon>delete_forever</mat-icon></button>
+                              <button mat-icon-button class="modify-btn" (click)="fillResidentType(element)"><mat-icon>border_color</mat-icon></button>
+                            </div>
+                          } @else {
+                            {{element[column]}}
+                          }
+                        </mat-cell>
+                      </ng-container>
+                    }
+                    <mat-header-row *matHeaderRowDef="residentTypeColumns"></mat-header-row>
+                    <mat-row *matRowDef="let row; columns: residentTypeColumns;" (click)="selectRow(row)"
+                             [ngClass]="{'selected-row': row === selectedRow}">
+                    </mat-row>
+                    <tr class="mat-row" *matNoDataRow>
+                      <td class="mat-cell" colspan="4">No data matching the filter</td>
+                    </tr>
+                  </mat-table>
+                  <mat-paginator #residentTypePaginator class="profile-table-paginator" [length]="20" [pageSize]="5" [pageSizeOptions]="[3,5,10,20]"
+                                 showFirstLastButtons></mat-paginator>
+                </mat-card-content>
+              </mat-card>
+            </div>
+          </mat-tab>
+
+          <!--===========================================Rates & Payment Conf==================================================-->
+
+          <mat-tab label="Rates & Payments">
+            <div class="grid-container">
+              <mat-card class="configuration-card">
+                <mat-card-header>
+                  <mat-card-title class="card-sub-title">Rate Types</mat-card-title>
+                  <div class="header-actions">
+                    @if (enableAddBtns['rateType']) {
+                      <button mat-raised-button color="primary" (click)="addNew('rateType')"><mat-icon>add</mat-icon>Add New</button>
+                    } @else {
+                      <button mat-raised-button color="primary" (click)="close('rateType')"><mat-icon>clear</mat-icon>Close</button>
+                    }
+                  </div>
+                </mat-card-header>
+                <mat-divider></mat-divider>
+                <mat-card-content>
+                  @if (enableForms['rateType']) {
+                    <div class="form-container">
+                      <form [formGroup]="rateTypeForm">
+                        <mat-form-field appearance="outline">
+                          <mat-label>Rate type</mat-label>
+                          <input matInput formControlName="name">
+                        </mat-form-field>
+                        <button mat-raised-button (click)="!isUpdate ? saveRateType() : updateRateType()">
+                          <mat-icon>add</mat-icon>
+                          save
+                        </button>
+                      </form>
+                    </div>
+                  } @else {
+                    <mat-form-field appearance="outline">
+                      <mat-label>Search rate types</mat-label>
+                      <input matInput (keyup)="filterRateType($event)">
+                      <mat-icon matSuffix>search</mat-icon>
+                    </mat-form-field>
+                  }
+                  <mat-table [dataSource]="rateTypeData">
+                    @for (column of rateTypeColumns; track rateTypeColumns; let i = $index){
+                      <ng-container [matColumnDef]="column">
+                        <mat-header-cell *matHeaderCellDef>{{ rateTypeHeaders[i] }}</mat-header-cell>
+                        <mat-cell *matCellDef="let element">
+                          @if (column === 'action'){
+                            <div class="tbl-btn-container">
+                              <button mat-icon-button class="delete-btn" (click)="deleteRateType(element)"><mat-icon>delete_forever</mat-icon></button>
+                              <button mat-icon-button class="modify-btn" (click)="fillRateType(element)"><mat-icon>border_color</mat-icon></button>
+                            </div>
+                          } @else {
+                            {{element[column]}}
+                          }
+                        </mat-cell>
+                      </ng-container>
+                    }
+                    <mat-header-row *matHeaderRowDef="rateTypeColumns"></mat-header-row>
+                    <mat-row *matRowDef="let row; columns: rateTypeColumns;" (click)="selectRow(row)"
+                             [ngClass]="{'selected-row': row === selectedRow}">
+                    </mat-row>
+                    <tr class="mat-row" *matNoDataRow>
+                      <td class="mat-cell" colspan="4">No data matching the filter</td>
+                    </tr>
+                  </mat-table>
+                  <mat-paginator #rateTypePaginator class="profile-table-paginator" [length]="20" [pageSize]="5" [pageSizeOptions]="[3,5,10,20]"
+                                 showFirstLastButtons></mat-paginator>
+                </mat-card-content>
+              </mat-card>
+
+              <mat-card class="configuration-card">
+                <mat-card-header>
+                  <mat-card-title class="card-sub-title">Currency</mat-card-title>
+                  <div class="header-actions">
+                    @if (enableAddBtns['currencyType']) {
+                      <button mat-raised-button color="primary" (click)="addNew('currencyType')"><mat-icon>add</mat-icon>Add New</button>
+                    } @else {
+                      <button mat-raised-button color="primary" (click)="close('currencyType')"><mat-icon>clear</mat-icon>Close</button>
+                    }
+                  </div>
+                </mat-card-header>
+                <mat-divider></mat-divider>
+                <mat-card-content>
+                  @if (enableForms['currencyType']) {
+                    <div class="form-container">
+                      <form [formGroup]="currencyTypeForm">
+                        <mat-form-field appearance="outline">
+                          <mat-label>Currency</mat-label>
+                          <input matInput formControlName="name">
+                        </mat-form-field>
+                        <button mat-raised-button (click)="!isUpdate ? saveCurrency() : updateCurrency()">
+                          <mat-icon>add</mat-icon>
+                          save
+                        </button>
+                      </form>
+                    </div>
+                  } @else {
+                    <mat-form-field appearance="outline">
+                      <mat-label>Search currencies</mat-label>
+                      <input matInput (keyup)="filterCurrency($event)">
+                      <mat-icon matSuffix>search</mat-icon>
+                    </mat-form-field>
+                  }
+
+                  <mat-table [dataSource]="currencyData">
+                    @for (column of currencyColumns; track currencyColumns; let i = $index){
+                      <ng-container [matColumnDef]="column">
+                        <mat-header-cell *matHeaderCellDef>{{ currencyHeaders[i] }}</mat-header-cell>
+                        <mat-cell *matCellDef="let element">
+                          @if (column === 'action'){
+                            <div class="tbl-btn-container">
+                              <button mat-icon-button class="delete-btn" (click)="deleteCurrency(element)"><mat-icon>delete_forever</mat-icon></button>
+                              <button mat-icon-button class="modify-btn" (click)="fillCurrency(element)"><mat-icon>border_color</mat-icon></button>
+                            </div>
+                          } @else {
+                            {{element[column]}}
+                          }
+                        </mat-cell>
+                      </ng-container>
+                    }
+                    <mat-header-row *matHeaderRowDef="currencyColumns"></mat-header-row>
+                    <mat-row *matRowDef="let row; columns: currencyColumns;" (click)="selectRow(row)"
+                             [ngClass]="{'selected-row': row === selectedRow}">
+                    </mat-row>
+                    <tr class="mat-row" *matNoDataRow>
+                      <td class="mat-cell" colspan="4">No data matching the filter</td>
+                    </tr>
+                  </mat-table>
+                  <mat-paginator #currencyPaginator class="profile-table-paginator" [length]="20" [pageSize]="5" [pageSizeOptions]="[3,5,10,20]"
+                                 showFirstLastButtons></mat-paginator>
+
+                </mat-card-content>
+              </mat-card>
+            </div>
+          </mat-tab>
+
+          <!--==================================================Policy Conf====================================================-->
+
+          <mat-tab label="Policies">
+            <div class="grid-container">
+              <mat-card class="configuration-card">
+                <mat-card-header>
+                  <mat-card-title class="card-sub-title">Cancellation Schema</mat-card-title>
+                  <div class="header-actions">
+                    @if (enableAddBtns['cancellationScheme']) {
+                      <button mat-raised-button color="primary" (click)="addNew('cancellationScheme')"><mat-icon>add</mat-icon>Add New</button>
+                    } @else {
+                      <button mat-raised-button color="primary" (click)="close('cancellationScheme')"><mat-icon>clear</mat-icon>Close</button>
+                    }
+                  </div>
+                </mat-card-header>
+                <mat-divider></mat-divider>
+                <mat-card-content>
+                  @if (enableForms['cancellationScheme']) {
+                    <div class="form-container">
+                      <form [formGroup]="cancellationSchemeForm">
+                        <mat-form-field appearance="outline">
+                          <mat-label>Cancellation schem</mat-label>
+                          <input matInput formControlName="name">
+                        </mat-form-field>
+                        <button mat-raised-button (click)="!isUpdate ? saveCancellationScheme() : updateCancellationScheme()">
+                          <mat-icon>add</mat-icon>
+                          save
+                        </button>
+                      </form>
+                    </div>
+                  } @else {
+                    <mat-form-field appearance="outline">
+                      <mat-label>Search cancellation schemes</mat-label>
+                      <input matInput (keyup)="filterCancellationScheme($event)">
+                      <mat-icon matSuffix>search</mat-icon>
+                    </mat-form-field>
+                  }
+                  <mat-table [dataSource]="cancellationSchemeData">
+                    @for (column of cancellationSchemeColumns; track cancellationSchemeColumns; let i = $index){
+                      <ng-container [matColumnDef]="column">
+                        <mat-header-cell *matHeaderCellDef>{{ cancellationSchemeHeaders[i] }}</mat-header-cell>
+                        <mat-cell *matCellDef="let element">
+                          @if (column === 'action'){
+                            <div class="tbl-btn-container">
+                              <button mat-icon-button class="delete-btn" (click)="deleteCancellationScheme(element)"><mat-icon>delete_forever</mat-icon></button>
+                              <button mat-icon-button class="modify-btn" (click)="fillCancellationScheme(element)"><mat-icon>border_color</mat-icon></button>
+                            </div>
+                          } @else {
+                            {{element[column]}}
+                          }
+                        </mat-cell>
+                      </ng-container>
+                    }
+                    <mat-header-row *matHeaderRowDef="cancellationSchemeColumns"></mat-header-row>
+                    <mat-row *matRowDef="let row; columns: cancellationSchemeColumns;" (click)="selectRow(row)"
+                             [ngClass]="{'selected-row': row === selectedRow}">
+                    </mat-row>
+                    <tr class="mat-row" *matNoDataRow>
+                      <td class="mat-cell" colspan="4">No data matching the filter</td>
+                    </tr>
+                  </mat-table>
+                  <mat-paginator #cancellationSchemePaginator class="profile-table-paginator" [length]="20" [pageSize]="5" [pageSizeOptions]="[3,5,10,20]"
+                                 showFirstLastButtons></mat-paginator>
+                </mat-card-content>
+              </mat-card>
+            </div>
+          </mat-tab>
+
+        </mat-tab-group>
+      </mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+
+</mat-grid-list>

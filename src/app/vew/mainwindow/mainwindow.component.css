@@ -1,0 +1,401 @@
+>>> .mat-drawer-content {
+  /*overflow: visible;*/
+}
+
+::ng-deep .user-menu {
+  border-radius: 12px !important;
+  background: linear-gradient(to bottom, #f5f7fa, #edf1fa) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.32) !important;
+  overflow: hidden !important;
+  width: 320px !important;
+  padding: 0 !important;
+}
+
+/* User Profile Section */
+.user-profile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 16px 16px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.user-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  border: 3px solid white;
+}
+
+.user-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.user-name {
+  margin: 12px 0 4px;
+  font-weight: 600;
+  font-size: 16px;
+  color: #333;
+  letter-spacing: 0.5px;
+}
+
+/* Menu Actions */
+.menu-actions {
+  padding: 12px;
+}
+
+.action-button {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 12px 16px;
+  margin-bottom: 8px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.action-button:last-child {
+  margin-bottom: 0;
+}
+
+.action-button mat-icon {
+  margin-right: 12px;
+}
+
+.action-button span {
+  font-weight: 500;
+}
+
+/* Manage Account Button */
+.manage-account {
+  background-color: #ffffff;
+  color: #2c5282;
+  border: 1px solid rgba(44, 82, 130, 0.2);
+}
+
+.manage-account:hover {
+  background-color: rgba(44, 82, 130, 0.05);
+}
+
+/* Logout Button */
+.logout {
+  background-color: white;
+  color: #e53e3e !important;
+}
+
+.logout:hover {
+  background-color: rgba(229, 62, 62, 0.25);
+}
+
+.logout mat-icon {
+  color: #e53e3e;
+}
+
+mat-toolbar-row {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  align-items: center;
+  background: rgb(213, 225, 253) !important;
+  /*background: rgb(2, 0, 36) !important;*/
+  /*background: linear-gradient(180deg, rgba(2, 0, 36, 1) 0%, rgba(95, 153, 245, 0.02) 0%, rgba(95, 153, 245, 0.1) 100%) !important;*/
+  padding: 0 16px; /* Added padding for better spacing */
+}
+
+.toolbar-left,
+.toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 16px; /* Added gap between elements */
+}
+
+.toolbar-left {
+  justify-content: flex-start;
+}
+
+.toolbar-right {
+  justify-content: flex-end;
+}
+
+.img-logo {
+  height: 50px;
+  width: 150px;
+  border-radius: 5px;
+  margin-left: 10px;
+  vertical-align: middle;
+  /*box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); !* Added subtle shadow *!*/
+}
+
+.btn-nav.mat-mdc-icon-button {
+  background-color: #71deff;
+  color: #13100a;
+  vertical-align: middle;
+  box-shadow: 1px 1px 6px #6a9be4;
+  border: #3f56ed solid 2px;
+  padding: 7px;
+  --mat-mdc-button-ripple-color: rgb(86, 134, 168);
+  transition: transform 0.2s ease, box-shadow 0.2s ease; /* Added smooth transition */
+}
+
+.btn-nav.mat-mdc-icon-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 2px 2px 8px #6a9be4;
+}
+
+.lbl-user {
+  font-size: 14px;
+  color: white;
+  margin-right: 5px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2); /* Added text shadow */
+}
+
+.img-user {
+  height: 50px;
+  border-radius: 50%;
+  vertical-align: middle;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Added shadow */
+  border: 2px solid rgba(255, 255, 255, 0.2); /* Added subtle border */
+  cursor: pointer;
+}
+
+.btn-logout {
+  color: white;
+  margin-left: 8px; /* Increased spacing */
+  transition: opacity 0.2s ease;
+}
+
+.btn-logout:hover {
+  opacity: 0.8;
+}
+
+mat-sidenav-container {
+  height: 100%;
+}
+
+/*:host >>> mat-sidenav {*/
+/*  width: 15.4rem !important;*/
+/*}*/
+
+>>> mat-sidenav {
+  min-width: 15.6rem !important;
+  max-width: 15.6rem !important;
+  width: 15.6rem !important;
+  /*width: 16% !important;*/
+  font-size: 14px;
+  text-decoration: none;
+  background: rgb(2, 0, 36) !important;
+  background: linear-gradient(180deg, rgba(2, 0, 36, 1) 0%, rgba(95, 153, 245, 0.02) 0%, rgba(95, 153, 245, 0.1) 100%) !important;
+  padding-top: 16px; /* Added top padding */
+}
+
+mat-sidenav mat-icon {
+  font-size: 16px;
+  margin-bottom: -10px;
+  margin-right: 8px; /* Added spacing */
+}
+
+mat-nav-list > mat-list-item {
+  height: 40px;
+  font-size: 14px;
+  width: 200px;
+  padding: 0 20px 0 23px;
+  margin: 8px 20px !important; /* Increased margin for better spacing */
+  border-radius: 10px;
+  transition: background-color 0.2s ease;
+}
+
+/* Add spacing for expansion panel items */
+mat-expansion-panel {
+  width: 200px;
+  margin-left: 20px;
+  margin-bottom: 16px !important; /* Increased bottom margin */
+  box-shadow: unset !important;
+  background: unset;
+  color: #000000;
+}
+
+/* Add spacing for expansion panel content */
+.mat-expansion-panel-body {
+  padding: 8px 0 !important; /* Add padding inside panel */
+}
+
+/* Add spacing between expansion panel items */
+mat-expansion-panel mat-list-item {
+  height: 40px !important;
+  margin: 8px 0 0 0 !important; /* Added vertical margin */
+}
+
+/*mat-list-item {*/
+/*  padding-left: 30px;*/
+/*  width: 150px;*/
+/*  margin-bottom: 4px; !* Added spacing between items *!*/
+/*}*/
+
+/* Regular list items spacing */
+mat-list-item {
+  /*padding-left: 30px;*/
+  width: 150px;
+  margin: 8px 0 !important; /* Added vertical margin */
+}
+
+/* Spacing for the top-level items (Home, Dashboard, etc.) */
+mat-nav-list a.mat-list-item {
+  margin: 12px 0 !important; /* Increased margin for better separation */
+}
+
+/* Add spacing for the Report item at the bottom */
+mat-nav-list > mat-list-item:last-child {
+  margin-top: 16px !important; /* Add extra space before the Report item */
+}
+
+mat-expansion-panel mat-list-item {
+  height: 40px !important;
+  margin-bottom: 4px; /* Added spacing */
+}
+
+mat-nav-list mat-list-item:hover,
+mat-list-item:focus {
+  background: lightskyblue !important;
+  border-radius: 10px !important;
+  transform: translateX(2px); /* Added subtle movement */
+}
+
+mat-expansion-panel {
+  width: 200px;
+  margin-left: 20px;
+  box-shadow: unset !important;
+  background: unset;
+  color: #000000;
+  margin-bottom: 8px; /* Added spacing */
+}
+
+.mat-expansion-panel-header {
+  font-weight: unset;
+  font-size: 16px;
+  height: 40px !important;
+  transition: all 0.2s ease; /* Added transition */
+}
+
+.mat-expansion-panel-header:hover,
+.mat-expansion-panel-header:active {
+  background: lightskyblue !important;
+  border-radius: 10px;
+  color: black;
+  transform: translateX(2px); /* Added subtle movement */
+}
+
+.mat-expansion-panel-header .mat-icon {
+  margin-top: 3px;
+  margin-right: 8px; /* Added spacing */
+}
+
+mat-list-item mat-icon,
+mat-list-item a {
+  color: black;
+  transition: color 0.2s ease; /* Added transition */
+}
+
+.selected-menu {
+  background: lightskyblue !important;
+  border-radius: 10px !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Added shadow */
+}
+
+/* Dark mode switch styles */
+::ng-deep .mdc-switch__icon {
+  display: none;
+}
+
+::ng-deep .mat-slide-toggle-thumb {
+  display: none;
+}
+
+::ng-deep .mat-slide-toggle-bar {
+  position: relative;
+}
+
+mat-list-item .custom-icon-container #lightIcon {
+  position: absolute;
+  left: 31px;
+  top: 15px;
+  transition: opacity 0.2s ease; /* Added transition */
+}
+
+mat-list-item .custom-icon-container #darkIcon {
+  position: absolute;
+  left: 51px;
+  top: 15px;
+  color: black;
+  transition: opacity 0.2s ease; /* Added transition */
+}
+
+#darkModeBtn {
+  left: 20%;
+  width: 40% !important;
+  background-color: unset !important;
+  margin: 16px 0; /* Added vertical spacing */
+}
+
+/* Custom menu styles */
+::ng-deep .custom-menu {
+  background-color: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  margin-top: 8px;
+}
+
+::ng-deep .custom-menu .mat-menu-item {
+  padding: 12px 16px;
+  transition: all 0.2s ease-in-out;
+  margin: 2px 0; /* Added spacing */
+}
+
+::ng-deep .custom-menu .mat-menu-item:hover,
+::ng-deep .custom-menu .mat-menu-item.active {
+  background-color: #f5f5f5;
+  transform: translateX(2px); /* Added subtle movement */
+}
+
+::ng-deep .mat-toolbar {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+::ng-deep .mat-raised-button.mat-accent {
+  background-color: #FFC107;
+  color: #333;
+  transition: all 0.2s ease-in-out;
+  margin: 0 4px; /* Added horizontal spacing */
+}
+
+::ng-deep .mat-raised-button.mat-accent:hover {
+  background-color: #FFD54F;
+  transform: translateY(-1px); /* Added subtle lift effect */
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+}
+mat-nav-list {
+  max-height: 80vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: #64748B #F8FAFC;
+}
+
+mat-nav-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+mat-nav-list::-webkit-scrollbar-track {
+  background: #F8FAFC;
+}
+
+mat-nav-list::-webkit-scrollbar-thumb {
+  background: #64748B;
+}
+
+mat-nav-list::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}

@@ -1,0 +1,227 @@
+<div class="back-button">
+  <button mat-raised-button color="primary" (click)="backToPackages()">
+    <mat-icon>arrow_back</mat-icon>Back to Packages
+  </button>
+</div>
+@if (isEnableTourView && tour) {
+  <div class="booking-details-container" #tourDetailsContainer>
+    <!-- Main Content -->
+    <div class="booking-main-content">
+      <!-- Tour Header -->
+      <div class="booking-header">
+        <div class="booking-header-info">
+          <h1 class="booking-title">{{ tour.name }} ({{ tour.reference }})</h1>
+          <div class="booking-meta">
+            <span class="booking-dates">
+              <i class="icon-calendar"></i>
+              {{ tour.validfrom | date }} - {{ tour.validto | date }}
+            </span>
+            <span class="booking-status status-confirmed">
+              {{ tour.tourtype.name }}
+            </span>
+            <span class="booking-status status-pending">
+              {{ tour.tourcategory.name }}
+            </span>
+            <span class="booking-status status-confirmed">
+              {{ tour.tourtheme.name }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Day-Wise Sections -->
+      @for (day of getUniqueDays(); track day) {
+        <div class="booking-section">
+          <div class="section-header">
+            <h2 class="section-title">Day {{ day }}</h2>
+          </div>
+
+          <!-- Accommodations Section -->
+          @if (tour.touraccommodations | filterByDay:day) {
+            <h3 class="section-subheader">Accommodations</h3>
+            <div class="accommodations-list">
+              @for (accommodation of tour.touraccommodations | filterByDay:day; track accommodation.id) {
+                <div class="accommodation-card">
+                  <div class="accommodation-header">
+                    <h3 class="accommodation-name">{{ accommodation.accommodation.name }}</h3>
+                    <span class="status-badge status-confirmed">
+                      {{ accommodation.accommodation.accommodationtype.name }}
+                    </span>
+                  </div>
+                  <div class="accommodation-details">
+                    <div class="accommodation-dates">
+                      <span class="date-label">Location:</span>
+                      <span class="date-value">{{ accommodation.accommodation.location }}</span>
+                      <span class="date-label">Valid From:</span>
+                      <span class="date-value">{{ accommodation.accommodation.validfrom | date:'medium' }}</span>
+                      <span class="date-label">Valid To:</span>
+                      <span class="date-value">{{ accommodation.accommodation.validto | date:'medium' }}</span>
+                    </div>
+                    <div class="accommodation-pricing">
+                      <div class="price-item">
+                        <span class="price-label">Markup:</span>
+                        <span class="price-value">{{ accommodation.accommodation.markup }}%</span>
+                      </div>
+                      <div class="price-item">
+                        <span class="price-label">Supplier:</span>
+                        <span class="price-value">{{ accommodation.accommodation.supplier.name }}</span>
+                      </div>
+                      <div class="price-item">
+                        <span class="price-label">Star Rating:</span>
+                        <span class="price-value">{{ accommodation.accommodation.starrating.name }}</span>
+                      </div>
+                    </div>
+                  </div>
+                  @if (accommodation.touraccommodationrooms.length > 0) {
+                    <div class="accommodation-rooms">
+                      <h4 class="rooms-title">Rooms</h4>
+                      <div class="rooms-grid">
+                        @for (room of accommodation.touraccommodationrooms; track room.id) {
+                          <div class="room-item">
+                            <div class="room-details">
+                              <span class="room-type">{{ room.roomtype }}</span>
+                            </div>
+                          </div>
+                        }
+                      </div>
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+          }
+
+          <!-- Transfers Section -->
+          @if (tour.tourtransfercontracts | filterByDay:day) {
+            <h3 class="section-subheader">Transfers</h3>
+            <div class="transfers-list">
+              @for (transfer of tour.tourtransfercontracts | filterByDay:day; track transfer.id) {
+                <div class="transfer-card">
+                  <div class="transfer-header">
+                    <h3 class="transfer-name">{{ transfer.transfercontract.reference }}</h3>
+                    <span class="status-badge status-confirmed">
+                      {{ transfer.transfercontract.transfertype.name }}
+                    </span>
+                  </div>
+                  <div class="transfer-details">
+                    <div class="transfer-timing">
+                      <span class="timing-label">Valid From:</span>
+                      <span class="timing-value">{{ transfer.transfercontract.validfrom | date:'medium' }}</span>
+                      <span class="timing-label">Valid To:</span>
+                      <span class="timing-value">{{ transfer.transfercontract.validto | date:'medium' }}</span>
+                    </div>
+                    <div class="transfer-pricing">
+                      <div class="price-item">
+                        <span class="price-label">Markup:</span>
+                        <span class="price-value">{{ transfer.transfercontract.markup }}%</span>
+                      </div>
+                      <div class="price-item">
+                        <span class="price-label">Supplier:</span>
+                        <span class="price-value">{{ transfer.transfercontract.supplier.name }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+          }
+
+          <!-- Generics Section -->
+          @if (tour.tourgenerics | filterByDay:day) {
+            <h3 class="section-subheader">Generics</h3>
+            <div class="generics-list">
+              @for (generic of tour.tourgenerics | filterByDay:day; track generic.id) {
+                <div class="generic-card">
+                  <div class="generic-header">
+                    <h3 class="generic-name">{{ generic.generic.name }}</h3>
+                    <span class="status-badge status-confirmed">
+                      {{ generic.generic.generictype.name }}
+                    </span>
+                  </div>
+                  <div class="generic-details">
+                    <div class="generic-timing">
+                      <span class="timing-label">Valid From:</span>
+                      <span class="timing-value">{{ generic.generic.validfrom | date:'medium' }}</span>
+                      <span class="timing-label">Valid To:</span>
+                      <span class="timing-value">{{ generic.generic.validto | date:'medium' }}</span>
+                    </div>
+                    <div class="generic-pricing">
+                      <div class="price-item">
+                        <span class="price-label">Markup:</span>
+                        <span class="price-value">{{ generic.generic.markup }}%</span>
+                      </div>
+                      <div class="price-item">
+                        <span class="price-label">Supplier:</span>
+                        <span class="price-value">{{ generic.generic.supplier.name }}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="generic-paxes">
+                    <h4 class="paxes-title">Description</h4>
+                    <p class="generic-description">{{ generic.generic.description }}</p>
+                  </div>
+                </div>
+              }
+            </div>
+          }
+        </div>
+      }
+
+      <!-- Occupancies Section -->
+      @if (tour.touroccupancies.length > 0) {
+        <div class="booking-section">
+          <div class="section-header">
+            <h2 class="section-title">Occupancies</h2>
+            <span class="section-count">{{ tour.touroccupancies.length }}</span>
+          </div>
+          <div class="paxes-grid">
+            @for (occupancy of tour.touroccupancies; track occupancy.id) {
+              <div class="pax-item">
+                <span class="pax-type">{{ occupancy.paxtype.name }}</span>
+                <span class="pax-amount">{{ occupancy.amount | currency }}</span>
+              </div>
+            }
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Sidebar -->
+    <div class="booking-sidebar">
+      <div class="price-summary-card">
+        <h3 class="summary-title">Tour Summary</h3>
+        <div class="price-breakdown">
+          <div class="price-row">
+            <span class="price-label">Max Pax Count</span>
+            <span class="price-value">{{ tour.maxpaxcount }}</span>
+          </div>
+          <div class="price-row">
+            <span class="price-label">Sales From</span>
+            <span class="price-value">{{ tour.salesfrom | date }}</span>
+          </div>
+          <div class="price-row">
+            <span class="price-label">Sales To</span>
+            <span class="price-value">{{ tour.salesto | date }}</span>
+          </div>
+          <div class="price-row">
+            <span class="price-label">Created On</span>
+            <span class="price-value">{{ tour.createdon | date:'medium' }}</span>
+          </div>
+          <div class="price-row">
+            <span class="price-label">Updated On</span>
+            <span class="price-value">{{ tour.updatedon | date:'medium' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="quick-actions-card">
+        <h3 class="actions-title">Quick Actions</h3>
+        <div class="actions-buttons">
+          <button class="action-btn primary" (click)="modiFyTour(tour)">Edit Tour</button>
+          <button class="action-btn secondary" (click)="generateTourPDF()">Print Details</button>
+          <button class="action-btn secondary" (click)="generateTourPDF()">Download PDF</button>
+        </div>
+      </div>
+    </div>
+  </div>
+}

@@ -1,0 +1,233 @@
+<div class="user-profile-container">
+  <div class="profile-header">
+    <mat-card class="header-card">
+      <mat-card-content>
+        <div class="header-content">
+          <div class="user-avatar">
+            <img [src]="authorizationMangerService.setUserProfile()" alt="avatar" class="user-avatar">
+          </div>
+          <div class="user-info">
+            <h1 class="user-name">{{ employee.fullname }}</h1>
+            <p class="user-designation">{{ employee.designation.name }}</p>
+            <p class="user-username">{{ employee.users[0].username }}</p>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div class="profile-content">
+    <div class="left-column">
+      <mat-card class="info-card">
+        <mat-card-header>
+          <mat-card-title>Personal Information</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="info-grid">
+            <div class="info-item">
+              <mat-icon class="info-icon">person</mat-icon>
+              <div class="info-details">
+                <span class="info-label">Full Name</span>
+                <span class="info-value">{{ employee.fullname }}</span>
+              </div>
+            </div>
+
+            <div class="info-item">
+              <mat-icon class="info-icon">badge</mat-icon>
+              <div class="info-details">
+                <span class="info-label">Calling Name</span>
+                <span class="info-value">{{ employee.callingname }}</span>
+              </div>
+            </div>
+
+            <div class="info-item">
+              <mat-icon class="info-icon">cake</mat-icon>
+              <div class="info-details">
+                <span class="info-label">Date of Birth</span>
+                <span class="info-value">{{ formatDate(employee.dobirth) }}</span>
+              </div>
+            </div>
+
+            <div class="info-item">
+              <mat-icon class="info-icon">credit_card</mat-icon>
+              <div class="info-details">
+                <span class="info-label">NIC Number</span>
+                <span class="info-value">{{ employee.nic }}</span>
+              </div>
+            </div>
+
+            <div class="info-item">
+              <mat-icon class="info-icon">wc</mat-icon>
+              <div class="info-details">
+                <span class="info-label">Gender</span>
+                <span class="info-value">{{ employee.gender.name }}</span>
+              </div>
+            </div>
+
+            <div class="info-item">
+              <mat-icon class="info-icon">work</mat-icon>
+              <div class="info-details">
+                <span class="info-label">Employee Type</span>
+                <span class="info-value">{{ employee.employeetype.name }}</span>
+              </div>
+            </div>
+
+            <div class="info-item full-width">
+              <mat-icon class="info-icon">location_on</mat-icon>
+              <div class="info-details">
+                <span class="info-label">Address</span>
+                <span class="info-value">{{ employee.address }}</span>
+              </div>
+            </div>
+
+            @if (employee.description) {
+              <div class="info-item full-width">
+                <mat-icon class="info-icon">description</mat-icon>
+                <div class="info-details">
+                  <span class="info-label">Description</span>
+                  <span class="info-value">{{ employee.description }}</span>
+                </div>
+              </div>
+            }
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Security Section -->
+      <mat-card class="info-card">
+        <mat-card-header class="security-header">
+          <mat-card-title><mat-icon matIconPrefix>lock</mat-icon>Security</mat-card-title>
+            <button mat-raised-button color="primary" (click)="togglePasswordSection()">
+              <mat-icon>lock</mat-icon>
+              Change Password
+            </button>
+        </mat-card-header>
+
+        @if (showPasswordSection) {
+          <mat-card-content>
+            <form [formGroup]="passwordForm">
+              <div class="password-form">
+                <mat-form-field appearance="outline">
+                  <mat-label>CurrentPassword</mat-label>
+                  <input matInput [type]="pwdHide ? 'password' : 'text'" formControlName="currentPassword">
+                  <mat-icon matIconSuffix
+                            (click)="pwdHide = !pwdHide" [attr.aria-label]="'Hide password'"
+                            [attr.aria-pressed]="pwdHide"
+                  >{{ pwdHide ? 'visibility_off' : 'visibility' }}</mat-icon>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>New Password</mat-label>
+                  <input matInput [type]="newPwdHide ? 'password' : 'text'" formControlName="newPassword">
+                  <mat-icon matIconSuffix
+                            (click)="newPwdHide = !newPwdHide" [attr.aria-label]="'Hide password'"
+                            [attr.aria-pressed]="newPwdHide"
+                  >{{ newPwdHide ? 'visibility_off' : 'visibility' }}</mat-icon>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Confirm Password</mat-label>
+                  <input matInput [type]="pwdConfHide ? 'password' : 'text'" formControlName="confirmPassword">
+                  <mat-icon matIconSuffix
+                            (click)="pwdConfHide = !pwdConfHide" [attr.aria-label]="'Hide password'"
+                            [attr.aria-pressed]="pwdConfHide"
+                  >{{ pwdConfHide ? 'visibility_off' : 'visibility' }}</mat-icon>
+                  @if (passwordForm.controls['confirmPassword'].hasError('passwordsNotMatching')) {
+                    <mat-error>Confirmation password does not match.</mat-error>
+                  }
+                </mat-form-field>
+
+                <div class="password-actions">
+                  <button mat-raised-button color="primary" type="submit"
+                          [disabled]="!passwordForm.valid"
+                  (click)="updatePassword()">
+                    Update Password
+                  </button>
+                  <button mat-button type="button" (click)="togglePasswordSection(); passwordForm.reset()">
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </form>
+          </mat-card-content>
+        }
+      </mat-card>
+    </div>
+
+    <div class="right-column">
+      <!-- Contact Information -->
+      <mat-card class="info-card">
+        <mat-card-header>
+          <mat-card-title>Contact Information</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="contact-info">
+            <div class="contact-item">
+              <mat-icon class="contact-icon">email</mat-icon>
+              <div class="contact-details">
+                <span class="contact-label">Email</span>
+                <span class="contact-value">{{ employee.email }}</span>
+              </div>
+            </div>
+
+            <div class="contact-item">
+              <mat-icon class="contact-icon">phone</mat-icon>
+              <div class="contact-details">
+                <span class="contact-label">Mobile</span>
+                <span class="contact-value">{{ employee.mobile }}</span>
+              </div>
+            </div>
+
+            <div class="contact-item">
+              <mat-icon class="contact-icon">phone</mat-icon>
+              <div class="contact-details">
+                <span class="contact-label">Landline</span>
+                <span class="contact-value">{{ employee.land }}</span>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Account Information -->
+      <mat-card class="info-card">
+        <mat-card-header>
+          <mat-card-title>Account Information</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="account-info">
+            <div class="account-item">
+              <span class="account-label">Username</span>
+              <span class="account-value">{{ employee.users[0].username }}</span>
+            </div>
+
+            <div class="account-item">
+              <span class="account-label">User Type</span>
+              <span class="account-value">{{ employee.users[0].usertype.name }}</span>
+            </div>
+
+            <div class="account-item">
+              <span class="account-label">Account Status</span>
+              <mat-chip [ngClass]="'status-' + employee.users[0].userstatus.name">
+                {{ employee.users[0].userstatus.name }}
+              </mat-chip>
+            </div>
+
+            <div class="account-item">
+              <span class="account-label">Employee Status</span>
+              <mat-chip [ngClass]="'status-' + employee.employeestatus.name">
+                {{ employee.employeestatus.name }}
+              </mat-chip>
+            </div>
+
+            <div class="account-item">
+              <span class="account-label">Member Since</span>
+              <span class="account-value">{{ formatDate(employee.createdon) }}</span>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+    </div>
+  </div>
+</div>

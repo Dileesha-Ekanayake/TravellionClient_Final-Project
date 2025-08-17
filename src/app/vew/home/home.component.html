@@ -1,0 +1,537 @@
+<mat-grid-list [cols]="12" rowHeight="5.2rem">
+
+  <!--===============================================Main Section=================================================-->
+  <mat-grid-tile [colspan]="12" [rowspan]="10" id="main-section">
+    <mat-card>
+      <mat-card-content>
+        <div class="main-container">
+          <div class="nav-bar">
+            <div class="logo">
+              <span class="brand">Travellion</span>
+            </div>
+            <div class="nav-list">
+              <a href="#">Home</a>
+              <a (click)="scrollToSection('about-section')" style="cursor: pointer">About</a>
+              <a (click)="scrollToSection('destination-section')" style="cursor: pointer">Destination</a>
+              <a (click)="scrollToSection('services-section')" style="cursor: pointer">Services</a>
+              <a (click)="scrollToSection('package-section')" style="cursor: pointer">Packages</a>
+              <a (click)="scrollToSection('contactUs-section')" style="cursor: pointer">Contact</a>
+              <a routerLink="/login">Log In</a>
+            </div>
+          </div>
+          <div class="header">
+            <span class="explore-text">Explore the Imagine tour</span>
+            <h1 class="memories-text">
+              <span class="styled-text">Creating</span><span>&nbsp;Memories</span>
+            </h1>
+            <p class="location-text">In Sri Lanka</p>
+            <button class="cta-button">Book a Tour</button>
+          </div>
+          <div class="overlay"></div>
+          <img src="Home_cover.jpg" alt="Sri Lanka Landscape" class="background-image">
+          <div class="wave">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+              <path fill="#f8f7fb" fill-opacity="1"
+                    d="M0,256L40,224C80,192,160,128,240,101.3C320,75,400,85,480,122.7C560,160,640,224,720,229.3C800,235,880,181,960,138.7C1040,96,1120,64,1200,80C1280,96,1360,160,1400,192L1440,224L1440,320L1400,320C1360,320,1280,320,1200,320C1120,320,1040,320,960,320C880,320,800,320,720,320C640,320,560,320,480,320C400,320,320,320,240,320C160,320,80,320,40,320L0,320Z"></path>
+            </svg>
+          </div>
+          <div class="social-icons">
+            <a href="#" class="social-icon" aria-label="FaceBook"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" class="social-icon" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="social-icon" aria-label="X"><i class="fa-brands fa-x-twitter"></i></a>
+            <a href="#" class="social-icon" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+
+  <!--===============================================Greeting Section=================================================-->
+  <mat-grid-tile [colspan]="12" [rowspan]="4">
+    <mat-card>
+      <mat-card-content class="leaves-container">
+
+        <div class="welcoming-text">
+          <p>Ayubowan</p>
+          <p>Welcome to Sri Lanka</p>
+          <p>See what's waiting for you on your next island getaway.</p>
+          <p>Savour the unique experiences this island treasure has to offer.</p>
+        </div>
+
+        <div class="palm-leaves-container">
+          <div class="palm-leaves-left">
+            <img src="palm-leaves.png" alt="Palm Leaves Left" class="corner-palm">
+          </div>
+          <div class="palm-leaves-right">
+            <img src="palm-leaves.png" alt="Palm Leaves Right" class="corner-palm">
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+
+  <!--===============================================About Us Section=================================================-->
+  <mat-grid-tile [colspan]="12" [rowspan]="21">
+    <mat-card>
+      <mat-card-content class="about-us">
+        <div class="about-us-container" id="about-section">
+          <div class="about-us-text">
+            <p>We are the Best</p>
+            <p>About Us</p>
+            <p>
+              Our tours offer a diverse range of destinations that cater to a wide variety of interests. From
+              sun-drenched sandy beaches with crystal-clear blue oceans, to breathtaking mountain landscapes tranquil
+              lakes, and lush forests, we've got you covered
+              Dont waste your chance! We have a tempting offer for the first 50 people who apply for the tour will
+              receive a 15% discount on purchases from our partners.
+            </p>
+          </div>
+          <div class="back-image-navcard">
+            <img src="Nav-card.png" alt="back-image-navcard">
+          </div>
+          <div class="about-us-image">
+            <img src="scenic mountain landscape.jpg" alt="About Us" class="image-1">
+            <img src="tropical beach crystal clear water.jpg" alt="About Us" class="image-2">
+            <img src="lush green forest.jpg" alt="About Us" class="image-3">
+          </div>
+          <div class="back-image-navcard2">
+            <img src="Nav-card2.png" alt="back-image-navcard2">
+          </div>
+        </div>
+        <div class="data-container">
+          <div>
+            <p>10+</p>
+            <p>Year of experience</p>
+          </div>
+          <div>
+            <p>5000+</p>
+            <p>Satisfied Clients</p>
+          </div>
+          <div>
+            <p>2000+</p>
+            <p>Tours</p>
+          </div>
+        </div>
+
+        <div class="why-us">
+
+          <div class="image-gallery">
+            <div class="back-image-gallery">
+              <img src="palm-leaves-black.png" alt="Why Us">
+            </div>
+            <div class="experience"></div>
+            <div class="image1">
+              <img src="Beach.jpg" alt="Location-1" class="image-1">
+            </div>
+            <div class="image2">
+              <img src="Hiking.jpg" alt="Location-2" class="image-2">
+            </div>
+            <div class="image3">
+              <img src="Trills.png" alt="Location-3" class="image-3">
+            </div>
+          </div>
+          <div class="description">
+            <div class="heading">
+              <div>Best Choice</div>
+              <div>Why Choose Us</div>
+            </div>
+            <div class="text-body">
+              <div class="topic"><i class="fa-solid fa-check"></i> Handpicked Destinations</div>
+              <div class="content">
+                We curate the best travel experiences offering only the most beautiful and unique locations worldwide.
+              </div>
+
+              <div class="topic"><i class="fa-solid fa-check"></i> Personalized Itineraries</div>
+              <div class="content">
+                No two travelers are the same, and neither should be their adventures.
+              </div>
+
+              <div class="topic"><i class="fa-solid fa-check"></i> Exceptional Customer Support</div>
+              <div class="content">
+                From the moment you book until you return home, our dedicated customer support team is available 24/7.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mission-vision-values-section">
+          <div class="container">
+            <div class="mvv-grid">
+              <div class="mvv-card">
+                <h2 class="mvv-heading"><i class="fa-solid fa-earth-americas" style="color: darkgreen"></i>&nbsp;&nbsp;Our
+                  Mission</h2>
+                <p class="mvv-content">
+                  To empower Sri Lanka's tourism industry by delivering an all-in-one digital platform that streamlines
+                  operations, enhances <span class="highlight">stakeholder collaboration</span>, and provides
+                  exceptional user experiences for tourists and service providers alike.
+                </p>
+              </div>
+
+              <div class="mvv-card">
+                <h2 class="mvv-heading"><i class="fa-solid fa-star" style="color: #fdbe01"></i>&nbsp;&nbsp;Our Vision
+                </h2>
+                <p class="mvv-content">
+                  To become the leading catalyst in transforming Sri Lanka's tourism ecosystem into a <span
+                  class="highlight">digitally-driven</span>, efficient, and inclusive industry that supports sustainable
+                  development and creates opportunities across all regions of the country.
+                </p>
+              </div>
+
+              <div class="mvv-card">
+                <h2 class="mvv-heading"><i class="fa-solid fa-lightbulb" style="color: orange"></i>&nbsp;&nbsp;Our
+                  Values</h2>
+                <p class="mvv-content">
+                  We value <span class="highlight">innovation, inclusivity, and reliability</span>. Our goal is to
+                  connect all tourism stakeholders through a smart, user-friendly system that boosts efficiency and
+                  reduces waste. We aim to empower rural communities, support sustainable tourism, and promote
+                  collaboration for a stronger, more connected industry.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+
+  <!--===============================================Destination Section=================================================-->
+  <mat-grid-tile [colspan]="12" [rowspan]="18" id="destination-section">
+    <mat-card class="destinations">
+      <mat-card-content id="destination-section">
+        <div class="back-image-worldMap">
+          <img src="world-map.png" alt="back-image-worldMap">
+        </div>
+        <div class="back-image-slMap">
+          <img src="sri-lanka.png" alt="back-image-SriLankanMap">
+        </div>
+        <div class="back-image-dancer">
+          <img src="Udarata-Dancer.png" alt="back-image-UdarataDancer">
+        </div>
+        <div class="back-image-mask">
+          <img src="Mask.png" alt="back-image-mask">
+        </div>
+        <div class="destinations-list">
+          <div class="subtitle">All Corners</div>
+          <div class="title">Destinations</div>
+
+          <div class="reasons-to-travel">
+            Five Most famous Places You Need to Visit in Sri Lanka
+          </div>
+
+          <div class="timeline">
+            <div class="timeline-item">
+              <div class="timeline-image">
+                <img src="sigiriya.jpeg" alt="Sigiriya Rock Fortress">
+              </div>
+              <div class="timeline-dot"></div>
+              <div class="timeline-content">
+                <div class="timeline-title">Sigiriya Rock Fortress</div>
+                <div class="timeline-description">Explore this UNESCO World Heritage site, an ancient rock fortress with
+                  spectacular frescoes, water gardens, and panoramic views from the top of the 200-meter high column of
+                  rock.
+                </div>
+              </div>
+            </div>
+
+            <div class="timeline-item">
+              <div class="timeline-image">
+                <img src="Kandy.jpeg" alt="Temple of the Sacred Tooth Relic">
+              </div>
+              <div class="timeline-dot"></div>
+              <div class="timeline-content">
+                <div class="timeline-title">Temple of the Sacred Tooth Relic</div>
+                <div class="timeline-description">Visit the revered Buddhist temple in Kandy that houses the relic of
+                  the tooth of Buddha, surrounded by beautiful architecture and serene lake views in Sri Lanka's
+                  cultural capital.
+                </div>
+              </div>
+            </div>
+
+            <div class="timeline-item">
+              <div class="timeline-image">
+                <img src="Galle-Fort.jpg" alt="Galle Fort">
+              </div>
+              <div class="timeline-dot"></div>
+              <div class="timeline-content">
+                <div class="timeline-title">Galle Fort</div>
+                <div class="timeline-description">Wander through this historic Dutch colonial fortress with its charming
+                  streets, boutique shops, and sea walls offering stunning views of the Indian Ocean.
+                </div>
+              </div>
+            </div>
+
+            <div class="timeline-item">
+              <div class="timeline-image">
+                <img src="Yala-National-Park.jpg" alt="Yala National Park">
+              </div>
+              <div class="timeline-dot"></div>
+              <div class="timeline-content">
+                <div class="timeline-title">Yala National Park</div>
+                <div class="timeline-description">Experience incredible wildlife including the highest density of
+                  leopards in the world, along with elephants, sloth bears, and hundreds of bird species in this diverse
+                  ecosystem.
+                </div>
+              </div>
+            </div>
+
+            <div class="timeline-item">
+              <div class="timeline-image">
+                <img src="Ella.jpg" alt="Ella">
+              </div>
+              <div class="timeline-dot"></div>
+              <div class="timeline-content">
+                <div class="timeline-title">Ella</div>
+                <div class="timeline-description">Discover this picturesque hill country town famous for breathtaking
+                  mountain views, lush tea plantations, and the iconic Nine Arch Bridge railway viaduct.
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+
+  <!--===============================================Services Section=================================================-->
+  <mat-grid-tile [colspan]="12" [rowspan]="8" id="services-section">
+    <mat-card class="services">
+      <mat-card-content>
+        <div class="header-section">
+          <div>Plan Your Dream Holiday</div>
+          <div>
+            Each day on this island promises new experiences, discoveries, and life-long memories. With so much to
+            do,let us help you with these itineraries created just for you!
+          </div>
+        </div>
+
+        <div class="services-list" (click)="scrollToSection('contactUs-section')">
+          <div class="service">
+            <img src="accommodation.png" alt="Accommodation" class="service-icon">
+            <div class="service-title">Find a Accommodation</div>
+          </div>
+
+          <div class="service">
+            <img src="travel-agent.jpeg" alt="Travel Agent" class="service-icon">
+            <div class="service-title">Find a Travel Agent</div>
+          </div>
+
+          <div class="service">
+            <img src="tourist-g.png" alt="Tour Guide" class="service-icon">
+            <div class="service-title">Find a Tour Guide</div>
+          </div>
+
+          <div class="service">
+            <img src="things-to-do.png" alt="ITernaries" class="service-icon">
+            <div class="service-title">Things to See and Do</div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+
+  <!--===============================================Tour Section=================================================-->
+  <mat-grid-tile [colspan]="12" [rowspan]="14" id="package-section">
+    <mat-card class="tours">
+      <mat-card-content>
+
+        <div class="package-header">
+          <div class="package-title">Exclusive Tour Packages</div>
+          <div class="package-subtitle">
+            Each place, and each smile in Sri Lanka has a story to tell. We have so much to share with you, so come
+            along
+            to our island in paradise!
+          </div>
+        </div>
+
+        <div class="package-list">
+          <div class="package">
+            <img src="travel-maligawa.jpg" alt="Maligawa">
+            <div class="location">Sri Lanka</div>
+            <div class="package-title">3 Days - A Quick Adventure</div>
+            <div class="package-price">
+              <div>Starting From</div>
+              <div>290 USD</div>
+            </div>
+          </div>
+
+          <div class="package">
+            <img src="travel-beach.jpg" alt="Beach">
+            <div class="location">Sri Lanka</div>
+            <div class="package-title">4 Days - Culture Shores</div>
+            <div class="package-price">
+              <div>Starting From</div>
+              <div>400 USD</div>
+            </div>
+          </div>
+
+          <div class="package">
+            <img src="travel-island.jpg" alt="Island">
+            <div class="location">Sri Lanka</div>
+            <div class="package-title">5 Days - Island Escape</div>
+            <div class="package-price">
+              <div>Starting From</div>
+              <div>585 USD</div>
+            </div>
+          </div>
+
+          <div class="package">
+            <img src="travel-waterfall.jpg" alt="Waterfall">
+            <div class="location">Sri Lanka</div>
+            <div class="package-title">Tour Itinerary 12 Days</div>
+            <div class="package-price">
+              <div>Starting From</div>
+              <div>1250 USD</div>
+            </div>
+          </div>
+
+          <div class="package">
+            <img src="travel-gallefort.jpg" alt="Galle Fort">
+            <div class="location">Sri Lanka</div>
+            <div class="package-title">6 Days - Temples, Wildlife & Beach</div>
+            <div class="package-price">
+              <div>Starting From</div>
+              <div>730 USD</div>
+            </div>
+          </div>
+
+          <div class="package">
+            <img src="travel-9arch.jpg" alt="9 Arch Bridge">
+            <div class="location">Sri Lanka</div>
+            <div class="package-title">7 Days - Island Adventure</div>
+            <div class="package-price">
+              <div>Starting From</div>
+              <div>872 USD</div>
+            </div>
+          </div>
+
+          <div class="package">
+            <img src="travel-romantic.jpg" alt="Romantic">
+            <div class="location">Sri Lanka</div>
+            <div class="package-title">15 Days of Romantic Bliss</div>
+            <div class="package-price">
+              <div>Starting From</div>
+              <div>4200 USD</div>
+            </div>
+          </div>
+
+          <div class="package">
+            <img src="travel-honeymoon.jpg" alt="Honeymoon">
+            <div class="location">Sri Lanka</div>
+            <div class="package-title">12 Dreamy Honeymoon Days</div>
+            <div class="package-price">
+              <div>Starting From</div>
+              <div>5000 USD</div>
+            </div>
+          </div>
+        </div>
+        <div class="button-container">
+          <button mat-raised-button color="primary" (click)="scrollToSection('contactUs-section')">Explore More</button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+
+  <!--===============================================Contact Us Section=================================================-->
+  <mat-grid-tile colspan="12" rowspan="9" id="contactUs-section">
+    <mat-card class="contact-us">
+      <mat-card-content>
+
+        <div class="contact-us-form">
+          <div class="contact-us-header">
+            <div class="contact-us-title">Contact Us</div>
+            <div class="contact-us-subtitle">
+              We'd love to hear from you! Whether you have questions about our travel packages, need help planning your
+              Sri Lankan adventure, or want to customize your itinerary, our friendly team is here to assist. Reach out
+              through any of the methods below, and we'll get back to you within 24 hours.
+            </div>
+          </div>
+
+          <div class="contact-us-form-container">
+            <form>
+              <div class="form-row">
+                <mat-form-field appearance="outline">
+                  <mat-label>Email</mat-label>
+                  <input matInput placeholder="Enter your Email" required type="email">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Name</mat-label>
+                  <input matInput placeholder="Enter your Name" required>
+                </mat-form-field>
+              </div>
+
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Address</mat-label>
+                <input matInput placeholder="Enter your Address">
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Message</mat-label>
+                <textarea matInput placeholder="Enter your Message" rows="5" required></textarea>
+              </mat-form-field>
+
+              <div class="button-container">
+                <button mat-raised-button color="primary">Submit</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+
+  <!--===============================================Footer Section=================================================-->
+  <mat-grid-tile [colspan]="12" [rowspan]="6">
+    <mat-card class="footer-container">
+      <div class="footer-text">
+        <div>Travellion</div>
+        <div>Discover Sri Lanka with Travellion</div>
+        <div>Your Ultimate Travel Companion!</div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="nav-bar">
+        <div class="nav-list">
+          <a (click)="scrollToSection('main-section')" style="cursor: pointer">Home</a>
+          <a (click)="scrollToSection('about-section')" style="cursor: pointer">About Us</a>
+          <a (click)="scrollToSection('destination-section')" style="cursor: pointer">Destination</a>
+          <a (click)="scrollToSection('services-section')" style="cursor: pointer">Services</a>
+          <a (click)="scrollToSection('package-section')" style="cursor: pointer">Packages</a>
+          <a (click)="scrollToSection('contactUs-section')" style="cursor: pointer">Contact</a>
+        </div>
+      </div>
+
+      <div class="contact-footer">
+        <div class="contact-info">
+          <i class="fa-solid fa-phone"></i> +94 76 834 8418
+        </div>
+
+        <div class="social-icons">
+          <a href="#" class="social-icon" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" class="social-icon" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+          <a href="#" class="social-icon" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+          <a href="#" class="social-icon" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+        </div>
+
+        <div class="contact-info">
+          <i class="fa-solid fa-envelope"></i> travellion&#64;gmail.com
+        </div>
+      </div>
+
+      <div class="copyright">
+        <div>
+          All rights reserved by Travellion © {{ currentYear }}
+        </div>
+        <div>
+          Developed by Travellion IT Solutions Pvt Ltd.
+        </div>
+      </div>
+    </mat-card>
+  </mat-grid-tile>
+
+</mat-grid-list>
+
+

@@ -1,0 +1,95 @@
+<mat-toolbar>
+  <!--  <mat-toolbar-row style="background-image: url('headerimg.png')">-->
+  <mat-toolbar-row>
+
+    <span class="toolbar-left">
+      <button mat-icon-button (click)="opened=!opened" class="btn-nav"><mat-icon>menu</mat-icon></button>
+      <img ngSrc="Travellion_Header_Logo.png" class="img-logo" height="100" width="300" alt="logo">
+    </span>
+
+    <span class="toolbar-right">
+      <label class="lbl-user" style="color: black">{{ authService.getUsername().toUpperCase() }}</label>
+      <img [src]="authService.setUserProfile()" [matMenuTriggerFor]="userMenu" class="img-user" alt="user"/>
+<!--      <button mat-icon-button [matMenuTriggerFor]="userMenu" style="color:#13100a;"><mat-icon>exit_to_app</mat-icon></button>-->
+    </span>
+
+    <mat-menu #userMenu="matMenu" class="user-menu">
+      <div class="user-profile">
+        <div class="user-avatar">
+          <img [src]="authService.setUserProfile()" alt="User profile">
+        </div>
+        <p class="user-name">Hi, {{ authService.getUsername().toUpperCase() }}!</p>
+      </div>
+
+      <div class="menu-actions">
+        <button mat-button class="action-button manage-account" (click)="loadProfile()">
+          <mat-icon>person</mat-icon>
+          <span>Manage your Account</span>
+        </button>
+
+        <button mat-button class="action-button logout" (click)="logout()">
+          <mat-icon>logout</mat-icon>
+          <span>Logout</span>
+        </button>
+      </div>
+    </mat-menu>
+
+  </mat-toolbar-row>
+</mat-toolbar>
+
+
+<mat-sidenav-container>
+
+  <mat-sidenav [style.width.rem]="15.6" [(opened)]="opened" mode="side">
+
+    <mat-nav-list>
+
+      <mat-list-item class="singleItem" routerLink="dashboard"
+                     [ngClass]="{ 'selected-menu': selectedMenuItem === 'dashboard' }"
+                     (click)="selectMenuItem('dashboard')">
+        <mat-icon>widgets</mat-icon>
+        <a>Dashboard</a>
+      </mat-list-item>
+
+
+      <!-- Dynamically add Mat Expansion Panels with Menus and Menu Items -->
+      @for (menuItem of menuGroup; track menuGroup) {
+        <ng-container>
+          @if (isMenuVisible(menuItem.Menu)) {
+            <mat-expansion-panel appHoverExpand>
+              <mat-expansion-panel-header>
+                <mat-icon style="color: #000000">{{ mainMenuIcons[menuItem.Menu] }}</mat-icon>
+                {{ menuItem.Menu }}
+              </mat-expansion-panel-header>
+              @for (menuItem of menuItem.MenuItems; track menuItem.MenuItems) {
+                <ng-container>
+                  @if (menuItem.isVisible) {
+                    <mat-list-item [routerLink]="menuItem.isVisible ? menuItem.routerLink : null"
+                                   [ngClass]="{ 'selected-menu': selectedMenuItem === menuItem.name }"
+                                   (click)="selectMenuItem(menuItem.name)">
+                      <mat-icon>{{ subMenuIcons[menuItem.name] }}</mat-icon>
+                      <a>{{ menuItem.name }}</a>
+                    </mat-list-item>
+                  }
+                </ng-container>
+              }
+            </mat-expansion-panel>
+          }
+        </ng-container>
+      }
+
+      <mat-list-item class="singleItem" routerLink="report-view"
+                     [ngClass]="{ 'selected-menu': selectedMenuItem === 'report-view' }"
+                     (click)="selectMenuItem('report-view')">
+        <mat-icon>poll</mat-icon>
+        <a>Report</a>
+      </mat-list-item>
+
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <router-outlet/>
+  </mat-sidenav-content>
+
+</mat-sidenav-container>

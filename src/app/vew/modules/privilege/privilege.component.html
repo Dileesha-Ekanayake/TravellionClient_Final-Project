@@ -1,0 +1,67 @@
+<mat-grid-list [cols]="12" rowHeight="4rem">
+
+  <mat-grid-tile [colspan]="12" rowspan="1">
+    <mat-card class="breadCrumbCard">
+      <mat-card-content [innerHTML]="breadcrumb"></mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+
+  <mat-grid-tile [colspan]="12" [rowspan]="10" style="margin-top: 15px;">
+    <mat-card>
+      <mat-card-content>
+        <div class="container">
+          <mat-accordion>
+            @for (module of modules; track module.id) {
+              <mat-expansion-panel [expanded]="selectedPanel === module.id"
+                                   (expandedChange)="selectedPanel = $event ? module.id : null">
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    {{ module.name }} Management
+                  </mat-panel-title>
+                  <mat-panel-description>
+                    <mat-icon>{{iconList[module.name.toLowerCase()]}}</mat-icon>
+                  </mat-panel-description>
+                </mat-expansion-panel-header>
+
+                <mat-table [dataSource]="getOperationsForModule(module)" class="operations-table">
+                  <!-- Actions Column -->
+                  <ng-container matColumnDef="actions">
+                    <mat-header-cell *matHeaderCellDef class="actions-column"> Actions</mat-header-cell>
+                    <mat-cell *matCellDef="let operation" class="actions-column">
+                      {{ operation.displayName }}
+                    </mat-cell>
+                  </ng-container>
+
+                  <!-- Dynamic Role Columns -->
+                  @for (role of roles; track role.id) {
+                    <ng-container [matColumnDef]="role.id.toString()">
+                      <mat-header-cell *matHeaderCellDef> {{ role.name }}</mat-header-cell>
+                      <mat-cell *matCellDef="let operation">
+                        <mat-slide-toggle
+                          [checked]="checkPrivilege(module, operation, role)"
+                          (change)="updatePrivilege(module, operation, role, $event.checked); getSelectedRoles(role)">
+                        </mat-slide-toggle>
+                      </mat-cell>
+                    </ng-container>
+                  }
+
+                  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                  <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                </mat-table>
+
+                <mat-action-row>
+                  <button mat-raised-button color="primary" (click)="saveModulePermissions(module)">
+                    <mat-icon matIconSuffix>save_alt</mat-icon>
+                    Save
+                  </button>
+
+                </mat-action-row>
+              </mat-expansion-panel>
+            }
+          </mat-accordion>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+
+</mat-grid-list>

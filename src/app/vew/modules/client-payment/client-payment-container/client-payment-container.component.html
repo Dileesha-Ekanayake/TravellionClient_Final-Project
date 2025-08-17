@@ -1,0 +1,284 @@
+<mat-grid-list [cols]="12" rowHeight="4rem">
+
+  <!--=================================================Navigation====================================================-->
+  <mat-grid-tile [colspan]="12" [rowspan]="0.5">
+    <mat-card class="breadCrumbCard">
+      <mat-card-content [innerHTML]="breadcrumb"></mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+  <!--===============================================================================================================-->
+
+  <!--============================================Payment Form Section==============================================-->
+  @if (enableForm) {
+    <mat-grid-tile [colspan]="12" [rowspan]="10" style="margin-top: 15px;">
+      <mat-card>
+        <mat-card-header class="form-header">
+          <mat-card-title class="title">Client Payment Form</mat-card-title>
+          <div class="form-button-group">
+            <button class="goto-records-btn" mat-raised-button (click)="setView('records')"
+                    [disabled]="!(enableGoToRecode)">Records
+              <mat-icon>list</mat-icon>
+            </button>
+            <button class="goto-profiles-btn" mat-raised-button (click)="setView('profiles')"
+                    [disabled]="!(enableGoToView)">View
+              <mat-icon>person</mat-icon>
+            </button>
+          </div>
+        </mat-card-header>
+
+        <mat-card-content class="employee-form">
+
+          <app-client-payment></app-client-payment>
+
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+  }
+  <!--===============================================================================================================-->
+
+  <!--===========================================Payment Details/Profiles===========================================-->
+  @if (enableDetailView) {
+    <mat-grid-tile [colspan]="12" [rowspan]="1" class="searchTile">
+      <mat-card class="searchView">
+        <mat-card-content class="search-view-container">
+          <div class="details-search-container">
+            <span class="title">Client Payments</span>
+            <mat-form-field appearance="outline">
+              <mat-label>Search Payments</mat-label>
+              <input matInput (keyup)="filterTable($event)" #input>
+              <mat-icon matPrefix>search</mat-icon>
+            </mat-form-field>
+
+            <div class="detail-button-group">
+              <button mat-raised-button class="goto-form-btn" (click)="setView('form')"
+                      [disabled]="!(enableAdd && hasInsertAuthority)">New
+                <mat-icon>add</mat-icon>
+              </button>
+              <button mat-raised-button class="goto-records-btn" (click)="setView('records')"
+                      [disabled]="!(enableGoToRecode)">Records
+                <mat-icon>list</mat-icon>
+              </button>
+              <button mat-raised-button class="tbl-selection-edit-btn"
+                      [disabled]="!(enableEdit && hasUpdateAuthority)"
+                      (click)="loadPaymentModifyView(selectedRow); clearTableSelection()">Edit
+                <mat-icon matPrefix>edit</mat-icon>
+              </button>
+              <button mat-raised-button class="tbl-selection-clear-btn" (click)="clearTableSelection()">Clear
+                <mat-icon matPrefix>clear</mat-icon>
+              </button>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+
+    <mat-grid-tile [colspan]="5" [rowspan]="10" style="margin-top: 20px">
+      <mat-card>
+        <mat-card-content>
+          <mat-table [dataSource]="data">
+            @for (column of columnsDetails; track columnsDetails; let i = $index) {
+              <ng-container [matColumnDef]="column">
+                <mat-header-cell *matHeaderCellDef> {{ headersDetails[i] }}</mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                  {{ element[column]?.callingname || element[column] }}
+                </mat-cell>
+              </ng-container>
+            }
+
+            <mat-header-row *matHeaderRowDef="columnsDetails"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: columnsDetails;" (click)="loadPaymentDetailView(row); selectRow(row)"
+                     [ngClass]="{'selected-row': row === selectedRow}"></mat-row>
+            <tr class="mat-row" *matNoDataRow>
+              <td class="mat-cell" colspan="4">No data matching the filter "{{ input.value }}"</td>
+            </tr>
+          </mat-table>
+          <mat-paginator class="profile-table-paginator" [length]="20" [pageSize]="3" [pageSizeOptions]="[3,5,10,20]"
+                         showFirstLastButtons></mat-paginator>
+
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+
+    <mat-grid-tile [colspan]="7" [rowspan]="10" style="margin-top: 20px">
+      <mat-card class="card-container">
+        <mat-card-content>
+          <div class="details-container">
+            <app-detail-view
+              [showDisplayColors]="true"
+              [showDisplayMessage]="true"
+              messageToDisplay="Select a row to display"
+              [isEnablePrint]="true"
+            ></app-detail-view>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+  }
+  <!--===============================================================================================================-->
+
+  @if (enableRecordView) {
+    <!--=======================================Payment Add / Preview / Search=========================================-->
+    <mat-grid-tile [colspan]="12" [rowspan]="1" class="searchTile">
+      <mat-card class="searchView">
+        <mat-card-content class="search-view-container">
+          <div class="search-container">
+            <span class="title"><b>Payment Records</b></span>
+            <div class="search-view-button-group">
+              <button class="add-btn" mat-raised-button (click)="setView('form')"
+                      [disabled]="!(enableAdd && hasInsertAuthority)">New
+                <mat-icon>add</mat-icon>
+              </button>
+              <button class="employee-view-btn" mat-raised-button (click)="setView('profiles')"
+                      [disabled]="!(enableGoToView)">View
+                <mat-icon>person</mat-icon>
+              </button>
+            </div>
+            <form [formGroup]="serverSearchForm" class="searchForm">
+              @if (isSearchFiledInput) {
+                <mat-form-field appearance="outline" class="search-input">
+                  <mat-label>Search Here</mat-label>
+                  <input matInput formControlName="searchInput">
+                  <mat-icon matSuffix>search</mat-icon>
+                </mat-form-field>
+              }
+
+              @if (isSearchFiledSelect) {
+                <mat-form-field appearance="outline" hidden="hidden" class="search-select">
+                  <mat-label>Select search value</mat-label>
+                  <mat-select formControlName="searchSelect">
+                    <mat-option [value]="null">Not Selected</mat-option>
+                    @for (searchSelectOption of searchSelectOptions; track searchSelectOptions) {
+                      <mat-option
+                        [value]="searchSelectOption.id">
+                        {{
+                          searchSelectOption.name ||
+                          searchSelectOption?.employee.callingname
+                        }}
+                      </mat-option>
+                    }
+                  </mat-select>
+                </mat-form-field>
+              }
+
+              @if (isSearchFiledDate) {
+                <mat-form-field appearance="outline">
+                  <mat-label>Select date / range</mat-label>
+                  <mat-date-range-input
+                    [rangePicker]="searchDates">
+                    <input matStartDate placeholder="Start date" formControlName="searchStartDate">
+                    <input matEndDate placeholder="End date" formControlName="searchEndDate">
+                  </mat-date-range-input>
+                  <mat-datepicker-toggle matIconSuffix [for]="searchDates"></mat-datepicker-toggle>
+                  <mat-date-range-picker #searchDates></mat-date-range-picker>
+                </mat-form-field>
+              }
+
+              <mat-form-field appearance="outline" class="filter-select">
+                <mat-label>Filter by</mat-label>
+                <mat-select formControlName="filterField"
+                            (selectionChange)="resetServerSearchQueryParamFields() ; loadSearchSelectOptions()">
+                  <mat-option [value]="null">Not Selected</mat-option>
+                  @for (filterFiled of filterFields; track filterFields) {
+                    <mat-option [value]="filterFiled">{{ filterFiled }}</mat-option>
+                  }
+                </mat-select>
+                <mat-icon matSuffix>filter_alt</mat-icon>
+              </mat-form-field>
+
+              <div class="button-group">
+                <button mat-raised-button class="search-btn" (click)="search()">
+                  <mat-icon>search</mat-icon>
+                </button>
+                <button mat-raised-button class="clear-btn" (click)="clearSearch()">
+                  <mat-icon>clear</mat-icon>
+                </button>
+              </div>
+            </form>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+
+    <!--=============================================Payment View Table===============================================-->
+    <mat-grid-tile [colspan]="12" [rowspan]="8" style="margin-top: 20px">
+      <mat-card>
+        <mat-card-content>
+          <div class="table-header-section">
+            <mat-form-field style="padding-top: 10px; width: 100%" appearance="outline" class="search-input">
+              <mat-label>Filter Here</mat-label>
+              <input matInput (keyup)="filterTable($event)" #input>
+              <mat-icon matSuffix style="color: black !important;">filter_list</mat-icon>
+            </mat-form-field>
+            <div class="loading">
+              <img [src]="imageURL" alt="loading-gif">
+            </div>
+          </div>
+
+          <mat-table [dataSource]="data">
+
+            @for (column of columns; track columns; let i = $index) {
+              <ng-container [matColumnDef]="column">
+                <!-- Header Cell -->
+                <mat-header-cell *matHeaderCellDef> {{ headers[i] }}</mat-header-cell>
+                <!-- Normal Data Cells -->
+                <mat-cell *matCellDef="let element">
+
+                  @if (column === 'payment-code') {
+                    <div class="payment-code-container">
+                      <span class="payment-code">{{ getPaymentCodes(element).paymentCode }}</span>
+                      <span class="booking-code">Booking: {{ getPaymentCodes(element).bookingCode }}</span>
+                    </div>
+                  } @else if (column === 'modify/view') {
+                    <!-- Action Buttons -->
+                    <div class="tbl-btn-container">
+                      <button mat-icon-button class="modify-btn"
+                              (click)="fillForm(element); loadPaymentModifyView(element)"
+                              [disabled]="!(hasUpdateAuthority)">
+                        <mat-icon>border_color</mat-icon>
+                      </button>
+                      <button mat-icon-button class="view-btn" (click)="loadPaymentDetailView(element)">
+                        <mat-icon>remove_red_eye</mat-icon>
+                      </button>
+                    </div>
+                  } @else if (column === 'customer') {
+                    <div class="customer-container">
+                      <mat-icon class="customer-icon">person</mat-icon>
+                      <div class="customer-name-code-container">
+                        <span class="customer-name">{{ getCustomerDetails(element).customerName }}</span>
+                        <span class="customer-number">{{ getCustomerDetails(element).customerCode }}</span>
+                      </div>
+                    </div>
+                  } @else if (column === 'amount-details') {
+                    <div class="amount-details-container">
+                      <span class="amount-details">Previous: {{ getPayments(element).previousAmount }}</span>
+                      <span class="amount-details">Paid: {{ getPayments(element).paidAmount }}</span>
+                      <span class="amount-details"
+                            [ngClass]="setBalanceColor(getPayments(element).balance)">Balance: {{ getPayments(element).balance }}</span>
+                    </div>
+                  } @else {
+                    {{ element[column]?.name || element[column] }}
+                  }
+                </mat-cell>
+              </ng-container>
+            }
+
+            <mat-header-row *matHeaderRowDef="columns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: columns;" (click)="selectRow(row)"
+                     [ngClass]="{'selected-row': row === selectedRow}"></mat-row>
+            <tr class="mat-row" *matNoDataRow>
+              <td class="mat-cell" colspan="4">No data matching the filter "{{ input.value }}"</td>
+            </tr>
+
+          </mat-table>
+
+          <mat-paginator [length]="20" [pageSize]="5" [pageSizeOptions]="[3,5,10,20]"
+                         showFirstLastButtons></mat-paginator>
+
+        </mat-card-content>
+
+      </mat-card>
+    </mat-grid-tile>
+  }
+  <!--===============================================================================================================-->
+
+</mat-grid-list>

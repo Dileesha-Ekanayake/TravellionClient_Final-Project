@@ -1,0 +1,669 @@
+/*=====================================================Global Styles================================================*/
+mat-grid-list {
+  background: rgb(2, 0, 36);
+  background: linear-gradient(180deg, rgba(2, 0, 36, 1) 0%, rgba(95, 153, 245, 0.02) 0%, rgba(95, 153, 245, 0.1) 100%);
+}
+
+mat-card {
+  width: 100%;
+  height: 100%;
+  background: white;
+  border: unset;
+  box-shadow: unset;
+  margin: 0.2rem;
+}
+
+mat-grid-tile {
+  margin: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: slideInUp 0.6s ease-out;
+  animation-fill-mode: both;
+}
+
+mat-grid-tile:nth-child(1) { animation-delay: 0.1s; }
+mat-grid-tile:nth-child(2) { animation-delay: 0.2s; }
+mat-grid-tile:nth-child(3) { animation-delay: 0.3s; }
+mat-grid-tile:nth-child(4) { animation-delay: 0.4s; }
+mat-grid-tile:nth-child(5) { animation-delay: 0.5s; }
+mat-grid-tile:nth-child(6) { animation-delay: 0.6s; }
+mat-grid-tile:nth-child(7) { animation-delay: 0.7s; }
+mat-grid-tile:nth-child(8) { animation-delay: 0.8s; }
+mat-grid-tile:nth-child(9) { animation-delay: 0.9s; }
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+mat-card form {
+  background: unset;
+}
+
+mat-card-content {
+  background: unset;
+  overflow: auto;
+  height: 100%;
+}
+
+/*button {*/
+/*  background-color: #2c3e50 !important;*/
+/*  color: white !important;*/
+/*  border: 1px solid white !important;*/
+/*}*/
+
+/*mat-icon {*/
+/*  color: white !important;*/
+/*  font-size: 18px;*/
+/*  width: 18px;*/
+/*  height: 18px;*/
+/*}*/
+
+button {
+  background-color: #9bc3fd !important;
+  border: 1px solid #fdfdfe !important;
+  color: #001231 !important;
+  border-radius: 10px;
+  transition: background-color 0.2s;
+}
+
+mat-icon {
+  color: #001231 !important;
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+.title {
+  display: flex;
+  font-weight: 600;
+  font-size: 1.75rem;
+  white-space: nowrap;
+  color: #2c3e50;
+}
+
+.designation-cell {
+  background-color: #fef9c3;
+  color: #683c0b;
+  padding: 4px 8px;
+  border-radius: 5px;
+  width: 50px;
+  text-align: center;
+}
+
+.active-cell {
+  background-color: #dcfce7 !important;
+  color: #12512b;
+  margin-left: -8px !important;
+  padding: 4px 8px;
+  border-radius: 5px;
+}
+
+.inactive-cell {
+  background-color: #fcdcdc;
+  color: #601515;
+  margin-left: -8px !important;
+  padding: 4px 8px;
+  border-radius: 5px;
+}
+
+.blacklisted-cell {
+  background-color: #fb5656;
+  color: #400707;
+  margin-left: -8px !important;
+  padding: 4px 8px;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+/*====================================================================================================================*/
+
+/*=======================================================Navigation===================================================*/
+.breadCrumbCard {
+  box-shadow: unset;
+}
+
+.breadCrumbCard mat-card-content{
+  margin-top: 4px;
+}
+
+/*====================================================================================================================*/
+
+/*==================================================Supplier From Section=============================================*/
+
+/*======================================================Stepper=======================================================*/
+mat-stepper {
+  background: unset;
+  height: 78%;
+  overflow: scroll;
+}
+
+mat-stepper button {
+  border-radius: 100%;
+}
+
+>>> .mat-step-header {
+  height: 40px !important;
+}
+
+>>> .mat-horizontal-stepper-header{
+  pointer-events: none !important;
+}
+
+.description-field {
+  margin-bottom: 30px;
+}
+
+.stepper-button-container {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.stepper-next-button-container {
+  display: flex;
+  justify-content: flex-end !important;
+}
+
+.stepper-next-button {
+  background: #6162a1 !important;
+  border: 1px solid white !important;
+  border-radius: 10px;
+
+}
+
+.blink-button{
+  animation: blink 1300ms infinite;
+}
+
+@keyframes blink {
+  0% {
+    background-color: #6162a1;
+    box-shadow: 0 0 1.2rem #fb0000;
+  }
+}
+
+.stepper-reset-button-container {
+  display: flex;
+  justify-content: flex-end !important;
+}
+
+.stepper-reset-button {
+  background: #c11a1a !important;
+  border: 1px solid white !important;
+  border-radius: 10px;
+}
+
+.stepper-back-button-container {
+  display: flex;
+  justify-content: flex-start !important;
+}
+
+.stepper-back-button {
+  background: #a19461 !important;
+  border: 1px solid white !important;
+  border-radius: 10px;
+}
+
+/*====================================================================================================================*/
+
+/*=====================================================Supplier-Form==================================================*/
+.form-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.form-header .form-button-group {
+  margin-top: -7px !important;
+}
+
+.form-button-group .goto-records-btn {
+  border-radius: 10px 0 0 10px;
+}
+
+.form-button-group .goto-profiles-btn {
+  border-radius: 0 10px 10px 0;
+}
+
+.supplier-form {
+  padding-top: 20px;
+}
+
+.supplier-form mat-icon{
+  color: black !important;
+}
+
+.supplier-form mat-form-field {
+  width: 100%;
+  height: 60px;
+  max-height: unset !important;
+  margin-top: -10px;
+}
+
+mat-form-field {
+  --mat-form-field-container-height: 40px;
+  --mat-form-field-container-vertical-padding: 8px;
+}
+
+.supplier-form mat-form-field .ng-valid,
+.ng-valid.required {
+  color: #00b900 !important;
+}
+
+.supplier-form mat-form-field .ng-dirty {
+  color: #ffbb00 !important;
+}
+
+.employee-profile-picture mat-card-header {
+  display: flex;
+  justify-content: center;
+}
+
+.employee-profile-picture mat-card-title {
+  width: 100%;
+  text-align: center;
+  padding-bottom: 14%;
+}
+
+form .control-button-panel {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 5px;
+}
+
+form .control-button-panel button {
+  width: 20% !important;
+}
+
+.control-add-btn {
+  border-radius: 10px 0 0 10px;
+}
+
+.control-clear-btn {
+  border-radius: unset;
+}
+
+.control-update-btn {
+  border-radius: unset;
+}
+
+.control-delete-btn {
+  background-color: #910404 !important;
+  border-radius: 0 10px 10px 0;
+  color: white !important;
+}
+
+/*========================================================File-Picker=================================================*/
+.employee-profile-picture {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+>>> av-file-picker .img-upload-panel {
+  margin-top: 20px !important;
+  width: 350px !important;
+  height: 450px !important;
+}
+
+>>> av-file-picker .img-preview-container {
+  height: 350px !important;
+}
+
+>>> av-file-picker .img-placeholder {
+  height: 320px !important;
+}
+/*====================================================================================================================*/
+
+/*========================================Supplier Add/ Preview / Search==============================================*/
+.searchTile {
+  margin-top: 15px !important;
+}
+
+.search-container .title{
+  margin-top: -20px !important;
+}
+
+.search-view-container{
+  padding-top: 12px !important;
+  overflow: hidden !important;
+}
+
+.search-container {
+  display: flex !important;
+  align-items: center !important;
+  vertical-align: center !important;
+  justify-content: space-between !important;
+}
+
+.searchView {
+  /*display: inline-table !important;*/
+}
+
+.searchForm {
+  display: flex !important;
+  justify-content: flex-end !important;
+}
+
+.searchForm mat-form-field {
+  margin: 0 10px 0 0 !important;
+}
+
+
+.searchForm mat-icon {
+  margin-left: 5px !important;
+  color: #ffffff !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 21px !important;
+}
+
+.search-input {
+  max-width: 300px !important;
+}
+
+.search-select {
+  max-width: 320px !important;
+}
+
+.filter-select {
+  max-width: 200px !important;
+}
+
+.search-btn {
+  border-right: 1px solid white !important;
+  border-radius: 10px 0 0 10px !important;
+
+  mat-icon {
+    color: #001231 !important;
+  }
+}
+
+.clear-btn {
+  border-radius: 0 10px 10px 0 !important;
+
+  mat-icon {
+    color: #001231 !important;
+  }
+}
+
+.search-view-button-group{
+  margin-top: -24px !important;
+}
+
+/*====================================================================================================================*/
+
+/*===========================================Supplier Details / Profiles==============================================*/
+.detail-button-group{
+  margin-top: -19px !important;
+  /*padding-top: 4px;*/
+}
+
+.detail-button-group .goto-records-btn {
+  border-radius: 0 0 0 0;
+}
+
+.detail-button-group .tbl-selection-edit-btn {
+  border-radius: 0 0 0 0;
+}
+
+.detail-button-group .goto-form-btn {
+  border-radius: 10px 0 0 10px;
+}
+
+.detail-button-group .tbl-selection-clear-btn {
+  border-radius: 0 10px 10px 0;
+}
+
+.details-search-container {
+  padding-top: unset !important;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.details-search-container .title{
+  margin-top: -20px !important;
+}
+
+.details-search-container mat-form-field mat-icon {
+  color: black !important;
+}
+
+.details-search-container mat-form-field {
+  /*padding-top: 2% !important;*/
+  width: 35%;
+}
+
+.detail-button-group .add-btn {
+  color: white;
+  background-color: black;
+  border-right: 1px solid white !important;
+  border-radius: 10px 0 0 10px;
+}
+
+/*====================================================================================================================*/
+
+/*==================================================Supplier-Table====================================================*/
+
+.table-header-section{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.table-header-section .loading {
+  width: 100%;
+  height: 100%;
+  padding-top: 1.4%;
+  justify-content: center !important;
+}
+
+.selected-row {
+  background-color: #c9e6ff !important;
+}
+
+.mat-row:hover {
+  background-color: inherit !important;
+}
+
+button:disabled {
+  opacity: 0.5;
+}
+
+mat-table {
+  background-color: white;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.mat-mdc-row .mat-mdc-cell {
+  border-bottom: 1px solid #f1f1f1;
+  border-top: 1px solid transparent;
+  cursor: pointer;
+  padding: 8px 16px;
+  font-size: 14px;
+  color: #475569;
+}
+
+mat-header-cell {
+  background: #f7f8f9 !important;
+  border-bottom: 4px solid #e9ecef;
+  font-weight: 600;
+  color: #334155;
+  padding: 12px 16px;
+  font-size: 14px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  text-transform: uppercase;
+}
+
+/* Target the paginator container */
+>>> .profile-table-paginator .mat-mdc-paginator-container {
+  margin-top: 8px;
+  padding: 0 8px !important; /* Reduce padding */
+  min-height: 40px !important; /* Reduce height */
+}
+
+/* Reduce font size of the range label */
+>>> .profile-table-paginator .mat-mdc-paginator-range-label {
+  font-size: 12px !important;
+  margin: 0 12px !important;
+}
+
+/* Style the select dropdown */
+.mat-mdc-paginator-page-size {
+  height: 32px !important;
+}
+
+>>> .profile-table-paginator .mat-mdc-paginator-page-size-select {
+  margin: 0 4px !important;
+  width: 56px !important;
+}
+
+/* Adjust navigation buttons */
+>>> .profile-table-paginator .mat-mdc-paginator-navigation-container {
+  height: 32px !important;
+}
+
+>>> .profile-table-paginator .mat-mdc-paginator-navigation-button {
+  height: 32px !important;
+  width: 32px !important;
+}
+
+/* Reduce icon size */
+>>> .profile-table-paginator .mat-mdc-paginator-icon {
+  width: 20px !important;
+}
+
+>>> .profile-table-paginator .mat-mdc-paginator-page-size-label{
+  display: none;
+}
+
+.mat-mdc-row:hover .mat-mdc-cell {
+  border-color: transparent;
+  background-color: rgba(201, 230, 255, 0.32) !important;
+}
+
+.tbl-btn-container {
+  display: flex;
+  gap: 8px;
+}
+
+.tbl-btn-container button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  background-color: rgba(19, 16, 10, 0.09) !important;
+  padding: 0;
+  min-width: 32px;
+}
+
+.view-btn mat-icon {
+  color: #ef4444 !important;
+}
+
+.modify-btn mat-icon, .update-btn mat-icon {
+  color: #3b82f6 !important;
+}
+
+.tbl-btn-container button {
+  border-radius: 30% !important;
+}
+
+.tbl-btn-container mat-icon {
+  font-size: 1.15rem;
+  padding-top: 3px;
+}
+
+button mat-icon{
+  font-size: 1.16rem;
+  background-clip: text;
+  -webkit-background-clip: text;
+  /*-webkit-text-fill-color: transparent;*/
+  /*background-image: linear-gradient(45deg, #ff5733, #ffbd69, #33ff57, #338aff, #a133ff);*/
+  /*text-shadow: 0 0 8px rgba(246, 246, 246, 0.24);*/
+}
+
+.add-btn, .employee-view-btn {
+  width: 96px;
+  margin-top: 4px;
+  color: black;
+  background-color: #6ed56e;
+}
+
+.add-btn {
+  border-radius: 10px 0 0 10px;
+}
+
+.employee-view-btn {
+  border-radius: 0 10px 10px 0;
+}
+
+.employee-image {
+  width: 50px !important;
+  height: 50px !important;
+  border-radius: 25%;
+  border: 3px solid rgba(19, 16, 10, 0.39);
+  text-align: center;
+  background-color: #fdfdfe;
+  margin: 5px 0 5px 0;
+}
+
+.employee-image img {
+  border-radius: 22%;
+  width: 49.8px;
+  height: 50px !important;
+}
+
+mat-table {
+  background-color: white;
+}
+
+mat-paginator {
+  background-color: white;
+}
+
+/*.gif {*/
+/*  width: 5%;*/
+/*}*/
+
+.loading {
+  display: flex;
+  justify-content: flex-end !important;
+}
+
+.loading img {
+  width: 30px;
+  height: 25px;
+}
+
+/*====================================================================================================================*/
+
+/*====================================================================================================================*/
+
+
+.searchForm mat-form-field mat-icon {
+  color: black !important;
+}
+
+.csearch {
+  height: 40px;
+  width: 100%;
+  margin-top: 5px;
+}

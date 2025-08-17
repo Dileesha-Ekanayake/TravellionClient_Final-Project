@@ -1,0 +1,246 @@
+<mat-grid-list gutterSize="10px" [cols]="12" rowHeight="4rem">
+
+  <mat-grid-tile [colspan]="4" [rowspan]="2">
+    <mat-card>
+      <mat-card-content>
+        <div class="data-container">
+          <div class="header-container">
+            <div class="header-title">Total Received</div>
+            <div class="header-icon icon-2">
+              <mat-icon>attach_money</mat-icon>
+            </div>
+          </div>
+          <div class="data-content">
+            <div class="data-item-value">{{ totalReceivedPayments | currency }}</div>
+<!--            <div class="data-item-rate up-value">+12.5% vs last month</div>-->
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+
+  <mat-grid-tile [colspan]="4" [rowspan]="2">
+    <mat-card>
+      <mat-card-content>
+        <div class="data-container">
+          <div class="header-container">
+            <div class="header-title">Pending Payments</div>
+            <div class="header-icon icon-2">
+              <mat-icon>attach_money</mat-icon>
+            </div>
+          </div>
+          <div class="data-content">
+            <div class="data-item-value">{{ totalPendingPayments | currency }}</div>
+<!--            <div class="data-item-rate up-value">-3.2% vs last month</div>-->
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+
+  <mat-grid-tile [colspan]="4" [rowspan]="2">
+    <mat-card style="border: unset">
+      <mat-card-content>
+        <div class="search-container">
+          <mat-card-content>
+            <form [formGroup]="searchForm">
+              <mat-form-field appearance="outline">
+                <mat-label>Select date / range</mat-label>
+                <mat-date-range-input
+                  [rangePicker]="searchDates">
+                  <input matStartDate placeholder="Start date" formControlName="startDate">
+                  <input matEndDate placeholder="End date" formControlName="endDate">
+                </mat-date-range-input>
+                <mat-datepicker-toggle matIconSuffix [for]="searchDates"></mat-datepicker-toggle>
+                <mat-date-range-picker #searchDates></mat-date-range-picker>
+              </mat-form-field>
+            </form>
+          </mat-card-content>
+          <button mat-raised-button color="primary" (click)="clear()">Clear</button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+
+  <mat-grid-tile [colspan]="4" [rowspan]="2">
+    <mat-card>
+      <mat-card-content>
+        <div class="data-container">
+          <div class="header-container">
+            <div class="header-title">Overdue Amounts</div>
+            <div class="header-icon icon-2">
+              <mat-icon>attach_money</mat-icon>
+            </div>
+          </div>
+          <div class="data-content">
+            <div class="data-item-value">{{ totalOverduePayments | currency }}</div>
+<!--            <div class="data-item-rate up-value">+5.8% vs last month</div>-->
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+
+  <mat-grid-tile [colspan]="4" [rowspan]="2">
+    <mat-card>
+      <mat-card-content>
+        <div class="data-container">
+          <div class="header-container">
+            <div class="header-title">Collection Rate</div>
+            <div class="header-icon icon-2">
+              <mat-icon>attach_money</mat-icon>
+            </div>
+          </div>
+          <div class="data-content">
+            <div class="data-item-value">{{ collectionRate | percent }}</div>
+<!--            <div class="data-item-rate up-value">+2.1% vs last month</div>-->
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+
+
+  <mat-grid-tile [colspan]="12" [rowspan]="8">
+    <mat-card>
+      <mat-card-content>
+        <av-chart-js
+          [chartType]="'line'"
+          chartTitle="Payment Collection"
+          [labels]="paymentCollectionMonthLabels"
+          [datasets]="paymentCollectionLineDatasets"
+          [legend]="'top'"
+          [dualYAxis]="true"
+          [maintainAspectRatio]="false"
+          [show_print_button]="true"
+        >
+        </av-chart-js>
+      </mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+
+  <mat-grid-tile [colspan]="12" [rowspan]="8">
+    <mat-card>
+      <mat-card-content>
+                <av-chart-js
+                  [chartType]="'doughnut'"
+                  [labels]="['Received', 'Pending', 'Overdue']"
+                  [datasets]="paymentCollectionPieDatasets"
+                  [legend]="'right'"
+                  [cutout]="'50%'"
+                  [show_print_button]="true">
+                </av-chart-js>
+<!--        <google-chart-->
+<!--          [chartType]="'PieChart'"-->
+<!--          [show_print_button]="true"-->
+<!--          title="Payment Collection"-->
+<!--          width="750"-->
+<!--          height="420"-->
+<!--          [columns]="[['string', 'Type'], ['number', 'Count']]"-->
+<!--          [rows]="[['Received', 45000], ['Pending', 20000], ['Overdue', 15000],]"-->
+<!--          [is3D]="false"-->
+<!--          pieSliceText="percent"-->
+<!--          [colors]="['#6cd52a', '#fdbe01', '#fd3b3c']"-->
+<!--          legend="right"-->
+<!--          [indicator_conditions]="[['<', '20000', '#830000']]"-->
+<!--        >-->
+<!--        </google-chart>-->
+      </mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+
+  <mat-grid-tile [colspan]="12" [rowspan]="8">
+    <mat-card>
+      <mat-card-content>
+        <av-chart-js
+          [chartType]="'polarArea'"
+          [labels]="['Received', 'Pending', 'Overdue']"
+          [datasets]="paymentCollectionPolarDatasets"
+          [legend]="'bottom'"
+          [cutout]="'70%'"
+          [show_print_button]="true">
+        </av-chart-js>
+      </mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+
+  <mat-grid-tile [colspan]="12" [rowspan]="10">
+    <mat-card>
+      <mat-card-content>
+        <div class="container">
+          <div class="header">
+            <h1>Payment Collection Report</h1>
+          </div>
+
+          <div class="payment-details">
+            <table class="payment-table">
+              <thead>
+              <tr>
+                <th>Period</th>
+                <th>Total Received</th>
+                <th>Total Pending</th>
+                <th>Total Overdue</th>
+                <th>Collection Rate</th>
+                <th>Status</th>
+              </tr>
+              </thead>
+              <tbody>
+                @for (payment of paymentCollectionData; track $index) {
+                  <tr>
+                    <td class="month-year">{{ payment.monthName }} {{ payment.year }}</td>
+                    <td class="currency">{{ formatCurrency(payment.totalReceivedPayments) }}</td>
+                    <td class="currency">{{ formatCurrency(payment.totalPendingPayments) }}</td>
+                    <td class="currency">{{ formatCurrency(payment.totalOverduePayments) }}</td>
+                    <td>
+                      <div style="display: flex; align-items: center;">
+                        <div class="collection-bar" style="width: 80px;">
+                          <div class="collection-fill"
+                               [style.width.%]="payment.collectionRate"
+                               [style.background]="getCollectionGradient(payment.collectionRate)">
+                          </div>
+                        </div>
+                        <span class="collection-text">{{ payment.collectionRate }}%</span>
+                      </div>
+                    </td>
+                    <td>
+              <span [style.color]="getCollectionColor(payment.collectionRate)"
+                    style="font-weight: bold;">
+                {{ getCollectionStatus(payment.collectionRate) }}
+              </span>
+                    </td>
+                  </tr>
+                }
+
+              <!-- Total Row -->
+              <tr class="total-row">
+                <td class="month-year">Total</td>
+                <td class="currency">{{ formatCurrency(getTotalReceivedPayments()) }}</td>
+                <td class="currency">{{ formatCurrency(getTotalPendingPayments()) }}</td>
+                <td class="currency">{{ formatCurrency(getTotalOverduePayments()) }}</td>
+                <td>
+                  <div style="display: flex; align-items: center;">
+                    <div class="collection-bar" style="width: 80px;">
+                      <div class="collection-fill"
+                           [style.width.%]="getAverageCollectionRate()"
+                           [style.background]="getCollectionGradient(getAverageCollectionRate())">
+                      </div>
+                    </div>
+                    <span class="collection-text">{{ getAverageCollectionRate() }}%</span>
+                  </div>
+                </td>
+                <td>
+            <span [style.color]="getCollectionColor(getAverageCollectionRate())"
+                  style="font-weight: bold;">
+              {{ getCollectionStatus(getAverageCollectionRate()) }}
+            </span>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+
+</mat-grid-list>

@@ -1,0 +1,335 @@
+/*=====================================================Global Styles================================================*/
+mat-grid-list {
+  background: rgb(2, 0, 36);
+  background: linear-gradient(180deg, rgba(2, 0, 36, 1) 0%, rgba(95, 153, 245, 0.02) 0%, rgba(95, 153, 245, 0.1) 100%);
+}
+
+mat-card {
+  width: 100%;
+  height: fit-content;
+  background: white;
+  border: unset;
+  box-shadow: unset;
+  margin: 0.2rem;
+}
+
+mat-grid-tile {
+  margin: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: slideInUp 0.6s ease-out;
+  animation-fill-mode: both;
+}
+
+mat-grid-tile:nth-child(1) { animation-delay: 0.1s; }
+mat-grid-tile:nth-child(2) { animation-delay: 0.2s; }
+mat-grid-tile:nth-child(3) { animation-delay: 0.3s; }
+mat-grid-tile:nth-child(4) { animation-delay: 0.4s; }
+mat-grid-tile:nth-child(5) { animation-delay: 0.5s; }
+mat-grid-tile:nth-child(6) { animation-delay: 0.6s; }
+mat-grid-tile:nth-child(7) { animation-delay: 0.7s; }
+mat-grid-tile:nth-child(8) { animation-delay: 0.8s; }
+mat-grid-tile:nth-child(9) { animation-delay: 0.9s; }
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+mat-card form {
+  background: unset;
+}
+
+mat-card-content {
+  background: unset;
+  overflow: auto;
+  height: fit-content;
+}
+
+button {
+  background-color: #9bc3fd !important;
+  border: 1px solid #fdfdfe !important;
+  color: #001231 !important;
+  border-radius: 10px;
+  transition: background-color 0.2s;
+}
+
+mat-icon {
+  color: #001231 !important;
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+mat-form-field {
+  --mat-form-field-container-height: 40px;
+  --mat-form-field-container-vertical-padding: 8px;
+}
+
+button:disabled {
+  opacity: 0.5;
+}
+
+/*====================================================================================================================*/
+.user-profile-container {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+  min-height: 100vh;
+  overflow: auto;
+}
+
+.profile-header {
+  margin-bottom: 24px;
+
+  .header-card {
+    background: #d3dffb;
+    color: white;
+
+    .header-content {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+
+      .user-avatar {
+        width: 80px;
+        height: 80px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid white;
+
+        .avatar-icon {
+          font-size: 48px;
+          width: 48px;
+          height: 48px;
+        }
+      }
+
+      .user-info {
+        color: #001231;
+        .user-name {
+          margin: 0 0 8px 0;
+          font-size: 2rem;
+          font-weight: 500;
+        }
+
+        .user-designation {
+          margin: 0 0 4px 0;
+          font-size: 1.2rem;
+          opacity: 0.9;
+        }
+
+        .user-username {
+          margin: 0;
+          opacity: 0.7;
+          font-size: 1rem;
+        }
+      }
+    }
+  }
+}
+
+.profile-content {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 24px;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.security-header {
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+
+  mat-card-title {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+
+    mat-icon {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+      margin-right: 10px;
+    }
+
+    padding-top: 5px;
+  }
+}
+
+.info-card {
+
+  margin-bottom: 24px;
+
+  mat-card-header {
+    margin-bottom: 16px;
+
+    mat-card-title {
+      font-size: 1.25rem;
+      font-weight: 500;
+    }
+  }
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+
+  .info-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+
+    &.full-width {
+      grid-column: 1 / -1;
+    }
+
+    .info-icon {
+      color: #666;
+      margin-top: 2px;
+    }
+
+    .info-details {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+
+      .info-label {
+        font-size: 0.875rem;
+        color: #666;
+        font-weight: 500;
+      }
+
+      .info-value {
+        font-size: 1rem;
+        color: #333;
+      }
+    }
+  }
+}
+
+.contact-info {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  .contact-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    .contact-icon {
+      color: #666;
+    }
+
+    .contact-details {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+
+      .contact-label {
+        font-size: 0.875rem;
+        color: #666;
+        font-weight: 500;
+      }
+
+      .contact-value {
+        font-size: 1rem;
+        color: #333;
+      }
+    }
+  }
+}
+
+.account-info {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  .account-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .account-label {
+      font-size: 0.875rem;
+      color: #666;
+      font-weight: 500;
+    }
+
+    .account-value {
+      font-size: 1rem;
+      color: #333;
+    }
+  }
+}
+
+.password-form {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  .password-field {
+    width: 100%;
+  }
+
+  .password-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 16px;
+
+    button {
+      background-color: #9bc3fd !important;
+      border: 1px solid #fdfdfe !important;
+      color: #001231 !important;
+      border-radius: 10px;
+      transition: background-color 0.2s;
+    }
+  }
+}
+
+.status-Active {
+  background-color: #d4edda !important;   /* light green */
+  border: 1px solid #28a745 !important;
+  color: #155724 !important;
+  border-radius: 10px;
+}
+
+.status-Assigned {
+  background-color: #fff3cd !important;   /* light amber */
+  border: 1px solid #ffc107 !important;
+  color: #856404 !important;
+  border-radius: 10px;
+}
+
+.status-Unassigned {
+  background-color: #f8d7da !important;   /* light red */
+  border: 1px solid #dc3545 !important;
+  color: #721c24 !important;
+  border-radius: 10px;
+}
+

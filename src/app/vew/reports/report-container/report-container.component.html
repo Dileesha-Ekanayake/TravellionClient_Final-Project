@@ -1,0 +1,66 @@
+<mat-grid-list gutterSize="12px" [cols]="12" rowHeight="4rem">
+
+  <!--=================================================Navigation====================================================-->
+  <mat-grid-tile [colspan]="12" [rowspan]="0.5">
+    <mat-card class="breadCrumbCard">
+      <mat-card-content [innerHTML]="breadcrumb"></mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+  <!--===============================================================================================================-->
+
+
+  <mat-grid-tile [colspan]="9" [rowspan]="10">
+    <mat-card>
+      <mat-card-content>
+
+        @if (isEnableBookingTrend) {
+          <app-booking-trend></app-booking-trend>
+        }
+
+
+        @if (isEnableMonthlyTourSummary) {
+          <app-monthly-tour-summary></app-monthly-tour-summary>
+        }
+
+
+        @if (isEnableTourOccupancy) {
+          <app-tour-occupancy></app-tour-occupancy>
+        }
+
+        @if (isEnableIncomeAndRevenue) {
+          <app-income-and-revenue></app-income-and-revenue>
+        }
+
+        @if (isEnablePaymentCollection) {
+          <app-payment-collection></app-payment-collection>
+        }
+
+        @if (isEnableProfitabilityAnalysisByTourType) {
+          <app-profitability-analysis-by-tour-type></app-profitability-analysis-by-tour-type>
+        }
+
+        @if (isEnablePeakSeasonDemandForecast) {
+          <app-peak-season-demand-forecast></app-peak-season-demand-forecast>
+        }
+      </mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+
+
+  <mat-grid-tile [colspan]="3" [rowspan]="10">
+    <mat-card>
+      <mat-card-content>
+        @for (menu of reportSideMenu; track menu.type) {
+          <div
+            class="list-item"
+            [ngClass]="getMenuItemClass(menu.type)"
+            (click)="selectReportMenu(menu.type, menu.name)">
+            <mat-icon matPrefix class="list-icon">{{ menu.icon }}</mat-icon>
+            {{ menu.name }}
+          </div>
+        }
+      </mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+
+</mat-grid-list>

@@ -1,0 +1,158 @@
+<mat-card-content>
+
+  <form [formGroup]="customerPaymentForm" class="client-payment-form">
+
+    <mat-form-field appearance="outline">
+      <mat-label>Select a User</mat-label>
+      <input type="text"
+             matInput
+             formControlName="user"
+             [matAutocomplete]="auto">
+      <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [displayWith]="displayUserName">
+        @for (user of filteredUserList | async; track user.id) {
+          <mat-option [value]="user">{{ user.employee.callingname }}</mat-option>
+        }
+      </mat-autocomplete>
+      <mat-icon matIconSuffix>verified_user</mat-icon>
+    </mat-form-field>
+
+    <div class="payment-form-container">
+
+      <mat-form-field appearance="outline">
+        <mat-label>Select a Customer</mat-label>
+        <input type="text"
+               matInput
+               formControlName="customer"
+               [matAutocomplete]="customerAuto">
+        <mat-autocomplete autoActiveFirstOption #customerAuto="matAutocomplete"
+                          [displayWith]="displayCustomerCode">
+          @for (customer of filteredCustomers | async; track customer.id) {
+            <mat-option [value]="customer">{{ customer.code + " - " + customer.fullname}}</mat-option>
+          }
+        </mat-autocomplete>
+        <mat-icon matIconSuffix>person_search</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Code</mat-label>
+        <input matInput placeholder="Code" formControlName="code">
+        <mat-icon matIconSuffix>confirmation_number</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Select a Booking</mat-label>
+        <input type="text"
+               matInput
+               formControlName="booking"
+               [matAutocomplete]="bookingAuto">
+        <mat-autocomplete autoActiveFirstOption #bookingAuto="matAutocomplete"
+                          [displayWith]="displayBookingCode">
+          @for (booking of filteredBookings | async; track booking.id) {
+            <mat-option [value]="booking">{{ booking.code }}</mat-option>
+          }
+        </mat-autocomplete>
+        <mat-icon matIconSuffix>event_note</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Payment Date</mat-label>
+        <input matInput
+               [matDatepicker]="paymentDate"
+               [min]="minimumPaymentDate"
+               [max]="minimumPaymentDate"
+               formControlName="date">
+        <mat-datepicker-toggle matSuffix [for]="paymentDate"></mat-datepicker-toggle>
+        <mat-datepicker #paymentDate></mat-datepicker>
+      </mat-form-field>
+
+    </div>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Customer Name</mat-label>
+      <input matInput placeholder="Customer Name" formControlName="customerName" readonly>
+      <mat-icon matIconSuffix>reorder</mat-icon>
+    </mat-form-field>
+
+    <div class="amount-container">
+
+      <mat-form-field appearance="outline">
+        <mat-label>Previous Amount</mat-label>
+        <input matInput placeholder="Amount" formControlName="previousamount">
+        <mat-icon matIconSuffix>history</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Paid Amount</mat-label>
+        <input matInput placeholder="Paid Amount" formControlName="paidamount">
+        <mat-icon matIconSuffix>payments</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Balance</mat-label>
+        <input matInput placeholder="Balance" formControlName="balance">
+        <mat-icon matIconSuffix>balance</mat-icon>
+      </mat-form-field>
+
+    </div>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Payment Type</mat-label>
+      <mat-select (selectionChange)="onPaymentTypeChange($event)" formControlName="paymenttype">
+        <mat-option [value]="null">Not Selected</mat-option>
+        @for (paymentType of customerPaymentTypes; track paymentType.name) {
+          <mat-option [value]="paymentType">{{ paymentType.name }}</mat-option>
+        }
+      </mat-select>
+      <mat-icon matIconSuffix>{{ paymentTypeIcons[selectedPaymentType] || 'payment' }}</mat-icon>
+    </mat-form-field>
+
+    @if (selectedPaymentType.toLowerCase() === 'cheque') {
+      <form [formGroup]="customerPaymentInformationForm">
+        <mat-form-field appearance="outline">
+          <mat-label>Cheque Number</mat-label>
+          <input matInput placeholder="Cheque Number" formControlName="chequenumber">
+          <mat-icon matIconSuffix>receipt</mat-icon>
+        </mat-form-field>
+      </form>
+    }
+
+    @if (!showTemporaryPaymentSaveButton) {
+      <div class="control-button-panel">
+        <button class="control-add-btn" mat-raised-button (click)="save()"
+                [disabled]="!(enableAdd && hasInsertAuthority)">Add
+        </button>
+        <button class="control-clear-btn" mat-raised-button (click)="clear()">Clear</button>
+<!--        <button class="control-update-btn" mat-raised-button (click)="update()"-->
+<!--                [disabled]="!(enableUpdate && hasUpdateAuthority)">Update-->
+<!--        </button>-->
+<!--        <button class="control-delete-btn" mat-raised-button (click)="delete()"-->
+<!--                [disabled]="!(enableDelete && hasDeleteAuthority)">Delete-->
+<!--        </button>-->
+      </div>
+    } @else {
+      <div class="control-button-panel temporary-payment-save-button-panel">
+        <button class="control-add-btn save-temporary" mat-raised-button
+                (click)="generateCustomerPayment()"
+        >Save
+        </button>
+        <button class="control-clear-btn clear-temporary" mat-raised-button (click)="closePayment()">Clear</button>
+      </div>
+    }
+  </form>
+
+</mat-card-content>
+
+<ng-template #paymentProofFilePicker>
+  <div class="payment-proof-container">
+
+    <div class="title">Upload Payment Proof</div>
+    <form [formGroup]="customerPaymentReceiptForm">
+      <av-file-picker
+        [defaultImage]="defaultPaymentIcon"
+        formControlName="receipt"
+        [showPdfDetails]="pdfDtls"
+      >
+      </av-file-picker>
+    </form>
+  </div>
+</ng-template>

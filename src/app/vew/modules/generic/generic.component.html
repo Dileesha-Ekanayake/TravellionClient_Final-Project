@@ -1,0 +1,871 @@
+<mat-grid-list [cols]="12" class="sticky" rowHeight="4rem">
+  <!--=================================================Navigation====================================================-->
+  <mat-grid-tile [colspan]="12" [rowspan]="1">
+    <mat-card class="breadCrumbCard">
+      <mat-card-content [innerHTML]="breadcrumb"></mat-card-content>
+      @if (enableForm) {
+        <div class="form-navigation">
+          <div class="form-steps-container">
+
+            <div class="step-item"
+                 [ngClass]="{'active': currentSection === 1}"
+                 (click)="goToStep(1)">
+              <div class="step-circle">1</div>
+              <div class="step-label">General Info</div>
+            </div>
+
+            <div class="step-connector">
+              <div class="connector-line"></div>
+            </div>
+
+            <div class="step-item"
+                 [ngClass]="{'active': currentSection === 2}"
+                 (click)="goToStep(2)">
+              <div class="step-circle">2</div>
+              <div class="step-label">Discount & Cancel</div>
+            </div>
+
+            <div class="step-connector">
+              <div class="connector-line"></div>
+            </div>
+
+            <div class="step-item"
+                 [ngClass]="{'active': currentSection === 3}"
+                 (click)="goToStep(3)">
+              <div class="step-circle">3</div>
+              <div class="step-label">Rates</div>
+            </div>
+
+            <div class="step-connector">
+              <div class="connector-line"></div>
+            </div>
+
+            <div class="step-item"
+                 [ngClass]="{'active': currentSection === 4}"
+                 (click)="goToStep(4)">
+              <div class="step-circle completed">
+                <mat-icon>check</mat-icon>
+              </div>
+              <div class="step-label">Complete</div>
+            </div>
+          </div>
+        </div>
+      }
+    </mat-card>
+  </mat-grid-tile>
+  <!--===============================================================================================================-->
+</mat-grid-list>
+
+<mat-grid-list [cols]="12" rowHeight="4rem" gutterSize="20px">
+
+  @if (enableForm) {
+
+    <!--==========================================Generic Form Section===========================================-->
+    <mat-grid-tile [colspan]="12" [rowspan]="1">
+      <mat-card>
+        <mat-card-header class="form-header" style="background: unset; border-bottom: unset">
+          <mat-card-title class="title">
+            <mat-icon>map</mat-icon>
+            Generic Form
+          </mat-card-title>
+          <div class="form-button-group">
+            <button class="goto-records-btn" mat-raised-button (click)="setView('records')"
+                    [disabled]="!(enableGoToRecode)">Records
+              <mat-icon>list</mat-icon>
+            </button>
+            <button class="goto-profiles-btn" mat-raised-button (click)="setView('profiles')"
+                    [disabled]="!(enableGoToView)">View
+              <mat-icon>person</mat-icon>
+            </button>
+          </div>
+        </mat-card-header>
+      </mat-card>
+    </mat-grid-tile>
+
+    <!--=======================================================General Information=======================================-->
+
+    <mat-grid-tile [colspan]="12" [rowspan]="7" class="step-section" id="step-1">
+      <mat-card>
+        <mat-card-header class="general-infor-header">
+          <mat-card-title class="subtitle">General Information</mat-card-title>
+        </mat-card-header>
+        <mat-card-content style="overflow:hidden !important;">
+          <div class="grid-container">
+            <mat-card class="transferContract-detail-card">
+              <mat-card-content class="transferContract-main-form">
+                <form [formGroup]="genericForm">
+                  <div class="form-item-container">
+                    <div class="form-tem-label-container">
+                      <mat-icon>
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                             fill="#BB271A">
+                          <path
+                            d="M400-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM80-160v-112q0-33 17-62t47-44q51-26 115-44t141-18h14q6 0 12 2-8 18-13.5 37.5T404-360h-4q-71 0-127.5 18T180-306q-9 5-14.5 14t-5.5 20v32h252q6 21 16 41.5t22 38.5H80Zm560 40-12-60q-12-5-22.5-10.5T584-204l-58 18-40-68 46-40q-2-14-2-26t2-26l-46-40 40-68 58 18q11-8 21.5-13.5T628-460l12-60h80l12 60q12 5 22.5 11t21.5 15l58-20 40 70-46 40q2 12 2 25t-2 25l46 40-40 68-58-18q-11 8-21.5 13.5T732-180l-12 60h-80Zm40-120q33 0 56.5-23.5T760-320q0-33-23.5-56.5T680-400q-33 0-56.5 23.5T600-320q0 33 23.5 56.5T680-240ZM400-560q33 0 56.5-23.5T480-640q0-33-23.5-56.5T400-720q-33 0-56.5 23.5T320-640q0 33 23.5 56.5T400-560Zm0-80Zm12 400Z"/>
+                        </svg>
+                      </mat-icon>
+                      <mat-label>User :</mat-label>
+                    </div>
+                    <mat-form-field appearance="outline">
+                      <mat-label>Select a User</mat-label>
+                      <input type="text"
+                             matInput
+                             formControlName="user"
+                             [matAutocomplete]="userAuto">
+                      <mat-autocomplete autoActiveFirstOption #userAuto="matAutocomplete"
+                                        [displayWith]="displayUserName">
+                        @for (user of filteredUserList | async; track user.id) {
+                          <mat-option [value]="user">{{ user.employee.callingname }}</mat-option>
+                        }
+                      </mat-autocomplete>
+                      <mat-icon matIconSuffix>verified_user</mat-icon>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="form-item-container">
+                    <div class="form-tem-label-container">
+                      <mat-icon>
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                             fill="#9B5278">
+                          <path
+                            d="M200-800v241-1 400-640 200-200Zm80 400h140q9-23 22-43t30-37H280v80Zm0 160h127q-5-20-6.5-40t.5-40H280v80ZM200-80q-33 0-56.5-23.5T120-160v-640q0-33 23.5-56.5T200-880h320l240 240v100q-19-8-39-12.5t-41-6.5v-41H480v-200H200v640h241q16 24 36 44.5T521-80H200Zm460-120q42 0 71-29t29-71q0-42-29-71t-71-29q-42 0-71 29t-29 71q0 42 29 71t71 29ZM864-40 756-148q-21 14-45.5 21t-50.5 7q-75 0-127.5-52.5T480-300q0-75 52.5-127.5T660-480q75 0 127.5 52.5T840-300q0 26-7 50.5T812-204L920-96l-56 56Z"/>
+                        </svg>
+                      </mat-icon>
+                      <mat-label>Reference :</mat-label>
+                    </div>
+                    <mat-form-field appearance="outline">
+                      <mat-label>Enter a Reference</mat-label>
+                      <input matInput formControlName="reference">
+                    </mat-form-field>
+                  </div>
+
+                  <div class="form-item-container">
+                    <div class="form-tem-label-container">
+                      <mat-icon>
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                             fill="#BD4C31">
+                          <path
+                            d="M320-400q-17 0-28.5-11.5T280-440q0-17 11.5-28.5T320-480q17 0 28.5 11.5T360-440q0 17-11.5 28.5T320-400Zm160 0q-17 0-28.5-11.5T440-440q0-17 11.5-28.5T480-480q17 0 28.5 11.5T520-440q0 17-11.5 28.5T480-400Zm160 0q-17 0-28.5-11.5T600-440q0-17 11.5-28.5T640-480q17 0 28.5 11.5T680-440q0 17-11.5 28.5T640-400ZM200-80q-33 0-56.5-23.5T120-160v-560q0-33 23.5-56.5T200-800h40v-80h80v80h320v-80h80v80h40q33 0 56.5 23.5T840-720v560q0 33-23.5 56.5T760-80H200Zm0-80h560v-400H200v400Zm0-480h560v-80H200v80Zm0 0v-80 80Z"/>
+                        </svg>
+                      </mat-icon>
+                      <mat-label>Valid Period :</mat-label>
+                    </div>
+                    <mat-form-field appearance="outline">
+                      <mat-label>Select Valid Period</mat-label>
+                      <mat-date-range-input
+                        [min]="minValidDate"
+                        [rangePicker]="validPeriod">
+                        <input matStartDate placeholder="Valid From" formControlName="validfrom">
+                        <input matEndDate placeholder="Valid To" formControlName="validto">
+                      </mat-date-range-input>
+                      <mat-datepicker-toggle matIconSuffix [for]="validPeriod"></mat-datepicker-toggle>
+                      <mat-date-range-picker #validPeriod></mat-date-range-picker>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="form-item-container">
+                    <div class="form-tem-label-container">
+                      <mat-icon>
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                             fill="#0000F5">
+                          <path
+                            d="m260-520 220-360 220 360H260ZM700-80q-75 0-127.5-52.5T520-260q0-75 52.5-127.5T700-440q75 0 127.5 52.5T880-260q0 75-52.5 127.5T700-80Zm-580-20v-320h320v320H120Zm580-60q42 0 71-29t29-71q0-42-29-71t-71-29q-42 0-71 29t-29 71q0 42 29 71t71 29Zm-500-20h160v-160H200v160Zm202-420h156l-78-126-78 126Zm78 0ZM360-340Zm340 80Z"/>
+                        </svg>
+                      </mat-icon>
+                      <mat-label>Type :</mat-label>
+                    </div>
+                    <mat-form-field appearance="outline">
+                      <mat-label>Select a Type</mat-label>
+                      <mat-select formControlName="generictype">
+                        <mat-option [value]="null">Not selected</mat-option>
+                        @for (type of genericTypes; track type.id) {
+                          <mat-option [value]="type">{{ type.name }}</mat-option>
+                        }
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="form-item-container">
+                    <div class="form-tem-label-container">
+                      <mat-icon>
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                             fill="#BB271A">
+                          <path
+                            d="M444-200h70v-50q50-9 86-39t36-89q0-42-24-77t-96-61q-60-20-83-35t-23-41q0-26 18.5-41t53.5-15q32 0 50 15.5t26 38.5l64-26q-11-35-40.5-61T516-710v-50h-70v50q-50 11-78 44t-28 74q0 47 27.5 76t86.5 50q63 23 87.5 41t24.5 47q0 33-23.5 48.5T486-314q-33 0-58.5-20.5T390-396l-66 26q14 48 43.5 77.5T444-252v52Zm36 120q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"/>
+                        </svg>
+                      </mat-icon>
+                      <mat-label>Markup :</mat-label>
+                    </div>
+                    <mat-form-field appearance="outline">
+                      <mat-label>Enter a Markup</mat-label>
+                      <input matInput formControlName="markup">
+                    </mat-form-field>
+                  </div>
+
+                  <div class="form-item-container">
+                    <div class="form-tem-label-container">
+                      <mat-icon>
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                             fill="#9B5278">
+                          <path
+                            d="M200-800v241-1 400-640 200-200Zm80 400h140q9-23 22-43t30-37H280v80Zm0 160h127q-5-20-6.5-40t.5-40H280v80ZM200-80q-33 0-56.5-23.5T120-160v-640q0-33 23.5-56.5T200-880h320l240 240v100q-19-8-39-12.5t-41-6.5v-41H480v-200H200v640h241q16 24 36 44.5T521-80H200Zm460-120q42 0 71-29t29-71q0-42-29-71t-71-29q-42 0-71 29t-29 71q0 42 29 71t71 29ZM864-40 756-148q-21 14-45.5 21t-50.5 7q-75 0-127.5-52.5T480-300q0-75 52.5-127.5T660-480q75 0 127.5 52.5T840-300q0 26-7 50.5T812-204L920-96l-56 56Z"/>
+                        </svg>
+                      </mat-icon>
+                      <mat-label>Description :</mat-label>
+                    </div>
+                    <mat-form-field appearance="outline">
+                      <mat-label>Enter a Description</mat-label>
+                      <textarea matInput formControlName="description"></textarea>
+                    </mat-form-field>
+                  </div>
+
+                </form>
+              </mat-card-content>
+            </mat-card>
+
+            <mat-card class="transferContract-detail-card">
+              <mat-card-content class="transferContract-main-form">
+                <form [formGroup]="genericForm">
+
+                  <div class="form-item-container">
+                    <div class="form-tem-label-container">
+                      <mat-icon>
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                             fill="#A96424">
+                          <path
+                            d="M720-400v-120H600v-80h120v-120h80v120h120v80H800v120h-80Zm-360-80q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM40-160v-112q0-34 17.5-62.5T104-378q62-31 126-46.5T360-440q66 0 130 15.5T616-378q29 15 46.5 43.5T680-272v112H40Zm80-80h480v-32q0-11-5.5-20T580-306q-54-27-109-40.5T360-360q-56 0-111 13.5T140-306q-9 5-14.5 14t-5.5 20v32Zm240-320q33 0 56.5-23.5T440-640q0-33-23.5-56.5T360-720q-33 0-56.5 23.5T280-640q0 33 23.5 56.5T360-560Zm0-80Zm0 400Z"/>
+                        </svg>
+                      </mat-icon>
+                      <mat-label>Supplier :</mat-label>
+                    </div>
+
+                    <mat-form-field appearance="outline">
+                      <mat-label>Select a Supplier</mat-label>
+                      <input type="text"
+                             matInput
+                             formControlName="supplier"
+                             [matAutocomplete]="supplierAuto">
+                      <mat-autocomplete autoActiveFirstOption #supplierAuto="matAutocomplete"
+                                        [displayWith]="displaySupplierName"
+                      >
+                        @for (supplier of filteredSupplierList | async; track supplier.id) {
+                          <mat-option [value]="supplier">{{ supplier.brno + " - " + supplier.name }}
+                          </mat-option>
+                        }
+                      </mat-autocomplete>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="form-item-container">
+                    <div class="form-tem-label-container">
+                      <mat-icon>
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                             fill="#9B5278">
+                          <path
+                            d="M200-800v241-1 400-640 200-200Zm80 400h140q9-23 22-43t30-37H280v80Zm0 160h127q-5-20-6.5-40t.5-40H280v80ZM200-80q-33 0-56.5-23.5T120-160v-640q0-33 23.5-56.5T200-880h320l240 240v100q-19-8-39-12.5t-41-6.5v-41H480v-200H200v640h241q16 24 36 44.5T521-80H200Zm460-120q42 0 71-29t29-71q0-42-29-71t-71-29q-42 0-71 29t-29 71q0 42 29 71t71 29ZM864-40 756-148q-21 14-45.5 21t-50.5 7q-75 0-127.5-52.5T480-300q0-75 52.5-127.5T660-480q75 0 127.5 52.5T840-300q0 26-7 50.5T812-204L920-96l-56 56Z"/>
+                        </svg>
+                      </mat-icon>
+                      <mat-label>Name :</mat-label>
+                    </div>
+                    <mat-form-field appearance="outline">
+                      <mat-label>Enter a Name</mat-label>
+                      <input matInput formControlName="name">
+                    </mat-form-field>
+                  </div>
+
+
+                  <div class="form-item-container">
+                    <div class="form-tem-label-container">
+                      <mat-icon>
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                             fill="#F19E39">
+                          <path
+                            d="M320-400q-17 0-28.5-11.5T280-440q0-17 11.5-28.5T320-480q17 0 28.5 11.5T360-440q0 17-11.5 28.5T320-400Zm160 0q-17 0-28.5-11.5T440-440q0-17 11.5-28.5T480-480q17 0 28.5 11.5T520-440q0 17-11.5 28.5T480-400Zm160 0q-17 0-28.5-11.5T600-440q0-17 11.5-28.5T640-480q17 0 28.5 11.5T680-440q0 17-11.5 28.5T640-400ZM200-80q-33 0-56.5-23.5T120-160v-560q0-33 23.5-56.5T200-800h40v-80h80v80h320v-80h80v80h40q33 0 56.5 23.5T840-720v560q0 33-23.5 56.5T760-80H200Zm0-80h560v-400H200v400Zm0-480h560v-80H200v80Zm0 0v-80 80Z"/>
+                        </svg>
+                      </mat-icon>
+                      <mat-label>Sales Period :</mat-label>
+                    </div>
+                    <mat-form-field appearance="outline">
+                      <mat-label>Select Sales Period</mat-label>
+                      <mat-date-range-input
+                        [min]="minSaleDate"
+                        [max]="maxSaleDate"
+                        [rangePicker]="salesPeriod">
+                        <input matStartDate placeholder="Sales From" formControlName="salesfrom">
+                        <input matEndDate placeholder="Sales To" formControlName="salesto">
+                      </mat-date-range-input>
+                      <mat-datepicker-toggle matIconSuffix [for]="salesPeriod"></mat-datepicker-toggle>
+                      <mat-date-range-picker #salesPeriod></mat-date-range-picker>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="form-item-container">
+                    <div class="form-tem-label-container">
+                      <mat-icon>
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                             fill="#00a339">
+                          <path
+                            d="m424-296 282-282-56-56-226 226-114-114-56 56 170 170Zm56 216q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"/>
+                        </svg>
+                      </mat-icon>
+                      <mat-label>Status :</mat-label>
+                    </div>
+                    <mat-form-field appearance="outline">
+                      <mat-label>Select a Status</mat-label>
+                      <mat-select formControlName="genericstatus">
+                        <mat-option [value]="null">Not selected</mat-option>
+                        @for (status of genericStatuses; track status.id) {
+                          <mat-option [value]="status">{{ status.name }}</mat-option>
+                        }
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="form-item-container">
+                    <div class="form-tem-label-container">
+                      <mat-icon>
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                             fill="#48752C">
+                          <path
+                            d="M441-120v-86q-53-12-91.5-46T293-348l74-30q15 48 44.5 73t77.5 25q41 0 69.5-18.5T587-356q0-35-22-55.5T463-458q-86-27-118-64.5T313-614q0-65 42-101t86-41v-84h80v84q50 8 82.5 36.5T651-650l-74 32q-12-32-34-48t-60-16q-44 0-67 19.5T393-614q0 33 30 52t104 40q69 20 104.5 63.5T667-358q0 71-42 108t-104 46v84h-80Z"/>
+                        </svg>
+                      </mat-icon>
+                      <mat-label>Currency :</mat-label>
+                    </div>
+                    <mat-form-field appearance="outline">
+                      <mat-label>Select a Currency</mat-label>
+                      <mat-select formControlName="currency">
+                        <mat-option [value]="null">Not selected</mat-option>
+                        @for (type of currencyTypes; track type.id) {
+                          <mat-option [value]="type">{{ type.name }}</mat-option>
+                        }
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+
+                </form>
+              </mat-card-content>
+            </mat-card>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+
+
+    <!--==============================================Discount and Cancellations=========================================-->
+
+    <mat-grid-tile [colspan]="12" [rowspan]="6" class="step-section" id="step-2">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title class="subtitle">Discounts & Cancellation Charges</mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="transferContract-form">
+          <div class="grid-container">
+            <mat-card class="transferContract-detail-card">
+              <mat-card-header class="custom-header discount-header">
+                <mat-card-title class="subtitle">Discounts</mat-card-title>
+                <div class="discount-type-btn-container">
+                  <button class="data-add-btn" mat-raised-button (click)="addDiscount()">
+                    <mat-icon>add</mat-icon>
+                    Add
+                  </button>
+                  <button class="data-clear-btn" mat-raised-button (click)="clearDiscount()">
+                    <mat-icon>clear</mat-icon>
+                    Clear
+                  </button>
+                </div>
+              </mat-card-header>
+              <mat-card-content>
+                <form [formGroup]="genericDiscountForm" style="padding-top: 5px">
+                  <div class="form-item-container">
+                    <div class="form-tem-label-container">
+                      <mat-icon>
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                             fill="#EA3323">
+                          <path
+                            d="M80-160v-640h800v640H80Zm80-80h640v-480H160v480Zm0 0v-480 480Zm160-40h80v-40h40q17 0 28.5-11.5T480-360v-120q0-17-11.5-28.5T440-520H320v-40h160v-80h-80v-40h-80v40h-40q-17 0-28.5 11.5T240-600v120q0 17 11.5 28.5T280-440h120v40H240v80h80v40Zm320-30 80-80H560l80 80Zm-80-250h160l-80-80-80 80Z"/>
+                        </svg>
+                      </mat-icon>
+                      <mat-label>Discount :</mat-label>
+                    </div>
+                    <mat-form-field appearance="outline">
+                      <mat-label>Select a Discount Type</mat-label>
+                      <mat-select formControlName="genericdiscounttype">
+                        <mat-option [value]="null">Not selected</mat-option>
+                        @for (discountType of genericDiscountTypes; track discountType.id) {
+                          <mat-option [value]="discountType">{{ discountType.name }}
+                          </mat-option>
+                        }
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="form-item-container">
+                    <div class="form-tem-label-container">
+                      <mat-icon>
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                             fill="#992B15">
+                          <path
+                            d="m136-240-56-56 296-298 160 160 208-206H640v-80h240v240h-80v-104L536-320 376-480 136-240Z"/>
+                        </svg>
+                      </mat-icon>
+                      <mat-label>Rate Type :</mat-label>
+                    </div>
+                    <mat-form-field appearance="outline">
+                      <mat-label>Select a Rate Type</mat-label>
+                      <mat-select formControlName="ratetype">
+                        <mat-option [value]="null">Not selected</mat-option>
+                        @for (rateType of rateTypes; track rateType.id) {
+                          <mat-option [value]="rateType">{{ rateType.name }}</mat-option>
+                        }
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="form-item-container">
+                    <div class="form-tem-label-container">
+                      <mat-icon>
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                             fill="#00a339">
+                          <path
+                            d="M440-200h80v-40h40q17 0 28.5-11.5T600-280v-120q0-17-11.5-28.5T560-440H440v-40h160v-80h-80v-40h-80v40h-40q-17 0-28.5 11.5T360-520v120q0 17 11.5 28.5T400-360h120v40H360v80h80v40ZM240-80q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h320l240 240v480q0 33-23.5 56.5T720-80H240Zm280-560v-160H240v640h480v-480H520ZM240-800v160-160 640-640Z"/>
+                        </svg>
+                      </mat-icon>
+                      <mat-label>Amount :</mat-label>
+                    </div>
+                    <mat-form-field appearance="outline">
+                      <mat-label>Enter Amount</mat-label>
+                      <input matInput formControlName="amount">
+                    </mat-form-field>
+                  </div>
+                </form>
+
+                <form [formGroup]="genericForm">
+                  <av-data-table
+                    [TableHeaders]="discountTableHeaders"
+                    [TableColumns]="discountTableColumns"
+                    [EnableActionColumn]="true"
+                    [EnableButtonDelete]="true"
+                    [Data]="genericDiscounts"
+                    formControlName="genericdiscounts"
+                  >
+                  </av-data-table>
+                </form>
+
+              </mat-card-content>
+            </mat-card>
+
+            <mat-card class="transferContract-detail-card"
+                      style="max-width: 700px !important; min-width: 500px !important;">
+              <mat-card-header class="custom-header cancellation-header">
+                <mat-card-title class="subtitle">Cancellation</mat-card-title>
+                <div class="cancellation-type-btn-container">
+                  <button class="data-add-btn" mat-raised-button (click)="addCancellationCharge()">
+                    <mat-icon>add</mat-icon>
+                    Add
+                  </button>
+                  <button class="data-clear-btn" mat-raised-button (click)="clearCancellationCharge()">
+                    <mat-icon>clear</mat-icon>
+                    Clear
+                  </button>
+                </div>
+              </mat-card-header>
+
+              <mat-card-content>
+                <form [formGroup]="genericCancellationChargesForm" style="padding-top: 5px">
+                  <div class="form-item-container">
+                    <div class="form-tem-label-container">
+                      <mat-icon>
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                             fill="#B89230">
+                          <path
+                            d="M160-40v-240h100v-80H160v-240h100v-80H160v-240h280v240H340v80h100v80h120v-80h280v240H560v-80H440v80H340v80h100v240H160Zm80-80h120v-80H240v80Zm0-320h120v-80H240v80Zm400 0h120v-80H640v80ZM240-760h120v-80H240v80Zm60-40Zm0 320Zm400 0ZM300-160Z"/>
+                        </svg>
+                      </mat-icon>
+                      <mat-label>Scheme :</mat-label>
+                    </div>
+                    <mat-form-field appearance="outline">
+                      <mat-label>Select a Cancellation Scheme</mat-label>
+                      <mat-select formControlName="cancellationscheme">
+                        <mat-option [value]="null">Not selected</mat-option>
+                        @for (cancellationScheme of cancellationSchemes; track cancellationScheme.id) {
+                          <mat-option [value]="cancellationScheme">{{ cancellationScheme.name }}</mat-option>
+                        }
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="form-item-container">
+                    <div class="form-tem-label-container">
+                      <mat-icon>
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                             fill="#992B15">
+                          <path
+                            d="m136-240-56-56 296-298 160 160 208-206H640v-80h240v240h-80v-104L536-320 376-480 136-240Z"/>
+                        </svg>
+                      </mat-icon>
+                      <mat-label>Rate Type :</mat-label>
+                    </div>
+                    <mat-form-field appearance="outline">
+                      <mat-label>Select a Rate Type</mat-label>
+                      <mat-select formControlName="ratetype">
+                        <mat-option [value]="null">Not selected</mat-option>
+                        @for (rateType of rateTypes; track rateType.id) {
+                          <mat-option [value]="rateType">{{ rateType.name }}</mat-option>
+                        }
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="form-item-container">
+                    <div class="form-tem-label-container">
+                      <mat-icon>
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                             fill="#00a339">
+                          <path
+                            d="M440-200h80v-40h40q17 0 28.5-11.5T600-280v-120q0-17-11.5-28.5T560-440H440v-40h160v-80h-80v-40h-80v40h-40q-17 0-28.5 11.5T360-520v120q0 17 11.5 28.5T400-360h120v40H360v80h80v40ZM240-80q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h320l240 240v480q0 33-23.5 56.5T720-80H240Zm280-560v-160H240v640h480v-480H520ZM240-800v160-160 640-640Z"/>
+                        </svg>
+                      </mat-icon>
+                      <mat-label>Amount :</mat-label>
+                    </div>
+                    <mat-form-field appearance="outline">
+                      <mat-label>Enter Amount</mat-label>
+                      <input matInput formControlName="amount">
+                    </mat-form-field>
+                  </div>
+                </form>
+
+                <form [formGroup]="genericForm">
+                  <av-data-table
+                    [TableHeaders]="cancellationTableHeaders"
+                    [TableColumns]="cancellationTableColumns"
+                    [EnableActionColumn]="true"
+                    [EnableButtonDelete]="true"
+                    [Data]="genericCancellationCharges"
+                    formControlName="genericcancellationcharges"
+                  >
+                  </av-data-table>
+                </form>
+
+              </mat-card-content>
+            </mat-card>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+
+    <!--========================================Transfer Rates========================================-->
+    <mat-grid-tile [colspan]="12" [rowspan]="5" class="step-section" id="step-3">
+      <mat-card class="transferContract-detail-card">
+        <mat-card-header class="room-occupancy-header">
+          <mat-card-title>Transfer Rates</mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="rate-form-main-container">
+          <form [formGroup]="genericRateForm">
+            <div class="rate-form-container">
+              <div class="rate-types-row">
+                @for (paxType of paxTypes; track paxType.id; let i = $index) {
+                  <ng-container>
+                    <div class="rate-type-column">
+                      <div class="pax-type-name">{{ paxType.name }}</div>
+
+                      <div class="resident-type-container">
+                        <mat-button-toggle-group #toggleGroup="matButtonToggleGroup" name="paxType_{{i}}"
+                                                 aria-label="Font Style">
+                          @for (residentType of residentTypes; track $index) {
+                            <mat-button-toggle [value]="residentType">{{ residentType.name }}</mat-button-toggle>
+                          }
+                        </mat-button-toggle-group>
+                      </div>
+
+                      <mat-form-field appearance="outline" class="amount-field">
+                        <mat-label>Amount for a Pax</mat-label>
+                        <input matInput type="number" [min]="0" formControlName="amount">
+                      </mat-form-field>
+
+                      <button mat-raised-button class="add-rate-btn"
+                              (click)="addGenericRate(paxType, toggleGroup.value)">
+                        <mat-icon>add</mat-icon>
+                        Add
+                      </button>
+                    </div>
+                  </ng-container>
+                }
+              </div>
+            </div>
+          </form>
+
+          <!--=============================Created Occupancy Table(Temporary)==================================-->
+          <form [formGroup]="genericForm">
+            <av-data-table
+              [TableHeaders]="rateTableHeaders"
+              [TableColumns]="rateTableColumns"
+              [EnableActionColumn]="true"
+              [EnableButtonDelete]="true"
+              [Data]="genericRates"
+              formControlName="genericrates"
+            >
+            </av-data-table>
+          </form>
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+
+    <!--===============================================Control Buttons===========================================================-->
+    <mat-grid-tile class="control-button-container" [colspan]="12" [rowspan]="1">
+      <mat-card class="transferContract-detail-card">
+        <mat-card-footer class="step-section" id="step-4">
+          <div class="control-button-panel">
+            <button class="control-add-btn" mat-raised-button (click)="save()"
+                    [disabled]="!(enableAdd && hasInsertAuthority)">Add
+            </button>
+            <button class="control-clear-btn" mat-raised-button (click)="clear()">Clear</button>
+            <button class="control-update-btn" mat-raised-button (click)="update()"
+                    [disabled]="!(enableUpdate && hasUpdateAuthority)">Update
+            </button>
+            <button class="control-delete-btn" mat-raised-button (click)="delete()"
+                    [disabled]="!(enableDelete && hasDeleteAuthority)">Delete
+            </button>
+          </div>
+        </mat-card-footer>
+      </mat-card>
+    </mat-grid-tile>
+
+    <!--=============================================================================================================-->
+  }
+
+  <!--===========================================Generic Details/Profiles===========================================-->
+  @if (enableDetailView) {
+    <mat-grid-tile [colspan]="12" [rowspan]="1">
+      <mat-card class="searchView">
+        <mat-card-content class="search-view-container">
+          <div class="details-search-container">
+            <span class="title">Generic Details</span>
+            <mat-form-field appearance="outline">
+              <mat-label>Search TransferContract</mat-label>
+              <input matInput (keyup)="filterTable($event)" #input>
+              <mat-icon matPrefix>search</mat-icon>
+            </mat-form-field>
+
+            <div class="detail-button-group">
+              <button mat-raised-button class="goto-form-btn" (click)="setView('form')"
+                      [disabled]="!(enableAdd && hasInsertAuthority)">New
+                <mat-icon>add</mat-icon>
+              </button>
+              <button mat-raised-button class="goto-records-btn" (click)="setView('records')"
+                      [disabled]="!(enableGoToRecode)">Records
+                <mat-icon>list</mat-icon>
+              </button>
+              <button mat-raised-button class="tbl-selection-edit-btn"
+                      [disabled]="!(enableEdit && hasUpdateAuthority)"
+                      (click)="loadTransferContractModifyView(selectedRow); clearTableSelection()">Edit
+                <mat-icon matPrefix>edit</mat-icon>
+              </button>
+              <button mat-raised-button class="tbl-selection-clear-btn" (click)="clearTableSelection()">Clear
+                <mat-icon matPrefix>clear</mat-icon>
+              </button>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+
+    <mat-grid-tile [colspan]="5" [rowspan]="10" class="searchTile">
+      <mat-card>
+        <mat-card-content>
+          <mat-table [dataSource]="data">
+            @for (column of columnsDetails; track columnsDetails; let i = $index) {
+              <ng-container [matColumnDef]="column">
+                <mat-header-cell *matHeaderCellDef> {{ headersDetails[i] }}</mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                  @if (column === 'genericstatus') {
+                    <span [ngClass]="setStatusColor(element[column])">{{ element[column].name }}</span>
+                  } @else {
+                    {{ element[column] }}
+                  }
+                </mat-cell>
+              </ng-container>
+            }
+
+            <mat-header-row *matHeaderRowDef="columnsDetails"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: columnsDetails;"
+                     (click)="loadTransferContractDetailView(row); selectGenericRow(row)"
+                     [ngClass]="{'selected-row': row === selectedRow}"></mat-row>
+            <tr class="mat-row" *matNoDataRow>
+              <td class="mat-cell" colspan="4">No data matching the filter "{{ input.value }}"</td>
+            </tr>
+          </mat-table>
+          <mat-paginator class="profile-table-paginator" [length]="20" [pageSize]="3" [pageSizeOptions]="[3,5,10,20]"
+                         showFirstLastButtons></mat-paginator>
+
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+
+    <mat-grid-tile [colspan]="7" [rowspan]="10" class="searchTile">
+      <mat-card class="card-container">
+        <mat-card-content>
+          <div class="details-container">
+            <app-detail-view
+              [showDisplayColors]="true"
+              [showDisplayMessage]="true"
+              messageToDisplay="Select a row to display"
+              [isEnablePrint]="true"
+              [setStatusColors]="statusColors"
+            ></app-detail-view>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+  }
+  <!--===============================================================================================================-->
+
+  @if (enableRecordView) {
+
+    <!--=======================================Generic Add / Preview / Search=========================================-->
+
+    <mat-grid-tile [colspan]="12" [rowspan]="1">
+      <mat-card class="searchView">
+        <mat-card-content class="search-view-container">
+          <div class="search-container">
+            <span class="title"><b>Generic Records</b></span>
+            <div class="search-view-button-group">
+              <button class="add-btn" mat-raised-button (click)="setView('form')"
+                      [disabled]="!(enableAdd && hasInsertAuthority)">New
+                <mat-icon>add</mat-icon>
+              </button>
+              <button class="accomm-view-btn" mat-raised-button (click)="setView('profiles')"
+                      [disabled]="!(enableGoToView)">View
+                <mat-icon>person</mat-icon>
+              </button>
+            </div>
+            <form [formGroup]="serverSearchForm" class="searchForm">
+              @if (isSearchFiledInput) {
+                <mat-form-field appearance="outline" class="search-input">
+                  <mat-label>Search Here</mat-label>
+                  <input matInput formControlName="searchInput">
+                  <mat-icon matSuffix>search</mat-icon>
+                </mat-form-field>
+              }
+
+              @if (isSearchFiledSelect) {
+                <mat-form-field appearance="outline" hidden="hidden" class="search-select">
+                  <mat-label>Select search value</mat-label>
+                  <mat-select formControlName="searchSelect">
+                    <mat-option [value]="null">Not Selected</mat-option>
+                    @for (searchSelectOption of searchSelectOptions; track searchSelectOptions) {
+                      <mat-option
+                        [value]="searchSelectOption.id">
+                        {{
+                          searchSelectOption.name ||
+                          searchSelectOption?.employee.callingname
+                        }}
+                      </mat-option>
+                    }
+                  </mat-select>
+                </mat-form-field>
+              }
+
+              @if (isSearchFiledDate) {
+                <mat-form-field appearance="outline">
+                  <mat-label>Select date / range</mat-label>
+                  <mat-date-range-input
+                    [rangePicker]="searchDates">
+                    <input matStartDate placeholder="Start date" formControlName="searchStartDate">
+                    <input matEndDate placeholder="End date" formControlName="searchEndDate">
+                  </mat-date-range-input>
+                  <mat-datepicker-toggle matIconSuffix [for]="searchDates"></mat-datepicker-toggle>
+                  <mat-date-range-picker #searchDates></mat-date-range-picker>
+                </mat-form-field>
+              }
+
+              <mat-form-field appearance="outline" class="filter-select">
+                <mat-label>Filter by</mat-label>
+                <mat-select formControlName="filterField"
+                            (selectionChange)="resetServerSearchQueryParamFields() ; loadSearchSelectOptions()">
+                  <mat-option [value]="null">Not Selected</mat-option>
+                  @for (filterFiled of filterFields; track filterFields) {
+                    <mat-option [value]="filterFiled">{{ filterFiled }}</mat-option>
+                  }
+                </mat-select>
+                <mat-icon matSuffix>filter_alt</mat-icon>
+              </mat-form-field>
+
+              <div class="button-group">
+                <button mat-raised-button class="search-btn" (click)="search()">
+                  <mat-icon>search</mat-icon>
+                </button>
+                <button mat-raised-button class="clear-btn" (click)="clearSearch()">
+                  <mat-icon>clear</mat-icon>
+                </button>
+              </div>
+            </form>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+
+    <!--=============================================Generic View Table===============================================-->
+
+    <mat-grid-tile [colspan]="12" [rowspan]="7" style="margin-top: -1px">
+      <mat-card>
+        <mat-card-content>
+          <div class="table-header-section">
+            <mat-form-field style="padding-top: 10px; width: 100%;" appearance="outline" class="search-input">
+              <mat-label>Filter Here</mat-label>
+              <input matInput (keyup)="filterTable($event)" #input>
+              <mat-icon matSuffix style="color: black !important;">filter_list</mat-icon>
+            </mat-form-field>
+            <div class="loading">
+              <img [src]="imageURL" alt="loading-gif">
+            </div>
+          </div>
+
+          <mat-table [dataSource]="data">
+
+            @for (column of columns; track columns; let i = $index) {
+              <ng-container [matColumnDef]="column">
+                <!-- Header Cell -->
+                <mat-header-cell *matHeaderCellDef> {{ headers[i] }}</mat-header-cell>
+                <!-- Normal Data Cells -->
+                <mat-cell *matCellDef="let element">
+
+                  @if (column === 'modify/view') {
+                    <!-- Action Buttons -->
+                    <div class="tbl-btn-container">
+                      <button mat-icon-button class="modify-btn"
+                              (click)="fillForm(element); loadTransferConModifyView(element)"
+                              [disabled]="!(hasUpdateAuthority)">
+                        <mat-icon>border_color</mat-icon>
+                      </button>
+                      <button mat-icon-button class="view-btn" (click)="loadTransferContractDetailView(element)">
+                        <mat-icon>remove_red_eye</mat-icon>
+                      </button>
+                    </div>
+                  } @else if (column === 'genericstatus') {
+                    <span [ngClass]="setStatusColor(element[column])">{{ element[column].name }}</span>
+                  } @else {
+                    {{ element[column]?.name || element[column] }}
+                  }
+                </mat-cell>
+              </ng-container>
+            }
+
+            <mat-header-row *matHeaderRowDef="columns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: columns;" (click)="selectGenericRow(row)"
+                     [ngClass]="{'selected-row': row === selectedGenericRow}"></mat-row>
+            <tr class="mat-row" *matNoDataRow>
+              <td class="mat-cell" colspan="4">No data matching the filter "{{ input.value }}"</td>
+            </tr>
+
+          </mat-table>
+
+          <mat-paginator [length]="20" [pageSize]="5" [pageSizeOptions]="[3,5,10,20]"
+                         showFirstLastButtons></mat-paginator>
+
+        </mat-card-content>
+
+      </mat-card>
+    </mat-grid-tile>
+  }
+
+</mat-grid-list>

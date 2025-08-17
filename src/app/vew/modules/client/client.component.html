@@ -1,0 +1,589 @@
+<mat-grid-list [cols]="12" rowHeight="4rem">
+
+  <!--=================================================Navigation====================================================-->
+  <mat-grid-tile [colspan]="12" [rowspan]="0.5">
+    <mat-card class="breadCrumbCard">
+      <mat-card-content [innerHTML]="breadcrumb"></mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+  <!--===============================================================================================================-->
+
+  <!--============================================Client Form Section==============================================-->
+  @if (enableForm) {
+    <mat-grid-tile [colspan]="12" [rowspan]="10" style="margin-top: 15px;">
+      <mat-card>
+        <mat-card-header class="form-header">
+          <mat-card-title class="title">Client Profile Form</mat-card-title>
+          <div class="form-button-group">
+            <button class="goto-records-btn" mat-raised-button (click)="setView('records')"
+                    [disabled]="!(enableGoToRecode)">Records
+              <mat-icon>list</mat-icon>
+            </button>
+            <button class="goto-profiles-btn" mat-raised-button (click)="setView('profiles')"
+                    [disabled]="!(enableGoToView)">View
+              <mat-icon>person</mat-icon>
+            </button>
+          </div>
+        </mat-card-header>
+
+        <mat-card-content class="client-form">
+
+          <mat-stepper orientation="horizontal" [linear]="isLinear" #stepper>
+
+            <mat-step [stepControl]="clientForm">
+              <form [formGroup]="clientForm" (ngSubmit)="onSubmitPersonalDetails(stepper)">
+                <ng-template matStepLabel>Personal Details</ng-template>
+                <br>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Select a User</mat-label>
+                  <input type="text"
+                         matInput
+                         formControlName="user"
+                         [matAutocomplete]="auto">
+                  <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [displayWith]="displayUserName">
+                    @for (user of filteredUserList | async; track user.id) {
+                      <mat-option [value]="user">{{ user.employee.callingname }}</mat-option>
+                    }
+                  </mat-autocomplete>
+                  <mat-icon matIconSuffix>verified_user</mat-icon>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Code</mat-label>
+                  <input matInput formControlName="code">
+                  <mat-icon matIconSuffix>confirmation_number</mat-icon>
+                </mat-form-field>
+
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Full Name</mat-label>
+                  <input matInput formControlName="fullname">
+                  <mat-icon matIconSuffix>reorder</mat-icon>
+                </mat-form-field>
+
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Calling Name</mat-label>
+                  <input matInput formControlName="callingname">
+                  <mat-icon matIconSuffix>reorder</mat-icon>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Birth Date</mat-label>
+                  <input matInput [matDatepicker]="dob" [min]="maximumBirthYear" [max]="minimumBirthYear"
+                         formControlName="dobirth">
+                  <mat-datepicker-toggle matSuffix [for]="dob"></mat-datepicker-toggle>
+                  <mat-datepicker #dob></mat-datepicker>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Gender</mat-label>
+                  <mat-select formControlName="gender">
+                    <mat-option [value]="null">Not Selected</mat-option>
+                    @for (gender of genders; track gender.id) {
+                      <mat-option [value]="gender">{{ gender.name }}</mat-option>
+                    }
+                  </mat-select>
+                  <mat-icon matIconSuffix>supervisor_account</mat-icon>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Resident Type</mat-label>
+                  <mat-select formControlName="residenttype">
+                    <mat-option [value]="null">Not Selected</mat-option>
+                    @for (residentType of residentTypes; track residentType.id) {
+                      <mat-option [value]="residentType">{{ residentType.name }}</mat-option>
+                    }
+                  </mat-select>
+                  <mat-icon matIconSuffix>supervisor_account</mat-icon>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Description</mat-label>
+                  <textarea matInput placeholder="Any special requests, dietary requirements, accessibility needs, etc." formControlName="description"></textarea>
+                  <mat-icon matIconSuffix>description</mat-icon>
+                </mat-form-field>
+
+                <div class="stepper-next-button-container">
+                  <button class="stepper-next-button" mat-icon-button type="submit"
+                          [ngClass]="{'blink-button' : blinkButton}">
+                    <mat-icon>navigate_next</mat-icon>
+                  </button>
+                </div>
+
+              </form>
+            </mat-step>
+
+            <mat-step [stepControl]="clientIdentityForm">
+              <form [formGroup]="clientIdentityForm" (ngSubmit)="onSubmitIdentityDetails(stepper)">
+                <ng-template matStepLabel>Client Identities</ng-template>
+                <br>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>NIC</mat-label>
+                  <input matInput formControlName="nic">
+                  <mat-icon matIconSuffix>fingerprint</mat-icon>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Passport Expiry Date</mat-label>
+                  <input matInput [matDatepicker]="passExpDate" formControlName="passportExpiryDate">
+                  <mat-datepicker-toggle matSuffix [for]="passExpDate"></mat-datepicker-toggle>
+                  <mat-datepicker #passExpDate></mat-datepicker>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Passport Number</mat-label>
+                  <input matInput formControlName="passportNo">
+                  <mat-icon matIconSuffix>travel_explore</mat-icon>
+                </mat-form-field>
+
+                <div class="stepper-button-container">
+                  <div class="stepper-back-button-container">
+                    <button class="stepper-back-button" mat-icon-button type="button" (click)="stepper.previous()">
+                      <mat-icon>navigate_before</mat-icon>
+                    </button>
+                  </div>
+                  <div class="stepper-next-button-container">
+                    <button class="stepper-next-button" mat-icon-button type="submit"
+                            [ngClass]="{'blink-button' : blinkButton}">
+                      <mat-icon>navigate_next</mat-icon>
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </mat-step>
+
+            <mat-step [stepControl]="clientContactDetailsForm">
+              <form [formGroup]="clientContactDetailsForm" (ngSubmit)="onSubmitContactDetails(stepper)">
+                <ng-template matStepLabel>Client Contact Details</ng-template>
+                <br>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Mobile</mat-label>
+                  <input matInput formControlName="mobile">
+                  <mat-icon matIconSuffix>smartphone</mat-icon>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Land</mat-label>
+                  <input matInput formControlName="land">
+                  <mat-icon matIconSuffix>call</mat-icon>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Emergency Number</mat-label>
+                  <input matInput formControlName="emergencyContactNumber">
+                  <mat-icon matIconSuffix>priority_high</mat-icon>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Email</mat-label>
+                  <input matInput formControlName="email">
+                  <mat-icon matIconSuffix>email</mat-icon>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Address Line 1</mat-label>
+                  <input matInput formControlName="addressLine1">
+                  <mat-icon matIconSuffix>home</mat-icon>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Address Line 2</mat-label>
+                  <input matInput formControlName="addressLine2">
+                  <mat-icon matIconSuffix>home_work</mat-icon>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Postal Code</mat-label>
+                  <input matInput formControlName="postalCode">
+                  <mat-icon matIconSuffix>markunread_mailbox</mat-icon>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Country</mat-label>
+                  <input matInput formControlName="country">
+                  <mat-icon matIconSuffix>public</mat-icon>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>City</mat-label>
+                  <input matInput formControlName="city">
+                  <mat-icon matIconSuffix>location_city</mat-icon>
+                </mat-form-field>
+
+                <div class="stepper-button-container">
+                  <div class="stepper-back-button-container">
+                    <button class="stepper-back-button" mat-icon-button type="button" (click)="stepper.previous()">
+                      <mat-icon>navigate_before</mat-icon>
+                    </button>
+                  </div>
+                  <div class="stepper-next-button-container">
+                    <button class="stepper-next-button" mat-icon-button type="submit"
+                            [ngClass]="{'blink-button' : blinkButton}">
+                      <mat-icon>navigate_next</mat-icon>
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </mat-step>
+
+            <mat-step [stepControl]="passengerDetailsForm">
+              <form [formGroup]="passengerDetailsForm" (ngSubmit)="onSubmitFinal(stepper)">
+                <ng-template matStepLabel>Passenger Details</ng-template>
+                <br>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Code</mat-label>
+                  <input matInput formControlName="code">
+                  <mat-icon matIconSuffix>confirmation_number</mat-icon>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Name</mat-label>
+                  <input matInput formControlName="name">
+                  <mat-icon matIconSuffix>person</mat-icon>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Age</mat-label>
+                  <input matInput formControlName="age">
+                  <mat-icon matIconSuffix>hourglass_bottom</mat-icon>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Relationship</mat-label>
+                  <mat-select formControlName="relationship">
+                    <mat-option [value]="null">Not Selected</mat-option>
+                    @for (relationship of customerRelationships; track relationship.id) {
+                      <mat-option [value]="relationship">{{ relationship.name }}</mat-option>
+                    }
+                  </mat-select>
+                  <mat-icon matIconSuffix>family_restroom</mat-icon>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Resident Type</mat-label>
+                  <mat-select formControlName="residenttype">
+                    <mat-option [value]="null">Not Selected</mat-option>
+                    @for (residentType of residentTypes; track residentType.id) {
+                      <mat-option [value]="residentType">{{ residentType.name }}</mat-option>
+                    }
+                  </mat-select>
+                  <mat-icon matIconSuffix>home</mat-icon>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Pax Type</mat-label>
+                  <mat-select formControlName="paxtype">
+                    <mat-option [value]="null">Not Selected</mat-option>
+                    @for (paxType of paxTypes; track paxType.id) {
+                      <mat-option [value]="paxType">{{ paxType.name }}</mat-option>
+                    }
+                  </mat-select>
+                  <mat-icon matIconSuffix>groups</mat-icon>
+                </mat-form-field>
+              </form>
+
+              <div class="add-new-btn-container">
+                <div class="dummy-passenger-container">
+                  <mat-form-field appearance="outline">
+                    <mat-label>Dummy Count</mat-label>
+                    <input matInput type="number" [min]="0" [(ngModel)]="dummyPassengerCount" name="dummyPassengerCount">
+                  </mat-form-field>
+                  <button mat-raised-button class="add-new-btn" (click)="autoGenerateDummyPassengers()" type="button">Generate</button>
+                  <button mat-raised-button class="close-btn" (click)="clearAllDummies()" type="button">Clear</button>
+                </div>
+                <div class="button-container">
+                  <button mat-raised-button class="add-new-btn" (click)="addNewPassenger()" type="button">
+                    <mat-icon>add</mat-icon>
+                    {{ !isEnableInnerDataModify ? 'Add' : 'Modify' }}
+                  </button>
+                  <button mat-raised-button class="close-btn" type="button"
+                          (click)="clearPassenger()">
+                    <mat-icon>clear</mat-icon>
+                    Clear
+                  </button>
+                </div>
+              </div>
+
+              <form [formGroup]="clientForm">
+                <av-data-table
+                  (onModify)="modifyPassenger($event)"
+                  (onItemRemoved)="removePassenger($event)"
+                  [TableHeaders]="passengerTableHeaders"
+                  [TableColumns]="passengerTableColumns"
+                  [EnableActionColumn]="true"
+                  [EnableButtonDelete]="true"
+                  [EnableButtonModify]="true"
+                  [Data]="storePassengers"
+                  formControlName="passengers"
+                >
+                </av-data-table>
+
+                <div class="stepper-button-container">
+                  <div class="stepper-back-button-container">
+                    <button class="stepper-back-button" mat-icon-button type="button" (click)="stepper.previous()">
+                      <mat-icon>navigate_before</mat-icon>
+                    </button>
+                  </div>
+                  <div class="stepper-reset-button-container">
+                    <button class="stepper-reset-button" mat-icon-button type="reset" (click)="resetStepper()">
+                      <mat-icon>clear</mat-icon>
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </mat-step>
+
+          </mat-stepper>
+
+          <form [formGroup]="clientForm">
+            <div class="control-button-panel">
+              <button class="control-add-btn" mat-raised-button (click)="save()"
+                      [disabled]="!(enableAdd && hasInsertAuthority)">Add
+              </button>
+              <button class="control-clear-btn" mat-raised-button (click)="clear()">Clear</button>
+              <button class="control-update-btn" mat-raised-button (click)="update()"
+                      [disabled]="!(enableUpdate && hasUpdateAuthority)">Update
+              </button>
+              <button class="control-delete-btn" mat-raised-button (click)="delete()"
+                      [disabled]="!(enableDelete && hasDeleteAuthority)">Delete
+              </button>
+            </div>
+          </form>
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+  }
+  <!--===============================================================================================================-->
+
+  <!--===========================================Client Details/Profiles===========================================-->
+  @if (enableDetailView) {
+    <mat-grid-tile [colspan]="12" [rowspan]="1" class="searchTile">
+      <mat-card class="searchView">
+        <mat-card-content class="search-view-container">
+          <div class="details-search-container">
+            <span class="title">Client Profiles</span>
+            <mat-form-field appearance="outline">
+              <mat-label>Search Client</mat-label>
+              <input matInput (keyup)="filterTable($event)" #input>
+              <mat-icon matPrefix>search</mat-icon>
+            </mat-form-field>
+
+            <div class="detail-button-group">
+              <button mat-raised-button class="goto-form-btn" (click)="setView('form')"
+                      [disabled]="!(enableAdd && hasInsertAuthority)">New
+                <mat-icon>add</mat-icon>
+              </button>
+              <button mat-raised-button class="goto-records-btn" (click)="setView('records')"
+                      [disabled]="!(enableGoToRecode)">Records
+                <mat-icon>list</mat-icon>
+              </button>
+              <button mat-raised-button class="tbl-selection-edit-btn"
+                      [disabled]="!(enableEdit && hasUpdateAuthority)"
+                      (click)="fillForm(selectedRow); loadCustomerModifyView(selectedRow); clearTableSelection()">Edit
+                <mat-icon matPrefix>edit</mat-icon>
+              </button>
+              <button mat-raised-button class="tbl-selection-clear-btn" (click)="clearTableSelection()">Clear
+                <mat-icon matPrefix>clear</mat-icon>
+              </button>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+
+    <mat-grid-tile [colspan]="5" [rowspan]="10" style="margin-top: 20px">
+      <mat-card>
+        <mat-card-content>
+          <mat-table [dataSource]="data">
+            @for (column of columnsDetails; track columnsDetails; let i = $index) {
+              <ng-container [matColumnDef]="column">
+                <mat-header-cell *matHeaderCellDef> {{ headersDetails[i] }}</mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                  {{ element[column]?.name || element[column] }}
+                </mat-cell>
+              </ng-container>
+            }
+
+            <mat-header-row *matHeaderRowDef="columnsDetails"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: columnsDetails;"
+                     (click)="loadCustomerDetailView(row); selectRow(row)"
+                     [ngClass]="{'selected-row': row === selectedRow}"></mat-row>
+            <tr class="mat-row" *matNoDataRow>
+              <td class="mat-cell" colspan="4">No data matching the filter "{{ input.value }}"</td>
+            </tr>
+          </mat-table>
+          <mat-paginator class="profile-table-paginator" [length]="20" [pageSize]="3" [pageSizeOptions]="[3,5,10,20]"
+                         showFirstLastButtons></mat-paginator>
+
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+
+    <mat-grid-tile [colspan]="7" [rowspan]="10" style="margin-top: 20px">
+      <mat-card class="card-container">
+        <mat-card-content>
+          <div class="details-container">
+            <app-detail-view
+              [showDisplayColors]="true"
+              [showDisplayMessage]="true"
+              messageToDisplay="Select a row to display"
+              [isEnablePrint]="true"
+            ></app-detail-view>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+  }
+  <!--===============================================================================================================-->
+
+  @if (enableRecordView) {
+    <!--=======================================Client Add / Preview / Search=========================================-->
+    <mat-grid-tile [colspan]="12" [rowspan]="1" class="searchTile">
+      <mat-card class="searchView">
+        <mat-card-content class="search-view-container">
+          <div class="search-container">
+            <span class="title"><b>Client Records</b></span>
+            <div class="search-view-button-group">
+              <button class="add-btn" mat-raised-button (click)="setView('form')"
+                      [disabled]="!(enableAdd && hasInsertAuthority)">New
+                <mat-icon>add</mat-icon>
+              </button>
+              <button class="employee-view-btn" mat-raised-button (click)="setView('profiles')"
+                      [disabled]="!(enableGoToView)">View
+                <mat-icon>person</mat-icon>
+              </button>
+            </div>
+            <form [formGroup]="serverSearchForm" class="searchForm">
+              @if (isSearchFiledInput) {
+                <mat-form-field appearance="outline" class="search-input">
+                  <mat-label>Search Here</mat-label>
+                  <input matInput formControlName="searchInput">
+                  <mat-icon matSuffix>search</mat-icon>
+                </mat-form-field>
+              }
+
+              @if (isSearchFiledSelect) {
+                <mat-form-field appearance="outline" hidden="hidden" class="search-select">
+                  <mat-label>Select search value</mat-label>
+                  <mat-select formControlName="searchSelect">
+                    <mat-option [value]="null">Not Selected</mat-option>
+                    @for (searchSelectOption of searchSelectOptions; track searchSelectOptions) {
+                      <mat-option
+                        [value]="searchSelectOption.id">
+                        {{
+                          searchSelectOption.name ||
+                          searchSelectOption?.employee.callingname
+                        }}
+                      </mat-option>
+                    }
+                  </mat-select>
+                </mat-form-field>
+              }
+
+              @if (isSearchFiledDate) {
+                <mat-form-field appearance="outline">
+                  <mat-label>Select date / range</mat-label>
+                  <mat-date-range-input
+                    [rangePicker]="searchDates">
+                    <input matStartDate placeholder="Start date" formControlName="searchStartDate">
+                    <input matEndDate placeholder="End date" formControlName="searchEndDate">
+                  </mat-date-range-input>
+                  <mat-datepicker-toggle matIconSuffix [for]="searchDates"></mat-datepicker-toggle>
+                  <mat-date-range-picker #searchDates></mat-date-range-picker>
+                </mat-form-field>
+              }
+
+              <mat-form-field appearance="outline" class="filter-select">
+                <mat-label>Filter by</mat-label>
+                <mat-select formControlName="filterField"
+                            (selectionChange)="resetServerSearchQueryParamFields() ; loadSearchSelectOptions()">
+                  <mat-option [value]="null">Not Selected</mat-option>
+                  @for (filterFiled of filterFields; track filterFields) {
+                    <mat-option [value]="filterFiled">{{ filterFiled }}</mat-option>
+                  }
+                </mat-select>
+                <mat-icon matSuffix>filter_alt</mat-icon>
+              </mat-form-field>
+
+              <div class="button-group">
+                <button mat-raised-button class="search-btn" (click)="search()">
+                  <mat-icon>search</mat-icon>
+                </button>
+                <button mat-raised-button class="clear-btn" (click)="clearSearch()">
+                  <mat-icon>clear</mat-icon>
+                </button>
+              </div>
+            </form>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+
+    <!--=============================================Client View Table===============================================-->
+    <mat-grid-tile [colspan]="12" [rowspan]="8" style="margin-top: 20px">
+      <mat-card>
+        <mat-card-content>
+          <div class="table-header-section">
+            <mat-form-field style="padding-top: 10px; width: 100%" appearance="outline" class="search-input">
+              <mat-label>Filter Here</mat-label>
+              <input matInput (keyup)="filterTable($event)" #input>
+              <mat-icon matSuffix style="color: black !important;">filter_list</mat-icon>
+            </mat-form-field>
+            <div class="loading">
+              <img [src]="imageURL" alt="loading-gif">
+            </div>
+          </div>
+
+          <mat-table [dataSource]="data">
+
+            @for (column of columns; track columns; let i = $index) {
+              <ng-container [matColumnDef]="column">
+                <!-- Header Cell -->
+                <mat-header-cell *matHeaderCellDef> {{ headers[i] }}</mat-header-cell>
+                <!-- Normal Data Cells -->
+                <mat-cell *matCellDef="let element">
+
+                  @if (column === 'modify/view') {
+                    <!-- Action Buttons -->
+                    <div class="tbl-btn-container">
+                      <button mat-icon-button class="modify-btn"
+                              (click)="fillForm(element); loadCustomerModifyView(element)"
+                              [disabled]="!(hasUpdateAuthority)">
+                        <mat-icon>border_color</mat-icon>
+                      </button>
+                      <button mat-icon-button class="view-btn" (click)="loadCustomerDetailView(element)">
+                        <mat-icon>remove_red_eye</mat-icon>
+                      </button>
+                    </div>
+                  }@else {
+                    {{ element[column]?.name || element[column] }}
+                  }
+                </mat-cell>
+              </ng-container>
+            }
+
+            <mat-header-row *matHeaderRowDef="columns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: columns;" (click)="selectRow(row)"
+                     [ngClass]="{'selected-row': row === selectedRow}"></mat-row>
+            <tr class="mat-row" *matNoDataRow>
+              <td class="mat-cell" colspan="4">No data matching the filter "{{ input.value }}"</td>
+            </tr>
+
+          </mat-table>
+
+          <mat-paginator [length]="20" [pageSize]="5" [pageSizeOptions]="[3,5,10,20]"
+                         showFirstLastButtons></mat-paginator>
+
+        </mat-card-content>
+
+      </mat-card>
+    </mat-grid-tile>
+  }
+  <!--===============================================================================================================-->
+
+</mat-grid-list>

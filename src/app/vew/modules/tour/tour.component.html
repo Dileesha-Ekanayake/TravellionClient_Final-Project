@@ -1,0 +1,1087 @@
+<mat-grid-list gutterSize="7px" [cols]="12" rowHeight="4rem">
+
+  <!--=================================================Navigation====================================================-->
+  <mat-grid-tile [colspan]="12" [rowspan]="0.5">
+    <mat-card class="breadCrumbCard">
+      <mat-card-content [innerHTML]="breadcrumb"></mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+  <!--===============================================================================================================-->
+
+  @if (isEnableRecordView) {
+
+    <mat-grid-tile [colspan]="12" [rowspan]="1" class="searchTile">
+      <mat-card class="searchView">
+        <mat-card-content class="search-view-container">
+          <div class="search-container">
+            <span class="title"><b>Planned Tours</b></span>
+            <div class="search-view-button-group">
+              <button class="add-btn" mat-raised-button (click)="setDisplayView('form')"
+                      [disabled]="!(enableAdd && hasInsertAuthority)">New
+                <mat-icon>add</mat-icon>
+              </button>
+              <button class="record-view-btn" mat-raised-button (click)="setDisplayView('records')"
+                      [disabled]="!(enableGoToView)">View
+                <mat-icon>person</mat-icon>
+              </button>
+            </div>
+            <form [formGroup]="serverSearchForm" class="searchForm">
+              @if (isSearchFiledInput) {
+                <mat-form-field appearance="outline" class="search-input">
+                  <mat-label>Search Here</mat-label>
+                  <input matInput formControlName="searchInput">
+                  <mat-icon matSuffix>search</mat-icon>
+                </mat-form-field>
+              }
+
+              @if (isSearchFiledSelect) {
+                <mat-form-field appearance="outline" hidden="hidden" class="search-select">
+                  <mat-label>Select search value</mat-label>
+                  <mat-select formControlName="searchSelect">
+                    <mat-option [value]="null">Not Selected</mat-option>
+                    @for (searchSelectOption of searchSelectOptions; track searchSelectOptions) {
+                      <mat-option
+                        [value]="searchSelectOption.id">
+                        {{
+                          searchSelectOption.name ||
+                          searchSelectOption?.employee.callingname
+                        }}
+                      </mat-option>
+                    }
+                  </mat-select>
+                </mat-form-field>
+              }
+
+              @if (isSearchFiledDate) {
+                <mat-form-field appearance="outline">
+                  <mat-label>Select date / range</mat-label>
+                  <mat-date-range-input
+                    [rangePicker]="searchDates">
+                    <input matStartDate placeholder="Start date" formControlName="searchStartDate">
+                    <input matEndDate placeholder="End date" formControlName="searchEndDate">
+                  </mat-date-range-input>
+                  <mat-datepicker-toggle matIconSuffix [for]="searchDates"></mat-datepicker-toggle>
+                  <mat-date-range-picker #searchDates></mat-date-range-picker>
+                </mat-form-field>
+              }
+
+              <mat-form-field appearance="outline" class="filter-select">
+                <mat-label>Filter by</mat-label>
+                <mat-select formControlName="filterField"
+                            (selectionChange)="resetServerSearchQueryParamFields() ; loadSearchSelectOptions()">
+                  <mat-option [value]="null">Not Selected</mat-option>
+                  @for (filterFiled of filterFields; track filterFields) {
+                    <mat-option [value]="filterFiled">{{ filterFiled }}</mat-option>
+                  }
+                </mat-select>
+                <mat-icon matSuffix>filter_alt</mat-icon>
+              </mat-form-field>
+
+              <div class="search-button-group">
+                <button mat-raised-button class="search-btn" (click)="search()">
+                  <mat-icon>search</mat-icon>
+                </button>
+                <button mat-raised-button class="clear-btn" (click)="clearSearch()">
+                  <mat-icon>clear</mat-icon>
+                </button>
+              </div>
+            </form>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+
+    <mat-grid-tile [colspan]="12" [rowspan]="8">
+      <mat-card>
+        <mat-card-content>
+          <div class="tours-container">
+            <div class="tour-container-header">
+              <div class="filter-field">
+                <mat-form-field appearance="outline">
+                  <mat-label>Search Tours</mat-label>
+                  <input matInput (keyup)="filterTourGrid($event)" #input>
+                  <mat-icon style="color: #1a202c !important;" matIconSuffix>search</mat-icon>
+                </mat-form-field>
+              </div>
+              <div class="loading">
+                <img [src]="loadingImageURL" alt="loading-gif">
+              </div>
+              <div class="item-count-label">
+                <span>Total Tours : </span>
+                <mat-form-field appearance="outline" class="item-count-input">
+                  <input matInput readonly type="number" placeholder="0" value="{{ filteredTours.length }}">
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="tours-grid">
+              @for (tour of filteredTours; track tour.id) {
+                <mat-card class="booking-card" appearance="outlined">
+                  <mat-card-content class="booking-content">
+                    <div class="booking-header" style="background: linear-gradient(135deg, #E3F2FD, #BBDEFB);">
+                      <div class="booking-info">
+                        <h3 class="booking-title">{{ tour.name }}</h3>
+                        <p class="booking-reference">{{ tour.reference }}</p>
+                      </div>
+                    </div>
+
+                    <div class="booking-details">
+                      <div class="detail-row">
+                        <mat-icon class="detail-icon">event</mat-icon>
+                        <span class="detail-text">{{ tour.validfrom | date:'yyyy-MM-dd' }} - {{ tour.validto | date:'yyyy-MM-dd' }}</span>
+                      </div>
+                      <div class="detail-row">
+                        <mat-icon class="detail-icon">hotel</mat-icon>
+                        <span class="detail-text">{{ Math.abs(getTourDuration(tour) - 1) }} Nights {{ getTourDuration(tour) }} Days Package</span>
+                      </div>
+                      <div class="detail-row">
+                        <mat-icon class="detail-icon">group</mat-icon>
+                        <span class="detail-text">{{ tour.maxpaxcount }} guests</span>
+                      </div>
+                      <div class="detail-row">
+                        <mat-icon class="detail-icon">location_city</mat-icon>
+                        <span class="detail-text">{{ getItineraryCount(tour).accommCount }} accommodations</span>
+                      </div>
+                      <div class="detail-row">
+                        <mat-icon class="detail-icon">commute</mat-icon>
+                        <span class="detail-text">{{ getItineraryCount(tour).transferCount }} transfers</span>
+                      </div>
+                      <div class="detail-row">
+                        <mat-icon class="detail-icon">card_travel</mat-icon>
+                        <span class="detail-text">{{ getItineraryCount(tour).genericCount }} activities</span>
+                      </div>
+                      <p class="detail-description">A {{ Math.abs(getTourDuration(tour) - 1) }} night, {{ getTourDuration(tour) }} day trip exploring key attractions.</p>
+                      <div class="booking-price">
+                        <span class="price-label">Starting from</span>
+                        <span class="price-amount">${{ getMinPriceForGuest(tour) }}/per person</span>
+                      </div>
+                    </div>
+
+                    <mat-card-actions class="booking-actions">
+                      <div>
+                        <button mat-flat-button color="primary" class="primary-btn" (click)="loadTourDataView(tour)" style="background: linear-gradient(90deg, #007BFF, #0056B3); box-shadow: 0 2px 4px rgba(0, 123, 255, 0.3);">
+                          View Details
+                        </button>
+                        <button mat-stroked-button class="secondary-btn" (click)="fillForm(tour); loadTourModifyView(tour)" style="border-color: #6C757D; color: #6C757D;">
+                          Edit
+                        </button>
+                      </div>
+                    </mat-card-actions>
+                  </mat-card-content>
+                </mat-card>
+              }
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+    </mat-grid-tile>
+  }
+
+  @if (isEnableFormView) {
+    <mat-grid-tile [colspan]="12" [rowspan]="2">
+      <mat-card>
+        <mat-card-content>
+          <!-- Header -->
+          <div class="header-section">
+            <div class="tour-summary">
+
+              <button class="goto-records-btn" mat-raised-button (click)="setDisplayView('records')"
+                      [disabled]="!(enableGoToRecode)">Records
+                <mat-icon>list</mat-icon>
+              </button>
+
+              <div class="summary-card">
+                <mat-icon class="summary-icon1 days-icon">today</mat-icon>
+                <div class="summary-content">
+                  <span class="summary-number">{{ totalDays }}</span>
+                  <span class="summary-label">Days</span>
+                </div>
+              </div>
+
+              <div class="summary-card">
+                <mat-icon class="summary-icon1 hotels-icon">hotel</mat-icon>
+                <div class="summary-content">
+                  <span class="summary-number">{{ totalAccommodations }}</span>
+                  <span class="summary-label">Hotels</span>
+                </div>
+              </div>
+
+              <div class="summary-card">
+                <mat-icon class="summary-icon1 transfers-icon">directions_car</mat-icon>
+                <div class="summary-content">
+                  <span class="summary-number">{{ totalTransfers }}</span>
+                  <span class="summary-label">Transfers</span>
+                </div>
+              </div>
+
+              <div class="summary-card">
+                <mat-icon class="summary-icon1 activities-icon">event</mat-icon>
+                <div class="summary-content">
+                  <span class="summary-number">{{ totalActivities }}</span>
+                  <span class="summary-label">Activities</span>
+                </div>
+              </div>
+
+              <div class="summary-card">
+                <mat-icon class="summary-icon1 travellers-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                       fill="#FFFFFF">
+                    <path
+                      d="M411-480q-28 0-46-21t-13-49l12-72q8-43 40.5-70.5T480-720q44 0 76.5 27.5T597-622l12 72q5 28-13 49t-46 21H411Zm24-80h91l-8-49q-2-14-13-22.5t-25-8.5q-14 0-24.5 8.5T443-609l-8 49ZM124-441q-23 1-39.5-9T63-481q-2-9-1-18t5-17q0 1-1-4-2-2-10-24-2-12 3-23t13-19l2-2q2-19 15.5-32t33.5-13q3 0 19 4l3-1q5-5 13-7.5t17-2.5q11 0 19.5 3.5T208-626q1 0 1.5.5t1.5.5q14 1 24.5 8.5T251-596q2 7 1.5 13.5T250-570q0 1 1 4 7 7 11 15.5t4 17.5q0 4-6 21-1 2 0 4l2 16q0 21-17.5 36T202-441h-78Zm676 1q-33 0-56.5-23.5T720-520q0-12 3.5-22.5T733-563l-28-25q-10-8-3.5-20t18.5-12h80q33 0 56.5 23.5T880-540v20q0 33-23.5 56.5T800-440ZM0-240v-63q0-44 44.5-70.5T160-400q13 0 25 .5t23 2.5q-14 20-21 43t-7 49v65H0Zm240 0v-65q0-65 66.5-105T480-450q108 0 174 40t66 105v65H240Zm560-160q72 0 116 26.5t44 70.5v63H780v-65q0-26-6.5-49T754-397q11-2 22.5-2.5t23.5-.5Zm-320 30q-57 0-102 15t-53 35h311q-9-20-53.5-35T480-370Zm0 50Zm1-280Z"/>
+                  </svg>
+                </mat-icon>
+                <div class="summary-content">
+                  <span class="summary-number">{{ totalPassengers }}</span>
+                  <span class="summary-label">Travellers</span>
+                </div>
+              </div>
+
+              <button class="goto-profiles-btn" mat-raised-button (click)="setDisplayView('records')"
+                      [disabled]="!(enableGoToView)">View
+                <mat-icon>person</mat-icon>
+              </button>
+
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+
+    <mat-grid-tile [colspan]="12" [rowspan]="14">
+      <mat-card>
+        <mat-card-content>
+
+          <mat-stepper orientation="horizontal" [linear]="isLinear" #stepper>
+
+            <!--Tour Details-->
+            <mat-step>
+              <ng-template matStepLabel>Tour Plan</ng-template>
+              <br>
+              <div class="journey-builder-container">
+
+                <div class="travel-planner" cdkDropListGroup>
+                  <div class="main-content">
+                    <div class="journey-section">
+                      <div class="journey-header">
+                        <h2>Journey Timeline</h2>
+                        <div class="journey-header-buttons">
+                          <button mat-raised-button color="primary" (click)="clear()" class="add-day-btn">
+                            <mat-icon>clear</mat-icon>
+                            Clear
+                          </button>
+                          <button mat-raised-button color="primary" (click)="addDay()" class="add-day-btn">
+                            <mat-icon>add</mat-icon>
+                            Add Day
+                          </button>
+                        </div>
+                      </div>
+
+                      <div class="days-container">
+                        @for (day of days; track day.id) {
+
+                          <mat-accordion>
+                            <mat-expansion-panel class="day-card">
+                              <mat-expansion-panel-header class="day-header">
+                                <mat-panel-title>
+                                  <div class="day-number">{{ day.id }}</div>
+                                  <!--                                <div class="day-location">-->
+                                  <!--                                  <mat-icon>location_on</mat-icon>-->
+                                  <!--                                </div>-->
+                                </mat-panel-title>
+                                <mat-panel-description>
+                                  <button mat-icon-button (click)="removeDay(day.id)" class="delete-btn">
+                                    <mat-icon>
+                                      <svg xmlns="http://www.w3.org/2000/svg" height="10px" viewBox="0 -960 960 960"
+                                           width="10px" fill="#EA3323">
+                                        <path
+                                          d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/>
+                                      </svg>
+                                    </mat-icon>
+                                  </button>
+                                </mat-panel-description>
+                              </mat-expansion-panel-header>
+
+                              <div class="day-content">
+                                <!-- Accommodation Section -->
+                                <div class="accommodation-section">
+                                  <div class="section-header">
+                                    <mat-icon>bed</mat-icon>
+                                    <span>Accommodation</span>
+                                  </div>
+
+                                  <div
+                                    cdkDropList
+                                    id="day-accommodation-{{ day.id }}"
+                                    class="accommodation-drop-zone"
+                                    [cdkDropListEnterPredicate]="accommodationPredicate"
+                                    (cdkDropListDropped)="dropAccommodation($event)">
+
+                                    @if (day.plannedAccommodation) {
+                                      <div class="accommodation-card selected" cdkDrag
+                                           [cdkDragData]="day.plannedAccommodation">
+                                        <button mat-icon-button class="remove-btn"
+                                                (click)="removeAccommodationFromDay(day.id)">
+                                          <mat-icon>close</mat-icon>
+                                        </button>
+                                        <div class="card-header">
+                                          <h5>{{ day.plannedAccommodation.accommodation.name }}</h5>
+                                          <span
+                                            class="cost">{{ day.plannedAccommodation.accommodation.starrating.name }}</span>
+                                        </div>
+                                        <div class="card-details">
+                                      <span
+                                        class="type">{{ day.plannedAccommodation.accommodation.accommodationtype.name }}</span>
+                                          <span
+                                            class="location">{{ day.plannedAccommodation.accommodation.location }}</span>
+                                        </div>
+                                      </div>
+                                    } @else {
+                                      <div class="empty-state">
+                                        <mat-icon>bed</mat-icon>
+                                        <span>Drop accommodation here</span>
+                                      </div>
+                                    }
+                                  </div>
+                                </div>
+
+                                <ng-template #roomTypeDialog>
+                                  <div class="select-roomtype-container">
+                                    <h2 mat-dialog-title>Select Room Types</h2>
+
+                                    <mat-dialog-content>
+                                      <div class="room-type-list">
+                                        @for (roomType of dropAccommodationRoomTypes; track roomType.id) {
+                                          <mat-checkbox
+                                            [(ngModel)]="roomType.selected"
+                                            class="room-type-checkbox">
+                                            {{ roomType.name }}
+                                          </mat-checkbox>
+                                        }
+                                      </div>
+                                    </mat-dialog-content>
+
+                                    <mat-dialog-actions align="end">
+                                      <button mat-button (click)="onCancel()" [disabled]="hasSelection()">Cancel
+                                      </button>
+                                      <button mat-raised-button color="primary" (click)="onConfirm()"
+                                              [disabled]="!hasSelection()">
+                                        Confirm Selection
+                                      </button>
+                                    </mat-dialog-actions>
+                                  </div>
+                                </ng-template>
+
+                                <!-- Transfer Section -->
+                                <div class="transfer-section">
+                                  <div class="section-header">
+                                    <mat-icon>directions_car</mat-icon>
+                                    <span>Transfer</span>
+                                  </div>
+
+                                  <div
+                                    cdkDropList
+                                    id="day-transfer-{{ day.id }}"
+                                    class="transfer-drop-zone"
+                                    [cdkDropListEnterPredicate]="transferPredicate"
+                                    (cdkDropListDropped)="dropTransfer($event)">
+
+                                    @if (day.plannedTransfer) {
+                                      <div class="transfer-card selected" cdkDrag [cdkDragData]="day.plannedTransfer">
+                                        <button mat-icon-button class="remove-btn"
+                                                (click)="removeTransferFromDay(day.id)">
+                                          <mat-icon>close</mat-icon>
+                                        </button>
+                                        <div class="card-header">
+                                          <span>{{ day.plannedTransfer.transfercontract.transfertype.name }}</span>
+                                          <!--                                        <span class="cost">${{ day.plannedTransfer.transferContact.transfertype.name }}</span>-->
+                                        </div>
+                                        <!--                                  <div class="duration">{{ day.plannedTransfer.duration }}</div>-->
+                                      </div>
+                                    } @else {
+                                      <div class="empty-state">
+                                        <mat-icon>directions_car</mat-icon>
+                                        <span>Drop transfer here</span>
+                                      </div>
+                                    }
+                                  </div>
+                                </div>
+
+                                <!-- Activities Section -->
+                                <div class="activities-section">
+                                  <div class="section-header">
+                                    <mat-icon>event</mat-icon>
+                                    <span>Activities</span>
+                                  </div>
+
+                                  <div
+                                    cdkDropList
+                                    id="day-activities-{{ day.id }}"
+                                    [cdkDropListData]="day.plannedActivities"
+                                    class="activities-drop-zone"
+                                    [cdkDropListEnterPredicate]="activityPredicate"
+                                    (cdkDropListDropped)="dropActivity($event)">
+
+                                    @for (activity of day.plannedActivities; track $index) {
+                                      <div class="activity-card" cdkDrag [cdkDragData]="activity">
+                                        <button mat-icon-button class="remove-btn"
+                                                (click)="removeActivityFromDay(day.id, $index)">
+                                          <mat-icon>close</mat-icon>
+                                        </button>
+                                        <div class="card-header">
+                                          <span>{{ activity.generic.name }}</span>
+                                          <!--                                    <span class="cost">${{ activity.generic.cost }}</span>-->
+                                        </div>
+                                        <!--                                  <div class="duration">{{ activity.duration }}</div>-->
+                                      </div>
+                                    }
+
+                                    @if (day.plannedActivities.length === 0) {
+                                      <div class="empty-state">
+                                        <mat-icon>event</mat-icon>
+                                        <span>Drop activities here</span>
+                                      </div>
+                                    }
+                                  </div>
+                                </div>
+
+                              </div>
+
+                            </mat-expansion-panel>
+                          </mat-accordion>
+                        }
+                      </div>
+                    </div>
+
+                    <!-- Sidebar with Available Items -->
+                    <div class="sidebar">
+
+                      <div>
+                        <mat-tab-group mat-align-tabs="start">
+
+                          <!--Available Accommodations-->
+                          <mat-tab>
+                            <ng-template mat-tab-label>
+                              <mat-icon class="tab-icon">hotel</mat-icon>
+                            </ng-template>
+                            <div class="tab-content">
+
+                              <div class="sidebar-section-form">
+                                <form [formGroup]="accommodationSearchForm">
+                                  <mat-form-field appearance="outline">
+                                    <mat-label>Search by Name</mat-label>
+                                    <input matInput formControlName="name">
+                                  </mat-form-field>
+                                  <mat-form-field appearance="outline">
+                                    <mat-label>Search by Location</mat-label>
+                                    <input matInput formControlName="location">
+                                  </mat-form-field>
+
+                                  <div class="sidebar-section-button-container">
+                                    <button mat-raised-button (click)="searchAccommodations()">
+                                      <mat-icon matIconSuffix>search</mat-icon>
+                                      Search
+                                    </button>
+                                    <button mat-raised-button (click)="clearAccommodationSearch()">
+                                      <mat-icon matIconSuffix>clear</mat-icon>
+                                      Clear
+                                    </button>
+                                  </div>
+                                </form>
+                              </div>
+
+                              <div class="sidebar-section">
+                                <div class="sidebar-header">
+                                  <div class="sidebar-header-title">
+                                    <mat-icon>hotel</mat-icon>
+                                    <h3>Available Accommodations</h3>
+                                  </div>
+                                  <div class="loading">
+                                    <img [src]="loadingAccommDataImageURL" alt="loading-gif">
+                                  </div>
+                                </div>
+
+                                <div
+                                  cdkDropList
+                                  id="available-accommodations"
+                                  [cdkDropListData]="availableAccommodations"
+                                  class="sidebar-drop-list"
+                                  [cdkDropListEnterPredicate]="accommodationPredicate"
+                                  (cdkDropListDropped)="dropAccommodation($event)">
+
+                                  @for (item of availableAccommodations; track item.id) {
+                                    <div class="accommodation-card" cdkDrag [cdkDragData]="item">
+                                      <div class="card-header">
+                                        <h5>{{ item.name }}</h5>
+                                        <span class="cost">{{ item.starrating.name }}</span>
+                                      </div>
+                                      <div class="card-details">
+                                        <span class="type">{{ item.accommodationtype.name }}</span>
+                                        <span class="location">{{ item.location }}</span>
+                                      </div>
+                                    </div>
+                                  }
+                                </div>
+                              </div>
+                            </div>
+                          </mat-tab>
+
+                          <!--Available Transfers-->
+                          <mat-tab>
+                            <ng-template mat-tab-label>
+                              <mat-icon class="tab-icon">directions_car</mat-icon>
+                            </ng-template>
+                            <div class="tab-content">
+
+                              <div class="sidebar-section-form">
+                                <form [formGroup]="transferSearchForm">
+                                  <mat-form-field appearance="outline">
+                                    <mat-label>Search by PickupLocation</mat-label>
+                                    <input matInput formControlName="pickuplocation">
+                                  </mat-form-field>
+                                  <mat-form-field appearance="outline">
+                                    <mat-label>Search by DropLocation</mat-label>
+                                    <input matInput formControlName="droplocation">
+                                  </mat-form-field>
+
+                                  <div class="sidebar-section-button-container">
+                                    <button mat-raised-button (click)="searchTransfers()">
+                                      <mat-icon matIconSuffix>search</mat-icon>
+                                      Search
+                                    </button>
+                                    <button mat-raised-button (click)="clearTransferSearch()">
+                                      <mat-icon matIconSuffix>clear</mat-icon>
+                                      Clear
+                                    </button>
+                                  </div>
+                                </form>
+                              </div>
+
+                              <div class="sidebar-section">
+                                <div class="sidebar-header">
+                                  <div class="sidebar-header-title">
+                                    <mat-icon>directions_car</mat-icon>
+                                    <h3>Available Transfers</h3>
+                                  </div>
+                                  <div class="loading">
+                                    <img [src]="loadingTransferDataImageURL" alt="loading-gif">
+                                  </div>
+                                </div>
+
+                                <div
+                                  cdkDropList
+                                  id="available-transfers"
+                                  [cdkDropListData]="availableTransfers"
+                                  class="sidebar-drop-list"
+                                  [cdkDropListEnterPredicate]="transferPredicate"
+                                  (cdkDropListDropped)="dropTransfer($event)">
+
+                                  @for (item of availableTransfers; track item.id) {
+                                    <div class="transfer-card" cdkDrag [cdkDragData]="item">
+                                      <div class="card-header">
+                                        <span>{{ item.transfertype.name }}</span>
+                                        <!--                                  <span class="cost">${{ item.cost }}</span>-->
+                                      </div>
+                                      <!--                                <div class="duration">{{ item.duration }}</div>-->
+                                    </div>
+                                  }
+                                </div>
+                              </div>
+                            </div>
+                          </mat-tab>
+
+                          <!--Available Activities-->
+                          <mat-tab>
+                            <ng-template mat-tab-label>
+                              <mat-icon class="tab-icon">event</mat-icon>
+                            </ng-template>
+                            <div class="tab-content">
+
+                              <div class="sidebar-section-form">
+                                <form [formGroup]="activitySearchForm">
+                                  <mat-form-field appearance="outline">
+                                    <mat-label>Search by Name</mat-label>
+                                    <input matInput formControlName="name">
+                                  </mat-form-field>
+                                  <mat-form-field appearance="outline">
+                                    <mat-label>Select date / range</mat-label>
+                                    <mat-date-range-input
+                                      [rangePicker]="searchDates">
+                                      <input matStartDate placeholder="Sales From" formControlName="salesFrom">
+                                      <input matEndDate placeholder="Sales To" formControlName="salesTo">
+                                    </mat-date-range-input>
+                                    <mat-datepicker-toggle matIconSuffix [for]="searchDates"></mat-datepicker-toggle>
+                                    <mat-date-range-picker #searchDates></mat-date-range-picker>
+                                  </mat-form-field>
+
+                                  <div class="sidebar-section-button-container">
+                                    <button mat-raised-button (click)="searchActivities()">
+                                      <mat-icon matIconSuffix>search</mat-icon>
+                                      Search
+                                    </button>
+                                    <button mat-raised-button (click)="clearActivitySearch()">
+                                      <mat-icon matIconSuffix>clear</mat-icon>
+                                      Clear
+                                    </button>
+                                  </div>
+                                </form>
+                              </div>
+
+                              <div class="sidebar-section">
+                                <div class="sidebar-header">
+                                  <div class="sidebar-header-title">
+                                    <mat-icon>event</mat-icon>
+                                    <h3>Available Activities</h3>
+                                  </div>
+                                  <div class="loading">
+                                    <img [src]="loadingGenericDataImageURL" alt="loading-gif">
+                                  </div>
+                                </div>
+
+                                <div
+                                  cdkDropList
+                                  id="available-activities"
+                                  [cdkDropListData]="availableActivities"
+                                  class="sidebar-drop-list"
+                                  [cdkDropListEnterPredicate]="activityPredicate"
+                                  (cdkDropListDropped)="dropActivity($event)">
+
+                                  @for (item of availableActivities; track item.name) {
+                                    <div class="activity-card" cdkDrag [cdkDragData]="item">
+                                      <div class="card-header">
+                                        <span>{{ item.name }}</span>
+                                        <!--                                  <span class="cost">${{ item.cost }}</span>-->
+                                      </div>
+                                      <!--                                <div class="duration">{{ item.duration }}</div>-->
+                                    </div>
+                                  }
+                                </div>
+                              </div>
+                            </div>
+                          </mat-tab>
+
+                        </mat-tab-group>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="stepper-button-container" style="justify-content: flex-end; padding-top: 40px">
+                <div class="stepper-next-button-container">
+                  <button class="stepper-next-button" mat-icon-button type="button" (click)="stepper.next()">
+                    <mat-icon>navigate_next</mat-icon>
+                  </button>
+                </div>
+              </div>
+
+            </mat-step>
+
+            <!--Tour Summary-->
+            <mat-step>
+              <ng-template matStepLabel>Tour Summary</ng-template>
+              <br>
+
+              @if (days.length === 0) {
+                <div class="no-plan-days">
+                  <div class="floating-shapes">
+                    <div class="shape shape-1"></div>
+                    <div class="shape shape-2"></div>
+                    <div class="shape shape-3"></div>
+                  </div>
+
+                  <div class="icon-wrapper">
+                    <div class="calendar-icon">
+                      <mat-icon>calendar_today</mat-icon>
+                    </div>
+                  </div>
+
+                  <p>No Plans Available</p>
+                  <p class="no-plan-subtitle">Your schedule is clear. Time to plan something amazing!</p>
+                </div>
+              } @else {
+                <div class="tour-summary-detail-card">
+                  @for (day of days; track day.id) {
+                    <mat-card class="tour-summary-card">
+
+                      <div class="card-header-wrapper">
+                        <mat-card-header class="enhanced-header">
+                          <div class="day-badge">
+                            <span class="day-number">{{ day.id }}</span>
+                          </div>
+                          <div class="header-content">
+                            <mat-card-title class="day-title">Day {{ day.id }}</mat-card-title>
+                            <!--                          <mat-card-subtitle class="day-subtitle">-->
+                            <!--                            {{ day.plannedAccommodation?.accommodation?.name || 'Destination' }}-->
+                            <!--                          </mat-card-subtitle>-->
+                          </div>
+                          <div class="card-action">
+                            <mat-icon class="expand-icon">expand_more</mat-icon>
+                          </div>
+                        </mat-card-header>
+                      </div>
+
+                      <mat-card-content class="enhanced-content">
+                        <div class="content-section">
+                          <!-- Accommodation Section -->
+                          @if (day.plannedAccommodation) {
+                            <div class="tour-hotel section-item">
+                              <div class="section-header">
+                                <mat-icon class="section-icon">hotel</mat-icon>
+                                <span class="section-label">Accommodation</span>
+                              </div>
+                              <div class="section-content">
+                                <div class="hotel-details">
+                                  <div class="hotel-name">{{ day.plannedAccommodation.accommodation.name }}</div>
+                                  <div
+                                    class="hotel-type">{{ day.plannedAccommodation.accommodation.accommodationtype?.name || 'Hotel' }}
+                                  </div>
+
+                                  @if (day.plannedAccommodation.accommodation.starrating) {
+                                    <div class="hotel-rating">
+                                      @for (
+                                        star of getStarArray(day.plannedAccommodation.accommodation.starrating); track star) {
+                                        <mat-icon class="star-icon"
+                                                  [class.filled]="star <= getStarCount(day.plannedAccommodation.accommodation.starrating)">
+                                          star
+                                        </mat-icon>
+                                      }
+                                    </div>
+                                  }
+
+                                  @if (day.plannedAccommodation.touraccommodationrooms && day.plannedAccommodation.touraccommodationrooms.length > 0) {
+                                    <div class="room-types">
+                                      <mat-chip-set>
+                                        @for (room of day.plannedAccommodation.touraccommodationrooms; let
+                                          i = $index; track room.id) {
+                                          <mat-chip class="room-type">
+                                            {{ room.roomtype || 'Room' }}
+                                            <button style="background: none !important; border: none !important;"
+                                                    matChipRemove
+                                                    (click)="removeRoomTypeFromDay(day.id, i)">
+                                              <mat-icon>cancel</mat-icon>
+                                            </button>
+                                          </mat-chip>
+                                        }
+                                      </mat-chip-set>
+                                    </div>
+                                  }
+                                </div>
+                              </div>
+                            </div>
+                          } @else {
+                            <div class="tour-hotel section-item no-data">
+                              <div class="section-header">
+                                <mat-icon class="section-icon">hotel</mat-icon>
+                                <span class="section-label">Accommodation</span>
+                              </div>
+                              <div class="section-content">
+                                <div class="no-data-message">No accommodation planned</div>
+                              </div>
+                            </div>
+                          }
+
+                          <!-- Transfer Section -->
+                          @if (day.plannedTransfer) {
+                            <div class="tour-transfer section-item">
+                              <div class="section-header">
+                                <mat-icon class="section-icon">directions_car</mat-icon>
+                                <span class="section-label">Transfer</span>
+                              </div>
+                              <div class="section-content">
+                                <div class="transfer-details">
+                                    <span
+                                      class="transfer-type">{{ day.plannedTransfer.transfercontract.transfertype?.name || 'Transportation' }}</span>
+                                </div>
+                              </div>
+                            </div>
+                          } @else {
+                            <div class="tour-transfer section-item no-data">
+                              <div class="section-header">
+                                <mat-icon class="section-icon">directions_car</mat-icon>
+                                <span class="section-label">Transfer</span>
+                              </div>
+                              <div class="section-content">
+                                <div class="no-data-message">No transfer planned</div>
+                              </div>
+                            </div>
+                          }
+
+                          <!-- Activities Section -->
+                          <div class="tour-activities section-item">
+                            <div class="section-header">
+                              <mat-icon class="section-icon">explore</mat-icon>
+                              <span class="section-label">Activities</span>
+                              <span class="activity-count">({{ day.plannedActivities?.length || 0 }})</span>
+                            </div>
+                            <div class="section-content">
+                              @if (day.plannedActivities && day.plannedActivities.length > 0) {
+                                <div class="activities-list">
+                                  @for (activity of day.plannedActivities; track activity.id) {
+                                    <div class="activity-item">
+                                      <span class="activity-name">{{ activity.generic.name }}</span>
+                                    </div>
+                                  }
+                                </div>
+                              } @else {
+                                <div class="no-data-message">No activities planned</div>
+                              }
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="card-footer">
+                          <div class="day-summary">
+                            <mat-icon class="summary-icon">info</mat-icon>
+                            <span class="summary-text">{{ getSummaryText(day) }}</span>
+                          </div>
+                        </div>
+                      </mat-card-content>
+                    </mat-card>
+                  }
+                </div>
+              }
+
+              <div class="stepper-button-container" style="padding-top: 40px">
+                <div class="stepper-back-button-container">
+                  <button class="stepper-back-button" mat-icon-button type="button" (click)="stepper.previous()">
+                    <mat-icon>navigate_before</mat-icon>
+                  </button>
+                </div>
+                <div class="stepper-next-button-container">
+                  <button class="stepper-next-button" mat-icon-button type="button" (click)="stepper.next()">
+                    <mat-icon>navigate_next</mat-icon>
+                  </button>
+                </div>
+              </div>
+            </mat-step>
+
+            Guest Configuration
+            <mat-step>
+              <ng-template matStepLabel>Guest Configuration</ng-template>
+              <br>
+
+              <form [formGroup]="tourOccupancyForm">
+                <div class="pax-form-container">
+                  <div class="pax-types-row">
+                    @for (paxType of paxTypes; track paxType.id; let i = $index) {
+                      <ng-container>
+                        <div class="pax-type-column">
+                          <div class="pax-type-name">{{ paxType.name }}</div>
+
+                          <div class="pax-count-container">
+                            <mat-form-field appearance="outline">
+                              <mat-label>Amount For a Pax</mat-label>
+                              <input matInput formControlName="amount" placeholder="0">
+                            </mat-form-field>
+                          </div>
+                          <button mat-raised-button (click)="addPaxAmount(paxType)">Add</button>
+                        </div>
+                      </ng-container>
+                    }
+                  </div>
+                </div>
+              </form>
+
+              @if(tourOccupancies.length >= 0) {
+              <form [formGroup]="tourForm">
+                <av-data-table
+                  [TableHeaders]="tourOccupancyTableHeaders"
+                  [TableColumns]="tourOccupancyTableColumns"
+                  [EnableActionColumn]="true"
+                  [EnableButtonDelete]="true"
+                  [EnableButtonModify]="true"
+                  [Data]="tourOccupancies"
+                  formControlName="touroccupancies"
+                >
+                </av-data-table>
+              </form>
+              }
+
+              <div class="stepper-button-container">
+                <div class="stepper-back-button-container">
+                  <button class="stepper-back-button" mat-icon-button type="button" (click)="stepper.previous()">
+                    <mat-icon>navigate_before</mat-icon>
+                  </button>
+                </div>
+                <div class="stepper-next-button-container">
+                  <button class="stepper-next-button" mat-icon-button type="button" (click)="stepper.next()">
+                    <mat-icon>navigate_next</mat-icon>
+                  </button>
+                </div>
+              </div>
+            </mat-step>
+
+            <!--General Information-->
+            <mat-step [stepControl]="tourForm">
+              <ng-template matStepLabel>General Info & Finish</ng-template>
+              <br>
+              <form [formGroup]="tourForm" class="tour-form">
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Select a User</mat-label>
+                  <input type="text"
+                         matInput
+                         formControlName="user"
+                         [matAutocomplete]="userAuto">
+                  <mat-autocomplete autoActiveFirstOption #userAuto="matAutocomplete"
+                                    [displayWith]="displayUserName">
+                    @for (user of filteredUserList | async; track user.id) {
+                      <mat-option [value]="user">{{ user.employee.callingname }}</mat-option>
+                    }
+                  </mat-autocomplete>
+                  <mat-icon matIconSuffix>verified_user</mat-icon>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Enter a Markup</mat-label>
+                  <input matInput formControlName="markup">
+                  <mat-icon matIconSuffix>attach_money</mat-icon>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Tour Name</mat-label>
+                  <input matInput formControlName="name">
+                  <mat-icon matIconSuffix>reorder</mat-icon>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Enter the Reference</mat-label>
+                  <input matInput formControlName="reference">
+                  <mat-icon matIconSuffix>confirmation_number</mat-icon>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Select Valid Dates</mat-label>
+                  <mat-date-range-input
+                    [min]="minValidDate"
+                    [rangePicker]="validDates">">
+                    <input matStartDate placeholder="Valid From" formControlName="validfrom">
+                    <input matEndDate placeholder="Valid To" formControlName="validto">
+                  </mat-date-range-input>
+                  <mat-datepicker-toggle matIconSuffix [for]="validDates"></mat-datepicker-toggle>
+                  <mat-date-range-picker #validDates></mat-date-range-picker>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Select Sales Dates</mat-label>
+                  <mat-date-range-input
+                    [min]="minSaleDate"
+                    [max]="maxSaleDate"
+                    [rangePicker]="salesDates">">
+                    <input matStartDate placeholder="Sales From" formControlName="salesfrom">
+                    <input matEndDate placeholder="Sales To" formControlName="salesto">
+                  </mat-date-range-input>
+                  <mat-datepicker-toggle matIconSuffix [for]="salesDates"></mat-datepicker-toggle>
+                  <mat-date-range-picker #salesDates></mat-date-range-picker>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Enter the Max Guest Capacity</mat-label>
+                  <input matInput formControlName="maxpaxcount">
+                  <mat-icon matIconSuffix>person</mat-icon>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Select a Tour Type</mat-label>
+                  <input type="text"
+                         matInput
+                         formControlName="tourtype"
+                         [matAutocomplete]="tourTypeAuto">
+                  <mat-autocomplete autoActiveFirstOption #tourTypeAuto="matAutocomplete"
+                                    [displayWith]="displayTourTypeName">
+                    @for (tourType of filteredTourTypes | async; track tourType.id) {
+                      <mat-option [value]="tourType">{{ tourType.name }}</mat-option>
+                    }
+                  </mat-autocomplete>
+                  <mat-icon matIconSuffix>reorder</mat-icon>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Select a Category</mat-label>
+                  <mat-select formControlName="tourcategory">
+                    <mat-option [value]="null">Not Selected</mat-option>
+                    @for (tourCategory of tourCategories; track tourCategory.id) {
+                      <mat-option [value]="tourCategory">{{ tourCategory.name }}</mat-option>
+                    }
+                  </mat-select>
+                  <mat-icon matIconSuffix>reorder</mat-icon>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Select a Theme</mat-label>
+                  <mat-select formControlName="tourtheme">
+                    <mat-option [value]="null">Not Selected</mat-option>
+                    @for (tourTheme of tourThemes; track tourTheme.id) {
+                      <mat-option [value]="tourTheme">{{ tourTheme.name }}</mat-option>
+                    }
+                  </mat-select>
+                  <mat-icon matIconSuffix>reorder</mat-icon>
+                </mat-form-field>
+
+              </form>
+
+              <div class="stepper-button-container">
+                <div class="stepper-back-button-container">
+                  <button class="stepper-back-button" mat-icon-button type="button" (click)="stepper.previous()">
+                    <mat-icon>navigate_before</mat-icon>
+                  </button>
+                </div>
+                <div class="stepper-reset-button-container">
+                  <button class="stepper-reset-button" mat-icon-button type="reset" (click)="resetStepper()">
+                    <mat-icon>clear</mat-icon>
+                  </button>
+                </div>
+              </div>
+
+              <form [formGroup]="tourForm">
+                <div class="control-button-panel">
+                  <button class="control-add-btn" mat-raised-button (click)="save()"
+                          [disabled]="!(enableAdd && hasInsertAuthority)">Add
+                  </button>
+                  <button class="control-clear-btn" mat-raised-button (click)="clear()">Clear</button>
+                  <button class="control-update-btn" mat-raised-button (click)="update()"
+                          [disabled]="!(enableUpdate && hasUpdateAuthority)">Update
+                  </button>
+                  <button class="control-delete-btn" mat-raised-button
+                          [disabled]="!(enableDelete && hasDeleteAuthority)" (click)="delete()">Delete
+                  </button>
+                </div>
+              </form>
+
+            </mat-step>
+
+          </mat-stepper>
+
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+  }
+
+  @if (isEnableTourDetailView) {
+    <mat-grid-tile [colspan]="12" [rowspan]="10">
+      <mat-card>
+        <mat-card-content>
+          <app-tour-view></app-tour-view>
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+  }
+</mat-grid-list>
+
+
+<!--<div class="pax-type-column">-->
+<!--  <div class="pax-type-name">{{ paxType.name }}</div>-->
+
+<!--  <div class="pax-count-container">-->
+<!--    <mat-form-field appearance="outline">-->
+<!--      <mat-icon style="color: black" matIconPrefix class="count-button-decrement"-->
+<!--                [ngClass]="{'do-not' : getCount(paxType) === 0}"-->
+<!--                (click)="decrementCount(paxType)">remove-->
+<!--      </mat-icon>-->
+<!--      <input readonly matInput [value]="getCount(paxType)">-->
+<!--      <mat-icon style="color: black" matIconSuffix class="count-button-increment"-->
+<!--                (click)="incrementCount(paxType)">add-->
+<!--      </mat-icon>-->
+<!--    </mat-form-field>-->
+<!--  </div>-->
+<!--</div>-->

@@ -1,0 +1,63 @@
+<mat-card id="mainCard">
+  <div class="card-container" #detailContainer>
+
+    @if (showDisplayMessage) {
+      @if (isNoSelectedValue) {
+        <div class="default-view">
+          {{ messageToDisplay }}
+        </div>
+      }
+    }
+
+    @if (isSelectedValue) {
+      <mat-card id="imageCard" class="employee-profile-card">
+        <mat-card-content class="employee-profile-content">
+          @if (photo) {
+            <img [src]="photo" alt="Profile" class="profile-image">
+          }
+          <div class="employee-name" [ngClass]="photo ? 'adding-margin' : ''">{{ cardTitle }}</div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card id="empDetails">
+        <mat-card-content>
+          <div class="employee-info">
+            @for (item of info; track info) {
+              <div class="info-item">
+                <strong>{{ item.label }}:</strong>
+                <span [ngClass]="addStyleClass(item.value)" [ngStyle]="getStyle(item.value)">
+                  {{ item.value }}
+                </span>
+              </div>
+            }
+          </div>
+          <br>
+          @if (tableConfigs.length > 0) {
+            @for (tableConfig of tableConfigs; track $index) {
+              <div class="table-header">{{ tableConfig.title }}</div>
+              <mat-table [dataSource]="tableConfig.dataSource" class="mat-elevation-z8">
+                @for (column of tableConfig.columns; track $index; let i = $index) {
+                  <ng-container [matColumnDef]="column">
+                    <mat-header-cell *matHeaderCellDef> {{ tableConfig.headers[i] }}</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                      {{ getNestedValue(element, column) }}
+                    </mat-cell>
+                  </ng-container>
+                }
+                <mat-header-row *matHeaderRowDef="tableConfig.columns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: tableConfig.columns;"></mat-row>
+              </mat-table>
+              <br><br>
+            }
+          }
+        </mat-card-content>
+      </mat-card>
+
+      @if (isEnablePrint && isSelectedValue) {
+        <div class="print-btn-container">
+          <button mat-raised-button (click)="print()"><mat-icon>print</mat-icon>Print</button>
+        </div>
+      }
+    }
+  </div>
+</mat-card>

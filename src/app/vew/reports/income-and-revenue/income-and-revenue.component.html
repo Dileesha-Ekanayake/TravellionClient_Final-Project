@@ -1,0 +1,171 @@
+<mat-grid-list gutterSize="10px" [cols]="12" rowHeight="4rem">
+
+  <mat-grid-tile [colspan]="4" [rowspan]="2">
+    <mat-card>
+      <mat-card-content>
+        <div class="data-container">
+          <div class="header-container">
+            <div class="header-title">Total Bookings</div>
+            <div class="header-icon icon-1">
+              <mat-icon>
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                     fill="#FFFFFF">
+                  <path
+                    d="M438-226 296-368l58-58 84 84 168-168 58 58-226 226ZM200-80q-33 0-56.5-23.5T120-160v-560q0-33 23.5-56.5T200-800h40v-80h80v80h320v-80h80v80h40q33 0 56.5 23.5T840-720v560q0 33-23.5 56.5T760-80H200Zm0-80h560v-400H200v400Zm0-480h560v-80H200v80Zm0 0v-80 80Z"/>
+                </svg>
+              </mat-icon>
+            </div>
+          </div>
+          <div class="data-content">
+            <div class="data-item-value">{{ totalBookingCount }}</div>
+<!--            <div class="data-item-rate up-value">12.5% from last month</div>-->
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+
+  <mat-grid-tile [colspan]="4" [rowspan]="2">
+    <mat-card>
+      <mat-card-content>
+          <div class="data-container">
+            <div class="header-container">
+              <div class="header-title">Revenue</div>
+              <div class="header-icon icon-2">
+                <mat-icon>attach_money</mat-icon>
+              </div>
+            </div>
+            <div class="data-content">
+              <div class="data-item-value">{{ totalIncome | currency }}</div>
+<!--              <div class="data-item-rate up-value">8.3% from last month</div>-->
+            </div>
+          </div>
+      </mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+
+  <mat-grid-tile [colspan]="4" [rowspan]="3">
+    <mat-card style="border: unset">
+      <mat-card-content>
+        <div class="search-container">
+          <mat-card-content>
+            <form [formGroup]="searchForm">
+              <mat-form-field appearance="outline">
+                <mat-label>Select date / range</mat-label>
+                <mat-date-range-input
+                  [rangePicker]="searchDates">
+                  <input matStartDate placeholder="Start date" formControlName="startDate">
+                  <input matEndDate placeholder="End date" formControlName="endDate">
+                </mat-date-range-input>
+                <mat-datepicker-toggle matIconSuffix [for]="searchDates"></mat-datepicker-toggle>
+                <mat-date-range-picker #searchDates></mat-date-range-picker>
+              </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Type</mat-label>
+                  <mat-select formControlName="type">
+                    <mat-option value="null">No Selected</mat-option>
+                    @for (type of types; track $index) {
+                      <mat-option [value]="type">{{ type }}</mat-option>
+                    }
+                  </mat-select>
+<!--                  <mat-icon matIconSuffix>supervisor_account</mat-icon>-->
+                </mat-form-field>
+            </form>
+          </mat-card-content>
+          <button mat-raised-button color="primary" (click)="clear()">Clear</button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+
+  <mat-grid-tile [colspan]="12" [rowspan]="8">
+    <mat-card>
+      <mat-card-content>
+        <av-chart-js
+          [chartType]="'line'"
+          chartTitle="Income And Revenue"
+          [labels]="incomeAndRevenueLabels"
+          [datasets]="incomeAndRevenueDatasets"
+          [legend]="'top'"
+          [dualYAxis]="true"
+          [maintainAspectRatio]="false"
+          [show_print_button]="true"
+        >
+        </av-chart-js>
+      </mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+
+  <mat-grid-tile [colspan]="12" [rowspan]="10">
+    <mat-card>
+      <mat-card-content>
+        <div class="container">
+          <div class="header">
+            <h1>Income and Revenue Report</h1>
+          </div>
+
+          <div class="income-details">
+            <table class="income-table">
+              <thead>
+              <tr>
+                <th>Period</th>
+                <th>Total Bookings</th>
+                <th>Total Revenue</th>
+                <th>Accommodation Revenue</th>
+                <th>Transfer Revenue</th>
+                <th>Generic Revenue</th>
+                <th>Tour Revenue</th>
+              </tr>
+              </thead>
+              <tbody>
+                @for (income of incomeAndRevenueData; track $index) {
+                  <tr>
+                    <td class="month-year">{{ income.monthName }} {{ income.year }}</td>
+                    <td class="number">{{ income.totalBookings }}</td>
+                    <td class="currency">
+                      <div class="revenue-display">
+                        <div class="revenue-bar">
+                          <div class="revenue-fill"
+                               [style.width.%]="getRevenuePercentage(income.totalRevenue)"
+                               [style.background]="getRevenueGradient(income.totalRevenue)">
+                          </div>
+                        </div>
+                        {{ formatCurrency(income.totalRevenue) }}
+                      </div>
+                    </td>
+                    <td class="currency">{{ formatCurrency(income.accommodationRevenue) }}</td>
+                    <td class="currency">{{ formatCurrency(income.transferRevenue) }}</td>
+                    <td class="currency">{{ formatCurrency(income.genericRevenue) }}</td>
+                    <td class="currency">{{ formatCurrency(income.tourRevenue) }}</td>
+                  </tr>
+                }
+
+              <tr class="total-row">
+                <td class="month-year">Total</td>
+                <td class="number">{{ getTotalBookings() }}</td>
+                <td class="currency">
+                  <div class="revenue-display">
+                    <div class="revenue-bar">
+                      <div class="revenue-fill"
+                           style="width: 100%;"
+                           style="background: linear-gradient(90deg, #667eea, #764ba2);">
+                      </div>
+                    </div>
+                    {{ formatCurrency(getTotalRevenue()) }}
+                  </div>
+                </td>
+                <td class="currency">{{ formatCurrency(getTotalAccommodationRevenue()) }}</td>
+                <td class="currency">{{ formatCurrency(getTotalTransferRevenue()) }}</td>
+                <td class="currency">{{ formatCurrency(getTotalGenericRevenue()) }}</td>
+                <td class="currency">{{ formatCurrency(getTotalTourRevenue()) }}</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+
+</mat-grid-list>

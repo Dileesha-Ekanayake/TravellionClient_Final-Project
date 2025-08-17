@@ -1,0 +1,80 @@
+<mat-grid-list gutterSize="10px" [cols]="12" rowHeight="4rem">
+
+  <mat-grid-tile [colspan]="8" [rowspan]="2">
+    <mat-card>
+      <mat-card-content class="booking-progress-card">
+        <div class="booking-progress-container">
+          <div class="booking-progress-icon">
+            <mat-icon>
+              <svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px"
+                   fill="#1976D2A8">
+                <path
+                  d="M430-360q13 0 21.5-8.5T460-390v-10h40v10q0 13 8.5 21.5T530-360q13 0 21.5-8.5T560-390v-10q17 0 28.5-11.5T600-440v-160q0-17-11.5-28.5T560-640h-20v-40q0-17-11.5-28.5T500-720h-40q-17 0-28.5 11.5T420-680v40h-20q-17 0-28.5 11.5T360-600v160q0 17 11.5 28.5T400-400v10q0 13 8.5 21.5T430-360Zm30-280v-40h40v40h-40ZM200-120v-640q0-33 23.5-56.5T280-840h400q33 0 56.5 23.5T760-760v640L480-240 200-120Zm80-122 200-86 200 86v-518H280v518Zm0-518h400-400Z"/>
+              </svg>
+            </mat-icon>
+          </div>
+          <div class="booking-progress-header">
+            <div class="booking-progress-header">Total Bookings</div>
+            <div class="booking-progress-value">{{ totalBookingCount }}</div>
+          </div>
+          <div class="booking-progress-bar-container">
+            <div class="booking-progress-bar">
+              <div class="bar-fill bar-done-fill" [ngStyle]="{ width: donePercent + '%' }"></div>
+              <div class="bar-fill bar-booked-fill" [ngStyle]="{ width: confirmPercent + '%' }"></div>
+              <div class="bar-fill bar-confirmed-fill" [ngStyle]="{ width: partiallyConfirmedPercent + '%' }"></div>
+            </div>
+            <div class="booking-progress-bar-value">
+              <div class="bar-segment bar-done">Done {{ doneBookingCount }}</div>
+              <div class="bar-segment bar-booked">Booked {{ confirmedBookingCount }}</div>
+              <div class="bar-segment bar-confirmed">Confirmed {{ partiallyConfirmedBookingCount }}</div>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+
+  <mat-grid-tile [colspan]="4" [rowspan]="2">
+    <mat-card style="border: unset">
+      <div class="search-container">
+        <mat-card-content>
+          <form [formGroup]="searchForm">
+            <mat-form-field appearance="outline">
+              <mat-label>Select date / range</mat-label>
+              <mat-date-range-input
+                [rangePicker]="searchDates">
+                <input matStartDate placeholder="Start date" formControlName="startDate">
+                <input matEndDate placeholder="End date" formControlName="endDate">
+              </mat-date-range-input>
+              <mat-datepicker-toggle matIconSuffix [for]="searchDates"></mat-datepicker-toggle>
+              <mat-date-range-picker #searchDates></mat-date-range-picker>
+            </mat-form-field>
+          </form>
+        </mat-card-content>
+        <button mat-raised-button color="primary" (click)="clear()">Clear</button>
+      </div>
+    </mat-card>
+  </mat-grid-tile>
+
+  <mat-grid-tile [colspan]="12" [rowspan]="8">
+    <mat-card>
+      <mat-card-content>
+        <av-chart-js
+          [chartType]="'bar'"
+          chartTitle="Booking Trend"
+          [labels]="monthLabels"
+          [datasets]="monthlyBookingTrendDataSet"
+          [legend]="'top'"
+          [X_Axis_title]="['Month', 12]"
+          [Y_Axis_title]="['Count', 12]"
+          [maintainAspectRatio]="false"
+          [toolTipOptions]="tooltipConfig"
+          [show_print_button]="true"
+          [beginAtZero]="true"
+        >
+        </av-chart-js>
+      </mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+
+</mat-grid-list>

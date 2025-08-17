@@ -1,0 +1,15 @@
+<mat-card>
+  <mat-card-title>{{ data.heading }}</mat-card-title>
+  <mat-card-content [ngClass]="{'single-message' : lines.length === 1}">
+    <p>{{ lines[0] }}</p>
+    @for (line of lines.slice(1); track lines) {
+      <ng-container>
+        <li>{{ line }}</li>
+      </ng-container>
+    }
+  </mat-card-content>
+  <mat-dialog-actions>
+    <button mat-raised-button (click)="onNoClick()">{{ NoButtonText }}</button>
+    <button mat-raised-button color="primary" (click)="onYesClick()">{{ YesButtonText }}</button>
+  </mat-dialog-actions>
+</mat-card>

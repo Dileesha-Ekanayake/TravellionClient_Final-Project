@@ -1,0 +1,146 @@
+<mat-grid-list gutterSize="10px" [cols]="12" rowHeight="4rem">
+
+  <mat-grid-tile [colspan]="4" [rowspan]="2">
+    <mat-card>
+      <mat-card-content>
+        <div class="data-container">
+          <div class="header-container">
+            <div class="header-title">Total Passenger</div>
+            <div class="header-icon icon-1">
+              <mat-icon>
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                     fill="#FFFFFF">
+                  <path
+                    d="M0-240v-63q0-43 44-70t116-27q13 0 25 .5t23 2.5q-14 21-21 44t-7 48v65H0Zm240 0v-65q0-32 17.5-58.5T307-410q32-20 76.5-30t96.5-10q53 0 97.5 10t76.5 30q32 20 49 46.5t17 58.5v65H240Zm540 0v-65q0-26-6.5-49T754-397q11-2 22.5-2.5t23.5-.5q72 0 116 26.5t44 70.5v63H780Zm-455-80h311q-10-20-55.5-35T480-370q-55 0-100.5 15T325-320ZM160-440q-33 0-56.5-23.5T80-520q0-34 23.5-57t56.5-23q34 0 57 23t23 57q0 33-23 56.5T160-440Zm640 0q-33 0-56.5-23.5T720-520q0-34 23.5-57t56.5-23q34 0 57 23t23 57q0 33-23 56.5T800-440Zm-320-40q-50 0-85-35t-35-85q0-51 35-85.5t85-34.5q51 0 85.5 34.5T600-600q0 50-34.5 85T480-480Zm0-80q17 0 28.5-11.5T520-600q0-17-11.5-28.5T480-640q-17 0-28.5 11.5T440-600q0 17 11.5 28.5T480-560Zm1 240Zm-1-280Z"/>
+                </svg>
+              </mat-icon>
+            </div>
+          </div>
+          <div class="data-content">
+            <div class="data-item-value">{{ totalTourBookingCount }}</div>
+<!--            <div class="data-item-rate down-value">8.3% from last month</div>-->
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+
+  <mat-grid-tile [colspan]="4" [rowspan]="2">
+    <mat-card>
+      <mat-card-content>
+        <div class="data-container">
+          <div class="header-container">
+            <div class="header-title">Average Utilization</div>
+            <div class="header-icon icon-4">
+              <mat-icon>
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                     fill="#FFFFFF">
+                  <path
+                    d="M203-480h117q11 0 21 5.5t15 16.5l44 88 124-248q11-23 36-23t36 23l69 138h92q-15-102-93-171t-184-69q-106 0-184 69t-93 171Zm277 320q106 0 184-69t93-171H640q-11 0-21-5.5T604-422l-44-88-124 248q-11 23-36 23t-36-23l-69-138h-92q15 102 93 171t184 69Zm0 80q-74 0-139.5-28.5T226-186q-49-49-77.5-114.5T120-440h80q0 116 82 198t198 82q116 0 198-82t82-198h80q0 74-28.5 139.5T734-186q-49 49-114.5 77.5T480-80ZM120-440q0-74 28.5-139.5T226-694q49-49 114.5-77.5T480-800q62 0 119 20t107 58l56-56 56 56-56 56q38 50 58 107t20 119h-80q0-116-82-198t-198-82q-116 0-198 82t-82 198h-80Zm240-400v-80h240v80H360Zm120 680q-116 0-198-82t-82-198q0-116 82-198t198-82q116 0 198 82t82 198q0 116-82 198t-198 82Zm0-280Z"/>
+                </svg>
+              </mat-icon>
+            </div>
+          </div>
+          <div class="data-content">
+            <div class="data-item-value">{{ averageTourUtilization | percent }}</div>
+<!--            <div class="data-item-rate up-value">8.3% from last month</div>-->
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+
+  <mat-grid-tile [colspan]="4" [rowspan]="2">
+    <mat-card style="border: unset">
+      <mat-card-content>
+        <div class="search-container">
+          <mat-card-content>
+            <form [formGroup]="searchForm">
+              <mat-form-field appearance="outline">
+                <mat-label>Select date / range</mat-label>
+                <mat-date-range-input
+                  [rangePicker]="searchDates">
+                  <input matStartDate placeholder="Start date" formControlName="startDate">
+                  <input matEndDate placeholder="End date" formControlName="endDate">
+                </mat-date-range-input>
+                <mat-datepicker-toggle matIconSuffix [for]="searchDates"></mat-datepicker-toggle>
+                <mat-date-range-picker #searchDates></mat-date-range-picker>
+              </mat-form-field>
+            </form>
+          </mat-card-content>
+          <button mat-raised-button color="primary" (click)="clear()">Clear</button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+
+  <mat-grid-tile [colspan]="12" [rowspan]="8">
+    <mat-card>
+      <mat-card-content>
+        <av-chart-js
+          [chartType]="'bar'"
+          chartTitle="Tour Occupancy vs Capacity"
+          [show_print_button]="true"
+          [labels]="tourOccupancyTourNameLabels"
+          [datasets]="tourOccupancyDataSet"
+          [X_Axis_title]="['Tour Name', 12]"
+          [Y_Axis_title]="['Tour Utilization', 12]"
+          [legend]="'top'"
+          [borderRadius]="6"
+          [responsive]="true"
+          [toolTipOptions]="tooltipConfig"
+        >
+        </av-chart-js>
+      </mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+
+  <mat-grid-tile [colspan]="12" [rowspan]="10">
+    <mat-card>
+      <mat-card-content>
+        <div class="tour-details">
+          <table class="tour-table">
+            <thead>
+            <tr>
+              <th>Tour Name</th>
+              <th>Date</th>
+              <th>Passengers</th>
+              <th>Capacity</th>
+              <th>Utilization</th>
+              <th>Status</th>
+            </tr>
+            </thead>
+            <tbody>
+              @for (tour of tourOccupancySummaryData; track $index) {
+                <tr>
+                  <td>{{ tour.tourName }}</td>
+                  <td>{{ formatDate(tour.year, tour.month) }}</td>
+                  <td>{{ tour.totalBookingPassengerCount }}</td>
+                  <td>{{ tour.maxpaxcount }}</td>
+                  <td>
+                    <div style="display: flex; align-items: center;">
+                      <div class="utilization-bar" style="width: 80px;">
+                        <div class="utilization-fill"
+                             [style.width.%]="tour.utilizationRate"
+                             [style.background]="getUtilizationGradient(tour.utilizationRate)">
+                        </div>
+                      </div>
+                      <span class="utilization-text">{{ tour.utilizationRate }}%</span>
+                    </div>
+                  </td>
+                  <td>
+            <span [style.color]="getUtilizationColor(tour.utilizationRate)"
+                  style="font-weight: bold;">
+              {{ getUtilizationStatus(tour.utilizationRate) }}
+            </span>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+
+</mat-grid-list>

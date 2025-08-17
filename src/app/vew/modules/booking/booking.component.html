@@ -1,0 +1,3510 @@
+<mat-grid-list gutterSize="5px" [cols]="12" rowHeight="4rem">
+
+  <mat-grid-tile [colspan]="12" [rowspan]="1">
+    <mat-card class="breadCrumbCard">
+      <mat-card-content [innerHTML]="breadcrumb"></mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+
+
+  <!--================================================================================================-->
+  @if (isEnableMainView) {
+    <mat-grid-tile [colspan]="12" [rowspan]="9">
+      <mat-card class="itinerary-section">
+        <mat-card-header>
+          <mat-card-title class="title">Trip Itinerary</mat-card-title>
+          <button mat-raised-button class="back-button" (click)="setDisplayView('bookingDetailView')">
+            <mat-icon>event</mat-icon>Bookings
+          </button>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="itinerary-container-title">
+            <div class="container-title">Start planning tour itinerary</div>
+            <div class="container-sub-title">
+              Sart from any component listed below and make pre plan tour itinerary from scratch.
+            </div>
+          </div>
+          <ng-container *ngTemplateOutlet="sharedItinerarySelection"></ng-container>
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+  }
+
+
+
+
+
+
+
+  <!--===================================================================================================-->
+  @if (isEnableClientSelectionView) {
+    <mat-grid-tile [colspan]="12" rowspan="9">
+      <ng-container *ngTemplateOutlet="sharedClientSelection"></ng-container>
+    </mat-grid-tile>
+  }
+
+
+
+
+
+
+
+  <!--=====================================Accommodation View=============================================-->
+  @if (isEnableAccommodationView) {
+    <mat-grid-tile [colspan]="8" [rowspan]="9">
+      <mat-card>
+        <mat-card-header class="card-section-header">
+          <mat-card-title class="title">Booking a Accommodation</mat-card-title>
+          <button mat-raised-button class="back-button" (click)="goBack()">
+            <mat-icon>arrow_back</mat-icon>
+            Go Back
+          </button>
+        </mat-card-header>
+        <mat-card-content>
+          <mat-stepper orientation="horizontal" [linear]="true" #accommodationStepper (selectionChange)="onStepChange($event, accommodationStepper)">
+
+            <mat-step>
+              <ng-template matStepLabel>
+                <div class="step-label">
+                  <span>Search</span>
+                </div>
+              </ng-template>
+              <!-- Search Section -->
+              <div class="search-section">
+                <!-- Left Column - Name, Location, Dates, and guests -->
+                <div class="search-column left-column">
+                  <form [formGroup]="accommodationSearchFrom" class="accommodationSearchForm">
+                    <mat-form-field appearance="outline" class="location-field">
+                      <mat-label>Hotel</mat-label>
+                      <input matInput placeholder="Name" formControlName="name">
+                      <mat-icon matSuffix style="color: unset !important;">reorder</mat-icon>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="location-field">
+                      <mat-label>Location</mat-label>
+                      <input matInput placeholder="City, region or specific hotel" formControlName="location">
+                      <mat-icon matSuffix style="color: unset !important;">location_on</mat-icon>
+                    </mat-form-field>
+
+                    <div class="date-fields">
+                      <mat-form-field appearance="outline">
+                        <mat-label>Check-in & Check-out</mat-label>
+                        <mat-date-range-input
+                          [rangePicker]="checkIn_checkOutDates"
+                          [dateFilter]="pastDateFilter"
+                        >
+                          <input matStartDate placeholder="MM/DD/YYYY" formControlName="checkInDate">
+                          <input matEndDate placeholder="MM/DD/YYYY" formControlName="checkOutDate">
+                        </mat-date-range-input>
+                        <mat-datepicker-toggle matIconSuffix [for]="checkIn_checkOutDates"></mat-datepicker-toggle>
+                        <mat-date-range-picker #checkIn_checkOutDates></mat-date-range-picker>
+                      </mat-form-field>
+                    </div>
+                  </form>
+                </div>
+
+                <!-- Right Column - Room Types -->
+                <div class="search-column right-column">
+                  <div class="room-types">
+                    <h4>Room Type</h4>
+                    <div class="room-options">
+                      @for (roomType of roomTypes; track roomType.id) {
+                        <mat-checkbox
+                          [checked]="isRoomTypeSelected(roomType)"
+                          (change)="toggleRoomTypeSelection(roomType)">
+                          {{ roomType.name }}
+                        </mat-checkbox>
+                      }
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Search Button Container -->
+              <div class="button-container">
+                <button mat-raised-button color="primary" class="search-button"
+                        (click)="searchAccommodation()">
+                  <mat-icon>search</mat-icon>
+                  Search
+                </button>
+                <button mat-stroked-button color="primary" class="clear-button"
+                        (click)="clearAccommodationSearch()">
+                  <mat-icon>clear</mat-icon>
+                  Clear
+                </button>
+                <div class="stepper-next-button-container">
+                  <button class="stepper-next-button" mat-icon-button type="submit"
+                          (click)="accommodationStepper.next()">
+                    <mat-icon>navigate_next</mat-icon>
+                  </button>
+                </div>
+              </div>
+
+              <div class="search-results-container">
+
+                <div class="search-results-header">
+                  <div class="result-header">
+                    Accommodations
+                  </div>
+                  <div class="loading">
+                    <img [src]="accommodationLoadingImageURL" alt="loading-gif">
+                  </div>
+                  <div class="result-count">
+                    Match found : {{ searchedAccommodations.length }}
+                  </div>
+                </div>
+
+                @if (searchedAccommodations.length > 0) {
+                  <div class="searched-accomm-container">
+                    <mat-accordion>
+                      @for (accommodation of searchedAccommodations; track accommodation.id) {
+                        <mat-expansion-panel class="search-result-panel">
+                          <mat-expansion-panel-header>
+                            <mat-panel-title>
+                              {{ accommodation.name }}
+                            </mat-panel-title>
+                            <mat-panel-description>
+                              <div class="location-container">
+                                {{ accommodation.location }}
+                                <mat-icon>location_on</mat-icon>
+                              </div>
+                            </mat-panel-description>
+                          </mat-expansion-panel-header>
+
+                          <!-- Expanded content -->
+                          <div class="accommodation-details">
+                            <!-- Key information section -->
+                            <div class="info-section">
+                              <div class="info-header">
+                                <mat-icon>info</mat-icon>
+                                <h3>Key Information</h3>
+                              </div>
+                              <div class="info-grid">
+                                <div class="info-item">
+                                  <span class="info-label">Reference</span>
+                                  <span class="info-value">{{ accommodation.reference || 'N/A' }}</span>
+                                </div>
+                                <div class="info-item">
+                                  <span class="info-label">Resident Type</span>
+                                  <span class="info-value">{{ accommodation.residenttype?.name || 'N/A' }}</span>
+                                </div>
+                                <div class="info-item">
+                                  <span class="info-label">Currency</span>
+                                  <span class="info-value">{{ accommodation.currency?.name || 'N/A' }}</span>
+                                </div>
+                                <div class="info-item">
+                                  <span class="info-label">Status</span>
+                                  <span class="info-value"
+                                        [ngClass]="{'status-active': accommodation.accommodationstatus?.name === 'Active'}">
+                                    {{ accommodation.accommodationstatus?.name || 'N/A' }}
+                              </span>
+                                </div>
+                              </div>
+                            </div>
+
+                            <!-- Validity section -->
+                            <div class="info-section">
+                              <div class="info-header">
+                                <mat-icon>date_range</mat-icon>
+                                <h3>Validity</h3>
+                              </div>
+                              <div class="validity-container">
+                                <div class="validity-item">
+                                  <div class="validity-period">
+                                    <div class="validity-label">Offer Valid</div>
+                                    <div class="date-range">
+                                      <mat-icon>event</mat-icon>
+                                      <span>{{ accommodation.validfrom }}
+                                        - {{ accommodation.validto }}</span>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="validity-item">
+                                  <div class="validity-period">
+                                    <div class="validity-label">Sales Period</div>
+                                    <div class="date-range">
+                                      <mat-icon>shopping_cart</mat-icon>
+                                      <span>{{ accommodation.salesfrom }}
+                                        - {{ accommodation.salesto }}</span>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            <!-- Rooms section -->
+                            @if (accommodation.accommodationrooms && accommodation.accommodationrooms.length > 0) {
+                              <div class="info-section">
+                                <div class="info-header">
+                                  <mat-icon>hotel</mat-icon>
+                                  <h3>Room Options</h3>
+                                </div>
+                                <div class="rooms-container">
+                                  @for (room of accommodation.accommodationrooms; track room.id) {
+                                    <div class="room-card">
+                                      <div class="room-header">
+                                        <h3 class="room-title">{{ room.roomtype?.name || 'Standard Room' }}</h3>
+                                      </div>
+
+                                      <div class="room-details">
+                                        <!-- Room Capacity Section -->
+                                        <div class="room-info-row">
+                                          <div class="room-amenities">
+                                            <mat-icon>people</mat-icon>
+                                            <span>Room Capacity: {{ room.rooms || 'N/A' }}</span>
+                                          </div>
+                                          <div class="price-label">
+                                            <span class="price-type">per night</span>
+                                          </div>
+                                        </div>
+
+                                        <!-- Guest Capacity Section -->
+                                        <div class="info-section">
+                                          <div class="section-header">
+                                            <span>Guest Capacity</span>
+                                          </div>
+                                          <div class="section-content capacity-content">
+                                            {{ getRoomGuestCapacity(room) }}
+                                          </div>
+                                        </div>
+
+                                        <!-- Guest Prices Section -->
+                                        <div class="info-section">
+                                          <div class="section-header">
+                                            <span>Guest Prices</span>
+                                            @if (currencyTypeSymbolMap[getCurrencyCode(accommodation.currency.name)]; as iconName) {
+                                              @if (iconName !== 'lkr') {
+                                                <mat-icon>{{ iconName }}</mat-icon>
+                                              }
+                                              @if (iconName === 'lkr') {
+                                                <mat-icon svgIcon="lkr"></mat-icon>
+                                              }
+                                            }
+                                          </div>
+                                          <div class="section-content price-content">
+                                            {{ calculateAndGetRoomPriceWithFixedMarkup(accommodation, room) }}
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  }
+                                </div>
+                              </div>
+                            }
+
+                            <!-- Cancellation Policy -->
+                            @if (accommodation.accommodationcncelationcharges && accommodation.accommodationcncelationcharges.length > 0) {
+                              <div class="info-section">
+                                <div class="info-header">
+                                  <mat-icon>announcement</mat-icon>
+                                  <h3>Cancellation Policy</h3>
+                                </div>
+                                <div class="cancellation-container">
+                                  @for (charge of accommodation.accommodationcncelationcharges; track charge.id) {
+                                    <div class="cancellation-item">
+                                      <div class="days">{{ charge.cancellationscheme.name }}</div>
+                                      <div class="charge">{{ charge.amount }}</div>
+                                    </div>
+                                  }
+                                </div>
+                              </div>
+                            }
+
+                            <!-- Action buttons -->
+                            <div class="action-buttons">
+                              <button class="add-itinerary-button" mat-raised-button color="primary" (click)="selectAccommodation(accommodation)">
+                                <mat-icon>add_circle</mat-icon>
+                                Add to Itinerary
+                              </button>
+                              <button class="view-itinerary-button" mat-stroked-button (click)="viewDetails(accommodation)">
+                                <mat-icon style="color: #38404f !important;">visibility</mat-icon>
+                                View Full Details
+                              </button>
+                            </div>
+                          </div>
+                        </mat-expansion-panel>
+                      }
+                    </mat-accordion>
+                  </div>
+                }
+              </div>
+            </mat-step>
+
+            @if (!isEnableBookingDataModify) {
+              <mat-step>
+              <ng-template matStepLabel>
+                <div class="step-label">
+                  <span>Passengers</span>
+                </div>
+              </ng-template>
+
+              <ng-container *ngTemplateOutlet="sharedPassengerForm"></ng-container>
+
+              <div class="stepper-button-container">
+                <div class="stepper-back-button-container">
+                  <button class="stepper-back-button" mat-icon-button type="button"
+                          (click)="accommodationStepper.previous()">
+                    <mat-icon>navigate_before</mat-icon>
+                  </button>
+                </div>
+                <div class="stepper-next-button-container">
+                  <button class="stepper-next-button" mat-icon-button type="submit"
+                          (click)="accommodationStepper.next()">
+                    <mat-icon>navigate_next</mat-icon>
+                  </button>
+                </div>
+              </div>
+            </mat-step>
+            }
+
+            <mat-step>
+              <ng-template matStepLabel>
+                <div class="step-label">
+                  <span>Rooms</span>
+                </div>
+              </ng-template>
+
+              <div class="guest-selection-container">
+                <div class="room-selection-card">
+                  <div class="room-selection-header">
+                    <h3>Room Selection</h3>
+                  </div>
+
+                  <div class="room-list">
+                    @for (roomType of selectedAccommodationRoomTypes; track roomType.id) {
+                      <div class="room-item">
+                        <div class="room-info">
+                          <div class="room-name">{{ roomType.name }}</div>
+                        </div>
+                        <button mat-raised-button color="primary" class="configure-btn"
+                                [ngClass]="{'sold-out-btn': checkIsRoomSoldOut(roomType)}"
+                                [disabled]="checkIsRoomSoldOut(roomType)"
+                                (click)="openConfigureModal(roomType)">
+                          {{ checkIsRoomSoldOut(roomType) ? 'Sold Out' : 'Configure' }}
+                        </button>
+                      </div>
+                    }
+                  </div>
+                </div>
+              </div>
+
+              <!-- Modal/Dialog Template -->
+              <ng-template #configureModal>
+                <div class="modal-header">
+                  <h2 mat-dialog-title>{{ selectedRoom?.name }}</h2>
+                  <div class="count-container">
+                    <mat-form-field appearance="outline" class="count-field">
+                      <mat-icon matIconPrefix class="count-button-decrement"
+                                (click)="selectedRoom && decrementRoomCount(selectedRoom)">
+                        remove
+                      </mat-icon>
+                      <input readonly matInput class="count-input"
+                             [value]="selectedRoom ? getRoomCount(selectedRoom) : 0">
+                      <mat-icon
+                        matIconSuffix
+                        class="count-button-increment"
+                        [ngClass]="{'disabled': checkIsRoomAvailable(selectedRoom)}"
+                        (click)="selectedRoom && incrementRoomCount(selectedRoom)">
+                        add
+                      </mat-icon>
+                    </mat-form-field>
+                  </div>
+                </div>
+
+                <mat-dialog-content class="modal-content">
+                  <div class="guest-types-grid">
+                    @for (guestType of selectedAccommodationRoomPaxTypes; track guestType.id) {
+                      <div class="guest-type-row">
+                        <div class="guest-type-info">
+                          <div class="guest-type-name">{{ guestType.name }}</div>
+                        </div>
+                        <div class="count-container">
+                          <mat-form-field appearance="outline" class="count-field">
+                            <mat-icon matIconPrefix class="count-button-decrement"
+                                      (click)="selectedRoom && decrementGuest(selectedRoom, guestType)">
+                              remove
+                            </mat-icon>
+                            <input readonly matInput class="count-input"
+                                   [value]="selectedRoom ? getGuestCount(selectedRoom, guestType) : 0">
+                            <mat-icon matIconSuffix class="count-button-increment"
+                                      [ngClass]="{'do-not' : getRoomCount(selectedRoom) === 0}"
+                                      (click)="getRoomCount(selectedRoom) > 0 && incrementGuest(selectedRoom, guestType)">
+                              add
+                            </mat-icon>
+                          </mat-form-field>
+                        </div>
+                      </div>
+                    }
+                  </div>
+                </mat-dialog-content>
+
+                <mat-dialog-actions class="modal-actions">
+                  <button mat-button mat-dialog-close>Cancel</button>
+                  <button mat-raised-button color="primary" (click)="saveConfiguration()">
+                    Save Configuration
+                  </button>
+                </mat-dialog-actions>
+              </ng-template>
+
+              <div class="stepper-button-container">
+                <div class="stepper-back-button-container">
+                  <button class="stepper-back-button" mat-icon-button type="button"
+                          (click)="accommodationStepper.previous()">
+                    <mat-icon>navigate_before</mat-icon>
+                  </button>
+                </div>
+                <div class="stepper-next-button-container">
+                  <button class="stepper-next-button" mat-icon-button type="submit"
+                          (click)="accommodationStepper.next()">
+                    <mat-icon>navigate_next</mat-icon>
+                  </button>
+                </div>
+              </div>
+            </mat-step>
+
+            <mat-step>
+              <ng-template matStepLabel>
+                <div class="step-label">
+                  <span>Accommodation</span>
+                </div>
+              </ng-template>
+
+              <div class="booking-accommodation-form">
+
+                <form [formGroup]="bookingAccommodationForm">
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Select a Discount scheme</mat-label>
+                    <mat-select formControlName="discountamount">
+                      <mat-option [value]="null">Not selected</mat-option>
+                      @for (discount of selectedAccommodation?.accommodationdiscounts; track discount.id) {
+                        <mat-option [value]="discount.amount">{{ discount.accommodationdiscounttype.name + " - " + discount.amount }}</mat-option>
+                      }
+                    </mat-select>
+                    <mat-icon matIconSuffix>percent</mat-icon>
+                  </mat-form-field>
+
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Total Amount</mat-label>
+                    <input matInput formControlName="totalamount">
+                    <mat-icon matIconSuffix>payments</mat-icon>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Supplier Amount</mat-label>
+                    <input matInput formControlName="supplieramount">
+                    <mat-icon matIconSuffix>payments</mat-icon>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Select From, To Dates</mat-label>
+                    <mat-date-range-input
+                      [rangePicker]="FromAndToDatePicker"
+                      [dateFilter]="pastDateFilter"
+                    >
+                      <input matStartDate placeholder="Departure Date" formControlName="fromdatetime">
+                      <input matEndDate placeholder="End Date" formControlName="todatetime">
+                    </mat-date-range-input>
+                    <mat-datepicker-toggle matIconSuffix [for]="FromAndToDatePicker"></mat-datepicker-toggle>
+                    <mat-date-range-picker #FromAndToDatePicker></mat-date-range-picker>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Select a Booking Item Status</mat-label>
+                    <mat-select formControlName="bookingitemstatus">
+                      <mat-option [value]="null">Not selected</mat-option>
+                      @for (bookingItemStatus of bookingItemStatuses; track bookingItemStatus.id) {
+                        <mat-option [value]="bookingItemStatus">{{ bookingItemStatus.name }}</mat-option>
+                      }
+                    </mat-select>
+                    <mat-icon matIconSuffix>inventory_2</mat-icon>
+                  </mat-form-field>
+
+                </form>
+
+                <div class="save-itinerary-button">
+                  <button mat-raised-button color="primary" class="done-button" (click)="addBookedAccommodationToBooking()">
+                   <mat-icon matIconPrefix>save</mat-icon> Save
+                  </button>
+                </div>
+
+              </div>
+
+              <div class="stepper-button-container">
+                <div class="stepper-back-button-container">
+                  <button class="stepper-back-button" mat-icon-button type="button"
+                          (click)="accommodationStepper.previous()">
+                    <mat-icon>navigate_before</mat-icon>
+                  </button>
+                </div>
+                <div class="stepper-next-button-container">
+                  <button class="stepper-next-button" mat-icon-button type="submit"
+                          (click)="accommodationStepper.next()">
+                    <mat-icon>navigate_next</mat-icon>
+                  </button>
+                </div>
+              </div>
+            </mat-step>
+
+            <mat-step>
+              <ng-template matStepLabel>
+                <div class="step-label">
+                  <span>Itineraries</span>
+                </div>
+              </ng-template>
+
+              <div class="additional-itinerary-container">
+                <div class="additional-itinerary-header">
+                  Refine your selected items
+                </div>
+                <ng-container *ngTemplateOutlet="sharedItinerarySelection"></ng-container>
+              </div>
+
+              <ng-container *ngTemplateOutlet="sharedBookingItems"></ng-container>
+
+              <div class="stepper-button-container">
+                <div class="stepper-back-button-container">
+                  <button class="stepper-back-button" mat-icon-button type="button"
+                          (click)="accommodationStepper.previous()">
+                    <mat-icon>navigate_before</mat-icon>
+                  </button>
+                </div>
+                <div class="stepper-next-button-container">
+                  <button class="stepper-next-button" mat-icon-button type="submit"
+                          (click)="accommodationStepper.next()">
+                    <mat-icon>navigate_next</mat-icon>
+                  </button>
+                </div>
+              </div>
+            </mat-step>
+
+            <mat-step>
+              <ng-template matStepLabel>
+                <div class="step-label">
+                  <span>Finished</span>
+                </div>
+              </ng-template>
+
+              <ng-container *ngTemplateOutlet="sharedBookingForm"></ng-container>
+
+              <div class="stepper-button-container">
+                <div class="stepper-back-button-container">
+                  <button class="stepper-back-button" mat-icon-button type="button" (click)="accommodationStepper.previous()">
+                    <mat-icon>navigate_before</mat-icon>
+                  </button>
+                </div>
+                <div class="stepper-reset-button-container">
+                  <button class="stepper-reset-button" mat-icon-button type="reset">
+                    <mat-icon>clear</mat-icon>
+                  </button>
+                </div>
+              </div>
+            </mat-step>
+
+          </mat-stepper>
+
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+  }
+
+
+
+
+
+
+
+
+  <!--=====================================Transfer View=============================================-->
+  @if (isEnableTransferView) {
+    <mat-grid-tile [colspan]="8" [rowspan]="9">
+      <mat-card>
+        <mat-card-header class="card-section-header">
+          <mat-card-title class="title">Booking a Transfer</mat-card-title>
+          <button mat-raised-button class="back-button" (click)="goBack()">
+            <mat-icon>arrow_back</mat-icon>
+            Go Back
+          </button>
+        </mat-card-header>
+        <mat-card-content>
+          <mat-stepper orientation="horizontal" [linear]="true" #transferStepper (selectionChange)="onStepChange($event, transferStepper)">
+
+            <mat-step>
+              <ng-template matStepLabel>
+                <div class="step-label">
+                  <span>Search</span>
+                </div>
+              </ng-template>
+              <!-- Search Section -->
+              <div class="transfer-search-section">
+
+                <div class="transfer-type">
+                  <div class="transfer-option" [ngClass]="{selected : selectedTransferType === 'Oneway'}" (click)="setSelectTransferType('Oneway')">
+                    <h3>One Way</h3>
+                    <p>Single journey</p>
+                  </div>
+                  <div class="transfer-option" [ngClass]="{selected : selectedTransferType === 'Return'}" (click)="setSelectTransferType('Return')">
+                    <h3>Round Trip</h3>
+                    <p>Return journey</p>
+                  </div>
+                </div>
+
+                <div class="transfer-search-form-container">
+
+                  <form [formGroup]="transferSearchFrom">
+
+                    <mat-form-field appearance="outline">
+                      <mat-label>Pickup Location</mat-label>
+                      <input matInput placeholder="Enter Pickup Location" formControlName="pickuplocation">
+                      <mat-icon matIconSuffix>location_on</mat-icon>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline">
+                      <mat-label>Drop-off Location</mat-label>
+                      <input matInput placeholder="Enter Drop-off Location" formControlName="droplocation">
+                      <mat-icon matIconSuffix>location_on</mat-icon>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline">
+                      <mat-label>Select Pickup, Drop-off Dates</mat-label>
+                      <mat-date-range-input
+                        [rangePicker]="searchDates"
+                        [dateFilter]="pastDateFilter"
+                      >
+                        <input matStartDate placeholder="Pickup date" formControlName="pickupDate">
+                        <input matEndDate placeholder="Drop-off date" formControlName="dropDate">
+                      </mat-date-range-input>
+                      <mat-datepicker-toggle matIconSuffix [for]="searchDates"></mat-datepicker-toggle>
+                      <mat-date-range-picker #searchDates></mat-date-range-picker>
+                    </mat-form-field>
+
+<!--                    <div class="search-pax-type-container">-->
+<!--                      <mat-form-field appearance="outline">-->
+<!--                        <input matInput readonly [(ngModel)]="displaySelectedTransferGuestInfor"-->
+<!--                               (click)="toggleDisplaySelectedTransferGuestInfor()"-->
+<!--                                formControlName="guestInfor">-->
+<!--                        <mat-icon matPrefix style="color: unset !important;">person</mat-icon>-->
+<!--                        <mat-icon matSuffix style="color: unset !important;">keyboard_arrow_down</mat-icon>-->
+<!--                      </mat-form-field>-->
+
+<!--                      @if (isDisplaySelectedTransferGuestInfor) {-->
+<!--                        <mat-card class="transfer-guest-info-card">-->
+<!--                          <mat-card-content>-->
+<!--                            <div class="guest-info-wrapper">-->
+<!--                              &lt;!&ndash; Adults Row &ndash;&gt;-->
+<!--                              <div class="guest-infor-container">-->
+<!--                                <div class="label">Adults</div>-->
+<!--                                <div class="count-container">-->
+<!--                                  <mat-form-field appearance="outline">-->
+<!--                                    <mat-icon-->
+<!--                                      [ngClass]="{'do-not': adults <= 1}"-->
+<!--                                      matIconPrefix-->
+<!--                                      class="count-button-decrement"-->
+<!--                                      (click)="onAdultsChange('-')">remove-->
+<!--                                    </mat-icon>-->
+<!--                                    <input readonly [value]="adults" matInput>-->
+<!--                                    <mat-icon-->
+<!--                                      matIconSuffix-->
+<!--                                      class="count-button-increment"-->
+<!--                                      (click)="onAdultsChange('+')">add-->
+<!--                                    </mat-icon>-->
+<!--                                  </mat-form-field>-->
+<!--                                </div>-->
+<!--                              </div>-->
+
+<!--                              &lt;!&ndash; Children Row &ndash;&gt;-->
+<!--                              <div class="guest-infor-container">-->
+<!--                                <div class="label">Children</div>-->
+<!--                                <div class="count-container">-->
+<!--                                  <mat-form-field appearance="outline">-->
+<!--                                    <mat-icon-->
+<!--                                      [ngClass]="{'do-not': children <= 0}"-->
+<!--                                      matIconPrefix-->
+<!--                                      class="count-button-decrement"-->
+<!--                                      (click)="onChildrenChange('-')">remove-->
+<!--                                    </mat-icon>-->
+<!--                                    <input readonly [value]="children" matInput>-->
+<!--                                    <mat-icon-->
+<!--                                      matIconSuffix-->
+<!--                                      class="count-button-increment"-->
+<!--                                      (click)="onChildrenChange('+')">add-->
+<!--                                    </mat-icon>-->
+<!--                                  </mat-form-field>-->
+<!--                                </div>-->
+<!--                              </div>-->
+
+<!--                              <div class="done-button-container">-->
+<!--                                <button mat-raised-button color="primary" class="done-button"-->
+<!--                                        (click)="toggleDisplaySelectedTransferGuestInfor()">-->
+<!--                                  Done-->
+<!--                                </button>-->
+<!--                              </div>-->
+<!--                            </div>-->
+
+<!--                          </mat-card-content>-->
+<!--                        </mat-card>-->
+<!--                      }-->
+<!--                    </div>-->
+
+                  </form>
+                </div>
+
+                <div class="vehicle-type-section">
+                  <h3>Vehicle Type</h3>
+                  <div class="vehicle-types">
+                    @for (vehicleType of transferTypes; track vehicleType.id) {
+                      <div class="vehicle-type" [ngClass]="{selected : selectedTransferVehicleType === vehicleType.name}" (click)="setSelectVehicleType(vehicleType.name)">
+                        <h4>{{ vehicleType.name }}</h4>
+                      </div>
+                    }
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- Search Button Container -->
+              <div class="button-container">
+                <button mat-raised-button color="primary" class="search-button"
+                        (click)="searchTransferContract()">
+                  <mat-icon>search</mat-icon>
+                  Search
+                </button>
+                <button mat-stroked-button color="primary" class="clear-button"
+                        (click)="clearTransferContractSearch()">
+                  <mat-icon>clear</mat-icon>
+                  Clear
+                </button>
+                <div class="stepper-next-button-container">
+                  <button class="stepper-next-button" mat-icon-button type="submit"
+                          (click)="transferStepper.next()">
+                    <mat-icon>navigate_next</mat-icon>
+                  </button>
+                </div>
+              </div>
+
+              <div class="search-results-container">
+
+                <div class="search-results-header">
+                  <div class="result-header">
+                    Transfers
+                  </div>
+                  <div class="loading">
+                    <img [src]="transferContractLoadingImageURL" alt="loading-gif">
+                  </div>
+                  <div class="result-count">
+                    Match found : {{ searchedTransfers.length }}
+                  </div>
+                </div>
+
+                @if (searchedTransfers.length > 0) {
+                  <div class="searched-accomm-container">
+                  <mat-accordion>
+                    @for (transfer of searchedTransfers; track transfer.id) {
+                      <mat-expansion-panel class="transfer-result-panel">
+                        <mat-expansion-panel-header>
+                          <mat-panel-title>
+                            <div class="transfer-header-content">
+                              <span class="transfer-reference">{{ transfer.reference }}</span>
+                              <span class="transfer-type-badge">{{ transfer.transfertype?.name || 'N/A' }}</span>
+                            </div>
+                          </mat-panel-title>
+                          <mat-panel-description>
+                            <div class="supplier-container">
+                              <span class="supplier-name">{{ transfer.supplier?.name || 'N/A' }}</span>
+                              <mat-icon class="shipping-icon">local_shipping</mat-icon>
+                            </div>
+                          </mat-panel-description>
+                        </mat-expansion-panel-header>
+
+                        <!-- Expanded content -->
+                        <div class="transfer-details">
+                          <!-- Key information section -->
+                          <div class="transfer-info-section">
+                            <div class="section-header">
+                              <mat-icon class="section-icon">info</mat-icon>
+                              <h3 class="section-title">Key Information</h3>
+                            </div>
+                            <div class="transfer-info-grid">
+                              <div class="transfer-info-item">
+                                <span class="transfer-info-label">Reference</span>
+                                <span class="transfer-info-value">{{ transfer.reference || 'N/A' }}</span>
+                              </div>
+                              <div class="transfer-info-item">
+                                <span class="transfer-info-label">Transfer Type</span>
+                                <span class="transfer-info-value">{{ transfer.transfertype?.name || 'N/A' }}</span>
+                              </div>
+                              <div class="transfer-info-item">
+                                <span class="transfer-info-label">Currency</span>
+                                <span class="transfer-info-value">{{ transfer.currency?.name || 'N/A' }}</span>
+                              </div>
+                              <div class="transfer-info-item">
+                                <span class="transfer-info-label">Status</span>
+                                <span class="transfer-info-value transfer-status"
+                                      [ngClass]="{
+                                      'status-active': transfer.transferstatus?.name === 'Active',
+                                      'status-waiting': transfer.transferstatus?.name === 'Waiting for payment',
+                                      'status-cancelled': transfer.transferstatus?.name === 'Cancelled',
+                                      'status-completed': transfer.transferstatus?.name === 'Completed'
+                                      }">
+                                  {{ transfer.transferstatus?.name || 'N/A' }}
+                                </span>
+                              </div>
+                              <div class="transfer-info-item">
+                                <span class="transfer-info-label">Return Transfer</span>
+                                <span class="transfer-info-value return-transfer-badge"
+                                      [ngClass]="{'is-return': transfer.transfer?.isreturn}">
+                                  {{ transfer.transfer?.isreturn ? 'Yes' : 'No' }}
+                                </span>
+                              </div>
+                              <div class="transfer-info-item">
+                                <span class="transfer-info-label">Markup</span>
+                                <span class="transfer-info-value markup-percentage">{{ transfer.markup || 0 }}%</span>
+                              </div>
+                            </div>
+                          </div>
+
+                          <!-- Validity section -->
+                          <div class="transfer-info-section">
+                            <div class="section-header">
+                              <mat-icon class="section-icon">date_range</mat-icon>
+                              <h3 class="section-title">Validity Period</h3>
+                            </div>
+                            <div class="validity-grid">
+                              <div class="validity-card">
+                                <div class="validity-card-header">
+                                  <mat-icon class="validity-icon">event</mat-icon>
+                                  <span class="validity-label">Offer Valid</span>
+                                </div>
+                                <div class="validity-dates">
+                                  <span class="date-from">{{ transfer.validfrom | date:'shortDate' }}</span>
+                                  <mat-icon class="date-separator">arrow_forward</mat-icon>
+                                  <span class="date-to">{{ transfer.validto | date:'shortDate' }}</span>
+                                </div>
+                              </div>
+                              <div class="validity-card">
+                                <div class="validity-card-header">
+                                  <mat-icon class="validity-icon">shopping_cart</mat-icon>
+                                  <span class="validity-label">Sales Period</span>
+                                </div>
+                                <div class="validity-dates">
+                                  <span class="date-from">{{ transfer.salesfrom | date:'shortDate' }}</span>
+                                  <mat-icon class="date-separator">arrow_forward</mat-icon>
+                                  <span class="date-to">{{ transfer.salesto | date:'shortDate' }}</span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                          <!-- Locations section -->
+                          @if (transfer.transfer) {
+                            <div class="transfer-info-section">
+                              <div class="section-header">
+                                <mat-icon class="section-icon">location_on</mat-icon>
+                                <h3 class="section-title">Transfer Locations</h3>
+                              </div>
+                              <div class="locations-grid">
+                                <!-- Pickup Locations -->
+                                @if (transfer.transfer.pickuplocations && transfer.transfer.pickuplocations.length > 0) {
+                                  <div class="location-group pickup-group">
+                                    <div class="location-group-header">
+                                      <mat-icon class="location-type-icon">flight_takeoff</mat-icon>
+                                      <h4 class="location-group-title">Pickup Locations</h4>
+                                    </div>
+                                    <div class="location-list">
+                                      @for (pickup of transfer.transfer.pickuplocations; track pickup.id) {
+                                        <div class="location-card">
+                                          <div class="location-name">{{ pickup.name }}</div>
+                                          <div class="location-meta">
+                                            <span class="location-code">{{ pickup.code }}</span>
+                                            <span class="location-type">{{ pickup.locationtype?.name || 'N/A' }}</span>
+                                          </div>
+                                        </div>
+                                      }
+                                    </div>
+                                  </div>
+                                }
+
+                                <!-- Drop Locations -->
+                                @if (transfer.transfer.droplocations && transfer.transfer.droplocations.length > 0) {
+                                  <div class="location-group drop-group">
+                                    <div class="location-group-header">
+                                      <mat-icon class="location-type-icon">flight_land</mat-icon>
+                                      <h4 class="location-group-title">Drop Locations</h4>
+                                    </div>
+                                    <div class="location-list">
+                                      @for (drop of transfer.transfer.droplocations; track drop.id) {
+                                        <div class="location-card">
+                                          <div class="location-name">{{ drop.name }}</div>
+                                          <div class="location-meta">
+                                            <span class="location-code">{{ drop.code }}</span>
+                                            <span class="location-type">{{ drop.locationtype?.name || 'N/A' }}</span>
+                                          </div>
+                                        </div>
+                                      }
+                                    </div>
+                                  </div>
+                                }
+                              </div>
+                            </div>
+                          }
+
+                          <!-- Transfer Rates section -->
+                          @if (transfer.transferrates && transfer.transferrates.length > 0) {
+                            <div class="transfer-info-section">
+                              <div class="section-header">
+                                <mat-icon class="section-icon">attach_money</mat-icon>
+                                <h3 class="section-title">Transfer Rates</h3>
+                              </div>
+                              <div class="rates-grid">
+                                @for (rate of transfer.transferrates; track rate.id) {
+                                  <div class="rate-card">
+                                    <div class="rate-card-header">
+                                      <span class="pax-type">{{ rate.paxtype?.name || 'Standard' }}</span>
+                                    </div>
+                                    <div class="rate-amount">
+                                      @if (currencyTypeSymbolMap[getCurrencyCode(transfer.currency.name)]; as iconName) {
+                                        @if (iconName !== 'lkr') {
+                                          <mat-icon class="currency-icon">{{ iconName }}</mat-icon>
+                                        }
+                                        @if (iconName === 'lkr') {
+                                          <mat-icon svgIcon="lkr" class="currency-icon lkr-icon"></mat-icon>
+                                        }
+                                      }
+                                      <span class="amount-value">{{ (rate.amount + transfer.markup) | currency:'':'' }}</span>
+                                    </div>
+                                  </div>
+                                }
+                              </div>
+                            </div>
+                          }
+
+                          <!-- Transfer Discounts section -->
+                          @if (transfer.transferdiscounts && transfer.transferdiscounts.length > 0) {
+                            <div class="transfer-info-section">
+                              <div class="section-header">
+                                <mat-icon class="section-icon">local_offer</mat-icon>
+                                <h3 class="section-title">Available Discounts</h3>
+                              </div>
+                              <div class="discounts-grid">
+                                @for (discount of transfer.transferdiscounts; track discount.id) {
+                                  <div class="discount-card">
+                                    <div class="discount-type">{{ discount.transferdiscounttype?.name || 'Discount' }}</div>
+                                    <div class="discount-amount">
+                                      <span class="discount-value">{{ discount.amount }}</span>
+                                      <span class="discount-rate-type">{{ discount.ratetype?.name || '%' }}</span>
+                                    </div>
+                                  </div>
+                                }
+                              </div>
+                            </div>
+                          }
+
+                          <!-- Cancellation Policy -->
+                          @if (transfer.transfercancellationcharges && transfer.transfercancellationcharges.length > 0) {
+                            <div class="transfer-info-section">
+                              <div class="section-header">
+                                <mat-icon class="section-icon">announcement</mat-icon>
+                                <h3 class="section-title">Cancellation Policy</h3>
+                              </div>
+                              <div class="cancellation-grid">
+                                @for (charge of transfer.transfercancellationcharges; track charge.id) {
+                                  <div class="cancellation-card">
+                                    <div class="cancellation-scheme">{{ charge.cancellationscheme?.name || 'Standard' }}</div>
+                                    <div class="cancellation-charge">
+                                      <span class="charge-amount">{{ charge.amount }}</span>
+                                      <span class="charge-rate-type">{{ charge.ratetype?.name || '%' }}</span>
+                                    </div>
+                                  </div>
+                                }
+                              </div>
+                            </div>
+                          }
+
+                          <!-- Action buttons -->
+                          <div class="action-buttons">
+                            <button class="add-itinerary-button" mat-raised-button color="primary" (click)="selectTransferContract(transfer)">
+                              <mat-icon>add_circle</mat-icon>
+                              Add to Itinerary
+                            </button>
+                            <button class="view-itinerary-button" mat-stroked-button (click)="viewTransferContractDetails(transfer)">
+                              <mat-icon style="color: #38404f !important;">visibility</mat-icon>
+                              View Full Details
+                            </button>
+                          </div>
+                        </div>
+                      </mat-expansion-panel>
+                    }
+                  </mat-accordion>
+                </div>
+                }
+              </div>
+            </mat-step>
+
+            @if (!isEnableBookingDataModify) {
+              <mat-step>
+              <ng-template matStepLabel>
+                <div class="step-label">
+                  <span>Passengers</span>
+                </div>
+              </ng-template>
+
+              <ng-container *ngTemplateOutlet="sharedPassengerForm"></ng-container>
+
+              <div class="stepper-button-container">
+                <div class="stepper-back-button-container">
+                  <button class="stepper-back-button" mat-icon-button type="button"
+                          (click)="transferStepper.previous()">
+                    <mat-icon>navigate_before</mat-icon>
+                  </button>
+                </div>
+                <div class="stepper-next-button-container">
+                  <button class="stepper-next-button" mat-icon-button type="submit"
+                          (click)="transferStepper.next()">
+                    <mat-icon>navigate_next</mat-icon>
+                  </button>
+                </div>
+              </div>
+            </mat-step>
+            }
+            <mat-step>
+              <ng-template matStepLabel>
+                <div class="step-label">
+                  <span>Passenger Config</span>
+                </div>
+              </ng-template>
+
+              <div class="transfer-pax-type-container">
+                @for (paxType of selectedTransferContractPaxTypes; track paxType.id; let i = $index) {
+                  <ng-container>
+                    <div class="transfer-pax-type-row">
+                      <div class="transfer-pax-type-name">{{ paxType.name }}</div>
+
+                      <div class="transfer-pax-count-container">
+                        <mat-form-field appearance="outline">
+                          <mat-icon matIconPrefix class="count-button-decrement"
+                                    [ngClass]="{'do-not' : getTransferPaxCount(paxType) === 0}"
+                                    (click)="decrementTransferPaxCount(paxType)">remove
+                          </mat-icon>
+                          <input readonly matInput [value]="getTransferPaxCount(paxType)">
+                          <mat-icon matIconSuffix class="count-button-increment"
+                                    (click)="incrementTransferPaxCount(paxType)">add
+                          </mat-icon>
+                        </mat-form-field>
+                      </div>
+                    </div>
+                  </ng-container>
+                }
+              </div>
+
+              <div class="stepper-button-container">
+                <div class="stepper-back-button-container">
+                  <button class="stepper-back-button" mat-icon-button type="button"
+                          (click)="transferStepper.previous()">
+                    <mat-icon>navigate_before</mat-icon>
+                  </button>
+                </div>
+                <div class="stepper-next-button-container">
+                  <button class="stepper-next-button" mat-icon-button type="submit"
+                          (click)="transferStepper.next()">
+                    <mat-icon>navigate_next</mat-icon>
+                  </button>
+                </div>
+              </div>
+
+            </mat-step>
+
+            <mat-step>
+              <ng-template matStepLabel>
+                <div class="step-label">
+                  <span>Transfer</span>
+                </div>
+              </ng-template>
+
+              <div class="booking-accommodation-form">
+
+                <form [formGroup]="bookingTransferContractForm">
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Select a Discount scheme</mat-label>
+                    <mat-select formControlName="discountamount">
+                      <mat-option [value]="null">Not selected</mat-option>
+                      @for (discount of selectedTransferContract?.transferdiscounts; track discount.id) {
+                        <mat-option [value]="discount">{{ discount.transferdiscounttype.name + " - " + discount.amount }}</mat-option>
+                      }
+                    </mat-select>
+                    <mat-icon matIconSuffix>percent</mat-icon>
+                  </mat-form-field>
+
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Total Amount</mat-label>
+                    <input matInput formControlName="totalamount">
+                    <mat-icon matIconSuffix>payments</mat-icon>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Supplier Amount</mat-label>
+                    <input matInput formControlName="supplieramount">
+                    <mat-icon matIconSuffix>payments</mat-icon>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Select From, To Dates</mat-label>
+                    <mat-date-range-input
+                      [rangePicker]="FromAndToDatePicker"
+                      [dateFilter]="pastDateFilter"
+                    >
+                      <input matStartDate placeholder="Departure Date" formControlName="fromdatetime">
+                      <input matEndDate placeholder="End Date" formControlName="todatetime">
+                    </mat-date-range-input>
+                    <mat-datepicker-toggle matIconSuffix [for]="FromAndToDatePicker"></mat-datepicker-toggle>
+                    <mat-date-range-picker #FromAndToDatePicker></mat-date-range-picker>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Select a Booking Item Status</mat-label>
+                    <mat-select formControlName="bookingitemstatus">
+                      <mat-option [value]="null">Not selected</mat-option>
+                      @for (bookingItemStatus of bookingItemStatuses; track bookingItemStatus.id) {
+                        <mat-option [value]="bookingItemStatus">{{ bookingItemStatus.name }}</mat-option>
+                      }
+                    </mat-select>
+                    <mat-icon matIconSuffix>inventory_2</mat-icon>
+                  </mat-form-field>
+
+                </form>
+
+                <div class="save-itinerary-button">
+                  <button mat-raised-button color="primary" class="done-button" (click)="addBookedTransferContractToBooking()">
+                    <mat-icon matIconPrefix>save</mat-icon> Save
+                  </button>
+                </div>
+
+              </div>
+
+              <div class="stepper-button-container">
+                <div class="stepper-back-button-container">
+                  <button class="stepper-back-button" mat-icon-button type="button"
+                          (click)="transferStepper.previous()">
+                    <mat-icon>navigate_before</mat-icon>
+                  </button>
+                </div>
+                <div class="stepper-next-button-container">
+                  <button class="stepper-next-button" mat-icon-button type="submit"
+                          (click)="transferStepper.next()">
+                    <mat-icon>navigate_next</mat-icon>
+                  </button>
+                </div>
+              </div>
+
+            </mat-step>
+
+            <mat-step>
+              <ng-template matStepLabel>
+                <div class="step-label">
+                  <span>Itineraries</span>
+                </div>
+              </ng-template>
+
+              <div class="additional-itinerary-container">
+                <div class="additional-itinerary-header">
+                  Refine your selected items
+                </div>
+                <ng-container *ngTemplateOutlet="sharedItinerarySelection"></ng-container>
+              </div>
+
+              <ng-container *ngTemplateOutlet="sharedBookingItems"></ng-container>
+
+              <div class="stepper-button-container">
+                <div class="stepper-back-button-container">
+                  <button class="stepper-back-button" mat-icon-button type="button"
+                          (click)="transferStepper.previous()">
+                    <mat-icon>navigate_before</mat-icon>
+                  </button>
+                </div>
+                <div class="stepper-next-button-container">
+                  <button class="stepper-next-button" mat-icon-button type="submit"
+                          (click)="transferStepper.next()">
+                    <mat-icon>navigate_next</mat-icon>
+                  </button>
+                </div>
+              </div>
+            </mat-step>
+
+            <mat-step>
+              <ng-template matStepLabel>
+                <div class="step-label">
+                  <span>Finished</span>
+                </div>
+              </ng-template>
+
+              <ng-container *ngTemplateOutlet="sharedBookingForm"></ng-container>
+
+              <div class="stepper-button-container">
+                <div class="stepper-back-button-container">
+                  <button class="stepper-back-button" mat-icon-button type="button" (click)="accommodationStepper.previous()">
+                    <mat-icon>navigate_before</mat-icon>
+                  </button>
+                </div>
+                <div class="stepper-reset-button-container">
+                  <button class="stepper-reset-button" mat-icon-button type="reset">
+                    <mat-icon>clear</mat-icon>
+                  </button>
+                </div>
+              </div>
+            </mat-step>
+
+          </mat-stepper>
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+  }
+
+
+
+
+
+
+
+
+  <!--=====================================Generic View=============================================-->
+  @if (isEnableGenericView) {
+    <mat-grid-tile [colspan]="8" [rowspan]="9">
+      <mat-card>
+        <mat-card-header class="card-section-header">
+          <mat-card-title class="title">Find a Activity</mat-card-title>
+          <button mat-raised-button class="back-button" (click)="goBack()">
+            <mat-icon>arrow_back</mat-icon>
+            Go Back
+          </button>
+        </mat-card-header>
+        <mat-card-content>
+          <mat-stepper orientation="horizontal" [linear]="true" #genericStepper (selectionChange)="onStepChange($event, genericStepper)">
+
+            <mat-step>
+              <ng-template matStepLabel>
+                <div class="step-label">
+                  <span>Search</span>
+                </div>
+              </ng-template>
+              <!-- Search Section -->
+              <div class="generic-search-section">
+
+                <div class="generic-search-form-container">
+
+                  <form [formGroup]="genericSearchFrom">
+
+                    <mat-form-field appearance="outline">
+                      <mat-label>Name</mat-label>
+                      <input matInput placeholder="Enter Pickup Location" formControlName="name">
+                      <mat-icon matIconSuffix>location_on</mat-icon>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline">
+                      <mat-label>Select Pickup, Drop-off Dates</mat-label>
+                      <mat-date-range-input
+                        [rangePicker]="searchDates"
+                        [dateFilter]="pastDateFilter"
+                      >
+                        <input matStartDate placeholder="Check-in date" formControlName="checkInDate">
+                        <input matEndDate placeholder="Check-out date" formControlName="checkOutDate">
+                      </mat-date-range-input>
+                      <mat-datepicker-toggle matIconSuffix [for]="searchDates"></mat-datepicker-toggle>
+                      <mat-date-range-picker #searchDates></mat-date-range-picker>
+                    </mat-form-field>
+
+<!--                    <div class="search-pax-type-container">-->
+<!--                      <mat-form-field appearance="outline">-->
+<!--                        <input matInput readonly [(ngModel)]="displaySelectedGenericGuestInfor"-->
+<!--                               (click)="toggleDisplaySelectedGenericGuestInfor()"-->
+<!--                               formControlName="guestInfor">-->
+<!--                        <mat-icon matPrefix style="color: unset !important;">person</mat-icon>-->
+<!--                        <mat-icon matSuffix style="color: unset !important;">keyboard_arrow_down</mat-icon>-->
+<!--                      </mat-form-field>-->
+
+<!--                      @if (isDisplaySelectedGenericGuestInfor) {-->
+<!--                        <mat-card class="generic-guest-info-card">-->
+<!--                          <mat-card-content>-->
+<!--                            <div class="guest-info-wrapper">-->
+<!--                              &lt;!&ndash; Adults Row &ndash;&gt;-->
+<!--                              <div class="guest-infor-container">-->
+<!--                                <div class="label">Adults</div>-->
+<!--                                <div class="count-container">-->
+<!--                                  <mat-form-field appearance="outline">-->
+<!--                                    <mat-icon-->
+<!--                                      [ngClass]="{'do-not': adults <= 1}"-->
+<!--                                      matIconPrefix-->
+<!--                                      class="count-button-decrement"-->
+<!--                                      (click)="onAdultsChange('-')">remove-->
+<!--                                    </mat-icon>-->
+<!--                                    <input readonly [value]="adults" matInput>-->
+<!--                                    <mat-icon-->
+<!--                                      matIconSuffix-->
+<!--                                      class="count-button-increment"-->
+<!--                                      (click)="onAdultsChange('+')">add-->
+<!--                                    </mat-icon>-->
+<!--                                  </mat-form-field>-->
+<!--                                </div>-->
+<!--                              </div>-->
+
+<!--                              &lt;!&ndash; Children Row &ndash;&gt;-->
+<!--                              <div class="guest-infor-container">-->
+<!--                                <div class="label">Children</div>-->
+<!--                                <div class="count-container">-->
+<!--                                  <mat-form-field appearance="outline">-->
+<!--                                    <mat-icon-->
+<!--                                      [ngClass]="{'do-not': children <= 0}"-->
+<!--                                      matIconPrefix-->
+<!--                                      class="count-button-decrement"-->
+<!--                                      (click)="onChildrenChange('-')">remove-->
+<!--                                    </mat-icon>-->
+<!--                                    <input readonly [value]="children" matInput>-->
+<!--                                    <mat-icon-->
+<!--                                      matIconSuffix-->
+<!--                                      class="count-button-increment"-->
+<!--                                      (click)="onChildrenChange('+')">add-->
+<!--                                    </mat-icon>-->
+<!--                                  </mat-form-field>-->
+<!--                                </div>-->
+<!--                              </div>-->
+
+<!--                              <div class="done-button-container">-->
+<!--                                <button mat-raised-button color="primary" class="done-button"-->
+<!--                                        (click)="toggleDisplaySelectedGenericGuestInfor()">-->
+<!--                                  Done-->
+<!--                                </button>-->
+<!--                              </div>-->
+<!--                            </div>-->
+
+<!--                          </mat-card-content>-->
+<!--                        </mat-card>-->
+<!--                      }-->
+<!--                    </div>-->
+
+                  </form>
+                </div>
+
+                <div class="generic-type-section">
+                  <h3>Activity Type</h3>
+                  <div class="generic-types">
+                    @for (genericType of genericTypes; track genericType.id) {
+                      <div
+                        class="generic-type"
+                        [ngClass]="{selected : selectedGenericType === genericType.name}"
+                        (click)="setSelectGenericType(genericType.name)">
+
+                        <div class="icon">{{ genericTypeIconList[genericType.name]}}</div>
+                        <h4>{{ genericType.name }}</h4>
+                      </div>
+                    }
+                  </div>
+
+                </div>
+
+              </div>
+
+              <!-- Search Button Container -->
+              <div class="button-container">
+                <button mat-raised-button color="primary" class="search-button"
+                        (click)="searchGeneric()">
+                  <mat-icon>search</mat-icon>
+                  Search
+                </button>
+                <button mat-stroked-button color="primary" class="clear-button"
+                        (click)="clearGenericSearch()">
+                  <mat-icon>clear</mat-icon>
+                  Clear
+                </button>
+                <div class="stepper-next-button-container">
+                  <button class="stepper-next-button" mat-icon-button type="submit"
+                          (click)="genericStepper.next()">
+                    <mat-icon>navigate_next</mat-icon>
+                  </button>
+                </div>
+              </div>
+
+              <div class="search-results-container">
+
+                <div class="search-results-header">
+                  <div class="result-header">
+                    Activities
+                  </div>
+                  <div class="loading">
+                    <img [src]="genericLoadingImageURL" alt="loading-gif">
+                  </div>
+                  <div class="result-count">
+                    Match found : {{ searchedGenerics.length }}
+                  </div>
+                </div>
+
+                @if (searchedGenerics.length > 0) {
+                  <div class="searched-accomm-container">
+                    <mat-accordion>
+                      @for (generic of searchedGenerics; track generic.id) {
+                        <mat-expansion-panel class="generic-result-panel">
+                          <mat-expansion-panel-header>
+                            <mat-panel-title>
+                              <div class="generic-header-content">
+                                <span class="generic-reference">{{ generic.reference }}</span>
+                                <span class="generic-name">{{ generic.name }}</span>
+                              </div>
+                            </mat-panel-title>
+                            <mat-panel-description>
+                              <div class="generic-container">
+                                <mat-icon class="generic-icon">inventory_2</mat-icon>
+                              </div>
+                            </mat-panel-description>
+                          </mat-expansion-panel-header>
+
+                          <!-- Expanded content -->
+                          <div class="generic-details">
+                            <!-- Key information section -->
+                            <div class="generic-info-section">
+                              <div class="section-header">
+                                <mat-icon class="section-icon">info</mat-icon>
+                                <h3 class="section-title">Key Information</h3>
+                              </div>
+                              <div class="generic-info-grid">
+                                <div class="generic-info-item">
+                                  <span class="generic-info-label">Reference</span>
+                                  <span class="generic-info-value">{{ generic.reference || 'N/A' }}</span>
+                                </div>
+                                <div class="generic-info-item">
+                                  <span class="generic-info-label">Name</span>
+                                  <span class="generic-info-value">{{ generic.name || 'N/A' }}</span>
+                                </div>
+                                <div class="generic-info-item">
+                                  <span class="generic-info-label">Generic Type</span>
+                                  <span class="generic-info-value">{{ generic.generictype?.name || 'N/A' }}</span>
+                                </div>
+                                <div class="generic-info-item">
+                                  <span class="generic-info-label">Status</span>
+                                  <span class="generic-info-value generic-status"
+                                        [ngClass]="{
+                                        'status-active': generic.genericstatus?.name === 'Active',
+                                        'status-waiting': generic.genericstatus?.name === 'Waiting',
+                                        'status-cancelled': generic.genericstatus?.name === 'Cancelled',
+                                        'status-completed': generic.genericstatus?.name === 'Completed'
+                                        }">
+                                    {{ generic.genericstatus?.name || 'N/A' }}
+                                  </span>
+                                </div>
+                                <div class="generic-info-item">
+                                  <span class="generic-info-label">Created On</span>
+                                  <span class="generic-info-value">{{ generic.createdon | date:'shortDate' }}</span>
+                                </div>
+                                <div class="generic-info-item">
+                                  <span class="generic-info-label">Updated On</span>
+                                  <span class="generic-info-value">{{ generic.updatedon | date:'shortDate' }}</span>
+                                </div>
+                              </div>
+                            </div>
+
+                            <!-- Description section -->
+                            @if (generic.description) {
+                              <div class="generic-info-section">
+                                <div class="section-header">
+                                  <mat-icon class="section-icon">description</mat-icon>
+                                  <h3 class="section-title">Description</h3>
+                                </div>
+                                <div class="generic-description">
+                                  <p>{{ generic.description }}</p>
+                                </div>
+                              </div>
+                            }
+
+                            <!-- Validity section -->
+                            <div class="generic-info-section">
+                              <div class="section-header">
+                                <mat-icon class="section-icon">date_range</mat-icon>
+                                <h3 class="section-title">Validity Period</h3>
+                              </div>
+                              <div class="validity-grid">
+                                <div class="validity-card">
+                                  <div class="validity-card-header">
+                                    <mat-icon class="validity-icon">event</mat-icon>
+                                    <span class="validity-label">Offer Valid</span>
+                                  </div>
+                                  <div class="validity-dates">
+                                    <span class="date-from">{{ generic.validfrom | date:'shortDate' }}</span>
+                                    <mat-icon class="date-separator">arrow_forward</mat-icon>
+                                    <span class="date-to">{{ generic.validto | date:'shortDate' }}</span>
+                                  </div>
+                                </div>
+                                <div class="validity-card">
+                                  <div class="validity-card-header">
+                                    <mat-icon class="validity-icon">shopping_cart</mat-icon>
+                                    <span class="validity-label">Sales Period</span>
+                                  </div>
+                                  <div class="validity-dates">
+                                    <span class="date-from">{{ generic.salesfrom | date:'shortDate' }}</span>
+                                    <mat-icon class="date-separator">arrow_forward</mat-icon>
+                                    <span class="date-to">{{ generic.salesto | date:'shortDate' }}</span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            <!-- Generic Rates section -->
+                            @if (generic.genericrates && generic.genericrates.length > 0) {
+                              <div class="generic-info-section">
+                                <div class="section-header">
+                                  <mat-icon class="section-icon">attach_money</mat-icon>
+                                  <h3 class="section-title">Generic Rates</h3>
+                                </div>
+                                <div class="rates-grid">
+                                  @for (rate of generic.genericrates; track rate.id) {
+                                    <div class="rate-card">
+                                      <div class="rate-card-header">
+                                        <span class="pax-type">{{ rate.paxtype?.name || 'Standard' }}</span>
+                                      </div>
+                                      <div class="rate-amount">
+                                        @if (currencyTypeSymbolMap[getCurrencyCode(generic.currency?.name || '')]; as iconName) {
+                                          @if (iconName !== 'lkr') {
+                                            <mat-icon class="currency-icon">{{ iconName }}</mat-icon>
+                                          }
+                                          @if (iconName === 'lkr') {
+                                            <mat-icon svgIcon="lkr" class="currency-icon lkr-icon"></mat-icon>
+                                          }
+                                        }
+                                        <span class="amount-value">{{ (rate.amount + generic.markup) | currency:'':'' }}</span>
+                                      </div>
+                                    </div>
+                                  }
+                                </div>
+                              </div>
+                            }
+
+                            <!-- Generic Discounts section -->
+                            @if (generic.genericdiscounts && generic.genericdiscounts.length > 0) {
+                              <div class="generic-info-section">
+                                <div class="section-header">
+                                  <mat-icon class="section-icon">local_offer</mat-icon>
+                                  <h3 class="section-title">Available Discounts</h3>
+                                </div>
+                                <div class="discounts-grid">
+                                  @for (discount of generic.genericdiscounts; track discount.id) {
+                                    <div class="discount-card">
+                                      <div class="discount-type">{{ discount.genericdiscounttype?.name || 'Discount' }}</div>
+                                      <div class="discount-amount">
+                                        <span class="discount-value">{{ discount.amount }}</span>
+                                        <span class="discount-rate-type">{{ discount.ratetype?.name || '%' }}</span>
+                                      </div>
+                                    </div>
+                                  }
+                                </div>
+                              </div>
+                            }
+
+                            <!-- Cancellation Policy -->
+                            @if (generic.genericcancellationcharges && generic.genericcancellationcharges.length > 0) {
+                              <div class="generic-info-section">
+                                <div class="section-header">
+                                  <mat-icon class="section-icon">announcement</mat-icon>
+                                  <h3 class="section-title">Cancellation Policy</h3>
+                                </div>
+                                <div class="cancellation-grid">
+                                  @for (charge of generic.genericcancellationcharges; track charge.id) {
+                                    <div class="cancellation-card">
+                                      <div class="cancellation-scheme">{{ charge.cancellationscheme?.name || 'Standard' }}</div>
+                                      <div class="cancellation-charge">
+                                        <span class="charge-amount">{{ charge.amount }}</span>
+                                        <span class="charge-rate-type">{{ charge.ratetype?.name || '%' }}</span>
+                                      </div>
+                                    </div>
+                                  }
+                                </div>
+                              </div>
+                            }
+
+                            <!-- Action buttons -->
+                            <div class="action-buttons">
+                              <button class="add-itinerary-button" mat-raised-button color="primary" (click)="selectGeneric(generic)">
+                                <mat-icon>add_circle</mat-icon>
+                                Add to Itinerary
+                              </button>
+                              <button class="view-itinerary-button" mat-stroked-button (click)="viewGenericDetails(generic)">
+                                <mat-icon style="color: #38404f !important;">visibility</mat-icon>
+                                View Full Details
+                              </button>
+                            </div>
+                          </div>
+                        </mat-expansion-panel>
+                      }
+                    </mat-accordion>
+                  </div>
+                }
+              </div>
+            </mat-step>
+
+            @if (!isEnableBookingDataModify) {
+              <mat-step>
+              <ng-template matStepLabel>
+                <div class="step-label">
+                  <span>Passengers</span>
+                </div>
+              </ng-template>
+
+              <ng-container *ngTemplateOutlet="sharedPassengerForm"></ng-container>
+
+              <div class="stepper-button-container">
+                <div class="stepper-back-button-container">
+                  <button class="stepper-back-button" mat-icon-button type="button"
+                          (click)="genericStepper.previous()">
+                    <mat-icon>navigate_before</mat-icon>
+                  </button>
+                </div>
+                <div class="stepper-next-button-container">
+                  <button class="stepper-next-button" mat-icon-button type="submit"
+                          (click)="genericStepper.next()">
+                    <mat-icon>navigate_next</mat-icon>
+                  </button>
+                </div>
+              </div>
+            </mat-step>
+            }
+            <mat-step>
+              <ng-template matStepLabel>
+                <div class="step-label">
+                  <span>Passenger Config</span>
+                </div>
+              </ng-template>
+
+              <div class="generic-pax-type-container">
+                <mat-tab-group>
+                  <mat-tab label="Locals">
+                    @for (config of selectedGenericLocalPaxTypes; track $index; let i = $index) {
+                      <ng-container>
+                        <div class="generic-pax-type-row">
+                          <div class="generic-pax-type-name">{{ config.paxType.name }}</div>
+
+                          <div class="generic-pax-count-container">
+                            <mat-form-field appearance="outline">
+                              <mat-icon matIconPrefix class="count-button-decrement"
+                                        [ngClass]="{'do-not' : getGenericPaxCount(config.paxType, config.residentType ) === 0}"
+                                        (click)="decrementGenericPaxCount(config.paxType, config.residentType)">remove
+                              </mat-icon>
+                              <input readonly matInput [value]="getGenericPaxCount(config.paxType, config.residentType )">
+                              <mat-icon matIconSuffix class="count-button-increment"
+                                        (click)="incrementGenericPaxCount(config.paxType, config.residentType)">add
+                              </mat-icon>
+                            </mat-form-field>
+                          </div>
+                        </div>
+                      </ng-container>
+                    }
+                  </mat-tab>
+
+                  <mat-tab label="Foreigns">
+                    @for (config of selectedGenericForeignPaxTypes; track $index; let i = $index) {
+                      <ng-container>
+                        <div class="generic-pax-type-row">
+                          <div class="generic-pax-type-name">{{ config.paxType.name }}</div>
+
+                          <div class="generic-pax-count-container">
+                            <mat-form-field appearance="outline">
+                              <mat-icon matIconPrefix class="count-button-decrement"
+                                        [ngClass]="{'do-not' : getGenericPaxCount(config.paxType, config.residentType ) === 0}"
+                                        (click)="decrementGenericPaxCount(config.paxType, config.residentType)">remove
+                              </mat-icon>
+                              <input readonly matInput [value]="getGenericPaxCount(config.paxType, config.residentType )">
+                              <mat-icon matIconSuffix class="count-button-increment"
+                                        (click)="incrementGenericPaxCount(config.paxType, config.residentType)">add
+                              </mat-icon>
+                            </mat-form-field>
+                          </div>
+                        </div>
+                      </ng-container>
+                    }
+                  </mat-tab>
+                </mat-tab-group>
+
+              </div>
+
+              <div class="stepper-button-container">
+                <div class="stepper-back-button-container">
+                  <button class="stepper-back-button" mat-icon-button type="button"
+                          (click)="genericStepper.previous()">
+                    <mat-icon>navigate_before</mat-icon>
+                  </button>
+                </div>
+                <div class="stepper-next-button-container">
+                  <button class="stepper-next-button" mat-icon-button type="submit"
+                          (click)="genericStepper.next()">
+                    <mat-icon>navigate_next</mat-icon>
+                  </button>
+                </div>
+              </div>
+
+            </mat-step>
+
+            <mat-step>
+              <ng-template matStepLabel>
+                <div class="step-label">
+                  <span>Activity</span>
+                </div>
+              </ng-template>
+
+              <div class="booking-accommodation-form">
+
+                <form [formGroup]="bookingGenericForm">
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Select a Discount scheme</mat-label>
+                    <mat-select formControlName="discountamount">
+                      <mat-option [value]="null">Not selected</mat-option>
+                      @for (discount of selectedGeneric?.genericdiscounts; track discount.id) {
+                        <mat-option [value]="discount">{{ discount.genericdiscounttype.name + " - " + discount.amount }}</mat-option>
+                      }
+                    </mat-select>
+                    <mat-icon matIconSuffix>percent</mat-icon>
+                  </mat-form-field>
+
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Total Amount</mat-label>
+                    <input matInput formControlName="totalamount">
+                    <mat-icon matIconSuffix>payments</mat-icon>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Spupplier Amount</mat-label>
+                    <input matInput formControlName="supplieramount">
+                    <mat-icon matIconSuffix>payments</mat-icon>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Select From, To Dates</mat-label>
+                    <mat-date-range-input
+                      [rangePicker]="FromAndToDatePicker"
+                      [dateFilter]="pastDateFilter"
+                    >
+                      <input matStartDate placeholder="Departure Date" formControlName="fromdatetime">
+                      <input matEndDate placeholder="End Date" formControlName="todatetime">
+                    </mat-date-range-input>
+                    <mat-datepicker-toggle matIconSuffix [for]="FromAndToDatePicker"></mat-datepicker-toggle>
+                    <mat-date-range-picker #FromAndToDatePicker></mat-date-range-picker>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Select a Booking Item Status</mat-label>
+                    <mat-select formControlName="bookingitemstatus">
+                      <mat-option [value]="null">Not selected</mat-option>
+                      @for (bookingItemStatus of bookingItemStatuses; track bookingItemStatus.id) {
+                        <mat-option [value]="bookingItemStatus">{{ bookingItemStatus.name }}</mat-option>
+                      }
+                    </mat-select>
+                    <mat-icon matIconSuffix>inventory_2</mat-icon>
+                  </mat-form-field>
+
+                </form>
+
+                <div class="save-itinerary-button">
+                  <button mat-raised-button color="primary" class="done-button" (click)="addBookedGenericToBooking()">
+                    <mat-icon matIconPrefix>save</mat-icon> Save
+                  </button>
+                </div>
+
+              </div>
+
+              <div class="stepper-button-container">
+                <div class="stepper-back-button-container">
+                  <button class="stepper-back-button" mat-icon-button type="button"
+                          (click)="genericStepper.previous()">
+                    <mat-icon>navigate_before</mat-icon>
+                  </button>
+                </div>
+                <div class="stepper-next-button-container">
+                  <button class="stepper-next-button" mat-icon-button type="submit"
+                          (click)="genericStepper.next()">
+                    <mat-icon>navigate_next</mat-icon>
+                  </button>
+                </div>
+              </div>
+
+            </mat-step>
+
+            <mat-step>
+              <ng-template matStepLabel>
+                <div class="step-label">
+                  <span>Itineraries</span>
+                </div>
+              </ng-template>
+
+              <div class="additional-itinerary-container">
+                <div class="additional-itinerary-header">
+                  Refine your selected items
+                </div>
+                <ng-container *ngTemplateOutlet="sharedItinerarySelection"></ng-container>
+              </div>
+
+              <ng-container *ngTemplateOutlet="sharedBookingItems"></ng-container>
+
+              <div class="stepper-button-container">
+                <div class="stepper-back-button-container">
+                  <button class="stepper-back-button" mat-icon-button type="button"
+                          (click)="transferStepper.previous()">
+                    <mat-icon>navigate_before</mat-icon>
+                  </button>
+                </div>
+                <div class="stepper-next-button-container">
+                  <button class="stepper-next-button" mat-icon-button type="submit"
+                          (click)="transferStepper.next()">
+                    <mat-icon>navigate_next</mat-icon>
+                  </button>
+                </div>
+              </div>
+            </mat-step>
+
+            <mat-step>
+              <ng-template matStepLabel>
+                <div class="step-label">
+                  <span>Finished</span>
+                </div>
+              </ng-template>
+
+              <ng-container *ngTemplateOutlet="sharedBookingForm"></ng-container>
+
+              <div class="stepper-button-container">
+                <div class="stepper-back-button-container">
+                  <button class="stepper-back-button" mat-icon-button type="button" (click)="accommodationStepper.previous()">
+                    <mat-icon>navigate_before</mat-icon>
+                  </button>
+                </div>
+                <div class="stepper-reset-button-container">
+                  <button class="stepper-reset-button" mat-icon-button type="reset">
+                    <mat-icon>clear</mat-icon>
+                  </button>
+                </div>
+              </div>
+            </mat-step>
+
+          </mat-stepper>
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+  <!--=====================================Tour View=============================================-->
+  @if (isEnableTourView) {
+    <mat-grid-tile [colspan]="8" [rowspan]="9">
+      <mat-card>
+        <mat-card-header class="card-section-header">
+          <mat-card-title class="title">Find a Tour</mat-card-title>
+          <button mat-raised-button class="back-button" (click)="goBack()">
+            <mat-icon>arrow_back</mat-icon>
+            Go Back
+          </button>
+        </mat-card-header>
+        <mat-card-content>
+
+          <mat-stepper orientation="horizontal" [linear]="true" #tourStepper (selectionChange)="onStepChange($event, tourStepper)">
+
+            <mat-step>
+              <ng-template matStepLabel>
+                <div class="step-label">
+                  <span>Search</span>
+                </div>
+              </ng-template>
+              <!-- Search Section -->
+              <div class="tour-search-section">
+
+                <div class="tour-search-form-container">
+
+                  <form [formGroup]="tourSearchFrom">
+
+                    <mat-form-field appearance="outline">
+                      <mat-label>Name</mat-label>
+                      <input matInput placeholder="Enter Pickup Location" formControlName="name">
+                      <mat-icon matIconSuffix>location_on</mat-icon>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline">
+                      <mat-label>Select Departure, End Dates</mat-label>
+                      <mat-date-range-input
+                        [rangePicker]="searchDates"
+                        [dateFilter]="pastDateFilter"
+                      >
+                        <input matStartDate placeholder="Check-in date" formControlName="departureDate">
+                        <input matEndDate placeholder="Check-out date" formControlName="endDate">
+                      </mat-date-range-input>
+                      <mat-datepicker-toggle matIconSuffix [for]="searchDates"></mat-datepicker-toggle>
+                      <mat-date-range-picker #searchDates></mat-date-range-picker>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline">
+                      <mat-label>Select a Tour Type</mat-label>
+                      <input type="text"
+                             matInput
+                             formControlName="tourtype"
+                             [matAutocomplete]="tourTypeAuto">
+                      <mat-autocomplete autoActiveFirstOption #tourTypeAuto="matAutocomplete"
+                                        [displayWith]="displayTourTypeName">
+                        @for (tourType of filteredTourTypes | async; track tourType.id) {
+                          <mat-option [value]="tourType">{{ tourType.name }}</mat-option>
+                        }
+                      </mat-autocomplete>
+                      <mat-icon matIconSuffix>reorder</mat-icon>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline">
+                      <mat-label>Select a Theme</mat-label>
+                      <mat-select formControlName="tourtheme">
+                        <mat-option [value]="null">Not Selected</mat-option>
+                        @for (tourTheme of tourThemes; track tourTheme.id) {
+                          <mat-option [value]="tourTheme.name">{{ tourTheme.name }}</mat-option>
+                        }
+                      </mat-select>
+                      <mat-icon matIconSuffix>reorder</mat-icon>
+                    </mat-form-field>
+
+                  </form>
+                </div>
+
+                <div class="tour-type-section">
+                  <h3>Tour Category</h3>
+                  <div class="tour-types">
+                    @for (tourCategory of tourCategories; track tourCategory.id) {
+                      <div
+                        class="tour-type"
+                        [ngClass]="{selected : selectedTourCategory === tourCategory.name}"
+                        (click)="setSelectedTourCategory(tourCategory.name)">
+
+                        <div class="icon">{{ tourCategoryIconList[tourCategory.name]}}</div>
+                        <h4>{{ tourCategory.name }}</h4>
+                      </div>
+                    }
+                  </div>
+                </div>
+
+                <div class="tour-pax-count-section">
+                  <h3>Tour Occupancy</h3>
+                  <div class="tour-pax-counts">
+                    @for (tourPaxCount of tourPaxCounts; track tourPaxCount.value) {
+                      <div
+                        class="tour-pax-count"
+                        [ngClass]="{ selected: selectedTourPaxCount === tourPaxCount.value }"
+                        (click)="setSelectedTourPaxCount(tourPaxCount.value)">
+                        <span class="tour-pax-value">{{ tourPaxCount.value }}</span>
+                        <span class="tour-pax-label">{{ tourPaxCount.label }}</span>
+                      </div>
+                    }
+                  </div>
+                </div>
+
+
+              </div>
+
+              <!-- Search Button Container -->
+              <div class="button-container">
+                <button mat-raised-button color="primary" class="search-button"
+                        (click)="searchTour()">
+                  <mat-icon>search</mat-icon>
+                  Search
+                </button>
+                <button mat-stroked-button color="primary" class="clear-button"
+                        (click)="clearTourSearch()">
+                  <mat-icon>clear</mat-icon>
+                  Clear
+                </button>
+                <div class="stepper-next-button-container">
+                  <button class="stepper-next-button" mat-icon-button type="submit"
+                          (click)="tourStepper.next()">
+                    <mat-icon>navigate_next</mat-icon>
+                  </button>
+                </div>
+              </div>
+
+              <div class="search-results-container">
+
+                <div class="search-results-header">
+                  <div class="result-header">
+                    Tours
+                  </div>
+                  <div class="loading">
+                    <img [src]="tourLoadingImageURL" alt="loading-gif">
+                  </div>
+                  <div class="result-count">
+                    Match found : {{ searchedTours.length }}
+                  </div>
+                </div>
+
+                @if (searchedTours.length > 0) {
+                  <div class="searched-accomm-container">
+                    <mat-accordion>
+                      @for (tour of searchedTours; track tour.id) {
+                        <mat-expansion-panel class="tour-result-panel">
+                          <mat-expansion-panel-header>
+                            <mat-panel-title>
+                              <div class="tour-header-content">
+                                <span class="tour-reference">{{ tour.reference }}</span>
+                                <span class="tour-name">{{ tour.name }}</span>
+                              </div>
+                            </mat-panel-title>
+                            <mat-panel-description>
+                              <div class="tour-container">
+                                <mat-icon class="tour-icon">tour</mat-icon>
+                              </div>
+                            </mat-panel-description>
+                          </mat-expansion-panel-header>
+
+                          <!-- Expanded content -->
+                          <div class="tour-details">
+                            <!-- Key information section -->
+                            <div class="tour-info-section">
+                              <div class="section-header">
+                                <mat-icon class="section-icon">info</mat-icon>
+                                <h3 class="section-title">Key Information</h3>
+                              </div>
+                              <div class="tour-info-grid">
+                                <div class="tour-info-item">
+                                  <span class="tour-info-label">Reference</span>
+                                  <span class="tour-info-value">{{ tour.reference || 'N/A' }}</span>
+                                </div>
+                                <div class="tour-info-item">
+                                  <span class="tour-info-label">Name</span>
+                                  <span class="tour-info-value">{{ tour.name || 'N/A' }}</span>
+                                </div>
+                                <div class="tour-info-item">
+                                  <span class="tour-info-label">Tour Type</span>
+                                  <span class="tour-info-value">{{ tour.tourtype?.name || 'N/A' }}</span>
+                                </div>
+                                <div class="tour-info-item">
+                                  <span class="tour-info-label">Tour Category</span>
+                                  <span class="tour-info-value">{{ tour.tourcategory?.name || 'N/A' }}</span>
+                                </div>
+                                <div class="tour-info-item">
+                                  <span class="tour-info-label">Tour Theme</span>
+                                  <span class="tour-info-value">{{ tour.tourtheme?.name || 'N/A' }}</span>
+                                </div>
+                                <div class="tour-info-item">
+                                  <span class="tour-info-label">Markup</span>
+                                  <span class="tour-info-value">{{ tour.markup || 'N/A' }}%</span>
+                                </div>
+                                <div class="tour-info-item">
+                                  <span class="tour-info-label">Created On</span>
+                                  <span class="tour-info-value">{{ tour.createdon | date:'shortDate' }}</span>
+                                </div>
+                                <div class="tour-info-item">
+                                  <span class="tour-info-label">Updated On</span>
+                                  <span class="tour-info-value">{{ tour.updatedon | date:'shortDate' }}</span>
+                                </div>
+                              </div>
+                            </div>
+
+                            <!-- Validity section -->
+                            <div class="tour-info-section">
+                              <div class="section-header">
+                                <mat-icon class="section-icon">date_range</mat-icon>
+                                <h3 class="section-title">Validity Period</h3>
+                              </div>
+                              <div class="validity-grid">
+                                <div class="validity-card">
+                                  <div class="validity-card-header">
+                                    <mat-icon class="validity-icon">event</mat-icon>
+                                    <span class="validity-label">Tour Valid</span>
+                                  </div>
+                                  <div class="validity-dates">
+                                    <span class="date-from">{{ tour.validfrom | date:'shortDate' }}</span>
+                                    <mat-icon class="date-separator">arrow_forward</mat-icon>
+                                    <span class="date-to">{{ tour.validto | date:'shortDate' }}</span>
+                                  </div>
+                                </div>
+                                <div class="validity-card">
+                                  <div class="validity-card-header">
+                                    <mat-icon class="validity-icon">shopping_cart</mat-icon>
+                                    <span class="validity-label">Sales Period</span>
+                                  </div>
+                                  <div class="validity-dates">
+                                    <span class="date-from">{{ tour.salesfrom | date:'shortDate' }}</span>
+                                    <mat-icon class="date-separator">arrow_forward</mat-icon>
+                                    <span class="date-to">{{ tour.salesto | date:'shortDate' }}</span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            <!-- Tour Accommodations section -->
+                            @if (tour.touraccommodations && tour.touraccommodations.length > 0) {
+                              <div class="tour-info-section">
+                                <div class="section-header">
+                                  <mat-icon class="section-icon">hotel</mat-icon>
+                                  <h3 class="section-title">Tour Accommodations</h3>
+                                </div>
+                                <div class="accommodations-grid">
+                                  @for (accommodation of tour.touraccommodations; track accommodation.id) {
+                                    <div class="accommodation-card">
+                                      <div class="accommodation-header">
+                                        <span class="accommodation-name">{{ accommodation.accommodation?.name || 'N/A' }}</span>
+                                      </div>
+                                      <div class="accommodation-details">
+                                        <span class="accommodation-type">{{ accommodation.accommodation?.accommodationtype?.name || 'N/A' }}</span>
+                                      </div>
+                                    </div>
+                                  }
+                                </div>
+                              </div>
+                            }
+
+                            <!-- Tour Transfer Contracts section -->
+                            @if (tour.tourtransfercontracts && tour.tourtransfercontracts.length > 0) {
+                              <div class="tour-info-section">
+                                <div class="section-header">
+                                  <mat-icon class="section-icon">local_taxi</mat-icon>
+                                  <h3 class="section-title">Tour Transfer Contracts</h3>
+                                </div>
+                                <div class="transfers-grid">
+                                  @for (transfer of tour.tourtransfercontracts; track transfer.id) {
+                                    <div class="transfer-card">
+                                      <div class="transfer-header">
+<!--                                        <span class="transfer-name">{{ transfer.transfercontract?.name || 'N/A' }}</span>-->
+                                      </div>
+                                      <div class="transfer-details">
+                                        <span class="transfer-type">{{ transfer.transfercontract?.transfertype?.name || 'N/A' }}</span>
+                                      </div>
+                                    </div>
+                                  }
+                                </div>
+                              </div>
+                            }
+
+                            <!-- Tour Generics section -->
+                            @if (tour.tourgenerics && tour.tourgenerics.length > 0) {
+                              <div class="tour-info-section">
+                                <div class="section-header">
+                                  <mat-icon class="section-icon">inventory_2</mat-icon>
+                                  <h3 class="section-title">Tour Generics</h3>
+                                </div>
+                                <div class="generics-grid">
+                                  @for (generic of tour.tourgenerics; track generic.id) {
+                                    <div class="generic-card">
+                                      <div class="generic-header">
+                                        <span class="generic-name">{{ generic.generic?.name || 'N/A' }}</span>
+                                      </div>
+                                      <div class="generic-details">
+                                        <span class="generic-type">{{ generic.generic?.generictype?.name || 'N/A' }}</span>
+                                      </div>
+                                    </div>
+                                  }
+                                </div>
+                              </div>
+                            }
+
+                            <!-- Tour Occupancies section -->
+                            @if (tour.touroccupancies && tour.touroccupancies.length > 0) {
+                              <div class="tour-info-section">
+                                <div class="section-header">
+                                  <mat-icon class="section-icon">people</mat-icon>
+                                  <h3 class="section-title">Tour Occupancies : {{ tour.maxpaxcount || 'N/A' }} guests</h3>
+                                </div>
+                                <div class="occupancies-grid">
+                                  @for (occupancy of tour.touroccupancies; track occupancy.id) {
+                                    <div class="occupancy-card">
+                                      <div class="occupancy-header">
+                                        <span class="occupancy-name">{{ occupancy.paxtype?.name || 'N/A' }}</span>
+                                      </div>
+                                      <div class="occupancy-details">
+                                        <span class="occupancy-pax">{{ occupancy?.amount || 'N/A' }} pax</span>
+                                      </div>
+                                    </div>
+                                  }
+                                </div>
+                              </div>
+                            }
+
+                            <!-- Action buttons -->
+                            <div class="action-buttons">
+                              <button class="add-itinerary-button" mat-raised-button color="primary" (click)="selectTour(tour)">
+                                <mat-icon>add_circle</mat-icon>
+                                Add to Itinerary
+                              </button>
+                              <button class="view-itinerary-button" mat-stroked-button (click)="viewTourDetails(tour)">
+                                <mat-icon style="color: #38404f !important;">visibility</mat-icon>
+                                View Full Details
+                              </button>
+                            </div>
+                          </div>
+                        </mat-expansion-panel>
+                      }
+                    </mat-accordion>
+                  </div>
+                }
+              </div>
+            </mat-step>
+
+            @if (!isEnableBookingDataModify) {
+              <mat-step>
+              <ng-template matStepLabel>
+                <div class="step-label">
+                  <span>Passengers</span>
+                </div>
+              </ng-template>
+
+              <ng-container *ngTemplateOutlet="sharedPassengerForm"></ng-container>
+
+              <div class="stepper-button-container">
+                <div class="stepper-back-button-container">
+                  <button class="stepper-back-button" mat-icon-button type="button"
+                          (click)="genericStepper.previous()">
+                    <mat-icon>navigate_before</mat-icon>
+                  </button>
+                </div>
+                <div class="stepper-next-button-container">
+                  <button class="stepper-next-button" mat-icon-button type="submit"
+                          (click)="genericStepper.next()">
+                    <mat-icon>navigate_next</mat-icon>
+                  </button>
+                </div>
+              </div>
+            </mat-step>
+            }
+            <mat-step>
+              <ng-template matStepLabel>
+                <div class="step-label">
+                  <span>Passenger Config</span>
+                </div>
+              </ng-template>
+
+              <div class="tour-pax-type-container">
+                @for (config of selectedTourGuestConfiguration; track $index; let i = $index) {
+                  <ng-container>
+                    <div class="tour-pax-type-row">
+                      <div class="tour-pax-type-name">{{ config.paxType.name }}</div>
+
+                      <div class="tour-pax-count-container">
+                        <mat-form-field appearance="outline">
+                          <mat-icon matIconPrefix class="count-button-decrement"
+                                    [ngClass]="{'do-not' : getTourPaxCount(config.paxType) === 0}"
+                                    (click)="decrementTourPaxCount(config.paxType)">remove
+                          </mat-icon>
+                          <input readonly matInput [value]="getTourPaxCount(config.paxType )">
+                          <mat-icon matIconSuffix class="count-button-increment"
+                                    (click)="incrementTourPaxCount(config.paxType)">add
+                          </mat-icon>
+                        </mat-form-field>
+                      </div>
+                    </div>
+                  </ng-container>
+                }
+              </div>
+
+              <div class="stepper-button-container">
+                <div class="stepper-back-button-container">
+                  <button class="stepper-back-button" mat-icon-button type="button"
+                          (click)="genericStepper.previous()">
+                    <mat-icon>navigate_before</mat-icon>
+                  </button>
+                </div>
+                <div class="stepper-next-button-container">
+                  <button class="stepper-next-button" mat-icon-button type="submit"
+                          (click)="genericStepper.next()">
+                    <mat-icon>navigate_next</mat-icon>
+                  </button>
+                </div>
+              </div>
+
+            </mat-step>
+
+            <mat-step>
+              <ng-template matStepLabel>
+                <div class="step-label">
+                  <span>Tour</span>
+                </div>
+              </ng-template>
+
+              <div class="booking-accommodation-form">
+
+                <form [formGroup]="bookingTourForm">
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Total Amount</mat-label>
+                    <input matInput formControlName="totalamount">
+                    <mat-icon matIconSuffix>payments</mat-icon>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Spupplier Amount</mat-label>
+                    <input matInput formControlName="suppliersamount">
+                    <mat-icon matIconSuffix>payments</mat-icon>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Select a Booking Item Status</mat-label>
+                    <mat-select formControlName="bookingitemstatus">
+                      <mat-option [value]="null">Not selected</mat-option>
+                      @for (bookingItemStatus of bookingItemStatuses; track bookingItemStatus.id) {
+                        <mat-option [value]="bookingItemStatus">{{ bookingItemStatus.name }}</mat-option>
+                      }
+                    </mat-select>
+                    <mat-icon matIconSuffix>inventory_2</mat-icon>
+                  </mat-form-field>
+
+                </form>
+
+                <div class="save-itinerary-button">
+                  <button mat-raised-button color="primary" class="done-button" (click)="addBookedTourToBooking()">
+                    <mat-icon matIconPrefix>save</mat-icon> Save
+                  </button>
+                </div>
+
+              </div>
+
+              <div class="stepper-button-container">
+                <div class="stepper-back-button-container">
+                  <button class="stepper-back-button" mat-icon-button type="button"
+                          (click)="tourStepper.previous()">
+                    <mat-icon>navigate_before</mat-icon>
+                  </button>
+                </div>
+                <div class="stepper-next-button-container">
+                  <button class="stepper-next-button" mat-icon-button type="submit"
+                          (click)="tourStepper.next()">
+                    <mat-icon>navigate_next</mat-icon>
+                  </button>
+                </div>
+              </div>
+
+            </mat-step>
+
+            <mat-step>
+              <ng-template matStepLabel>
+                <div class="step-label">
+                  <span>Itineraries</span>
+                </div>
+              </ng-template>
+
+              <div class="additional-itinerary-container">
+                <div class="additional-itinerary-header">
+                  Refine your selected items
+                </div>
+                <ng-container *ngTemplateOutlet="sharedItinerarySelection"></ng-container>
+              </div>
+
+              <ng-container *ngTemplateOutlet="sharedBookingItems"></ng-container>
+
+              <div class="stepper-button-container">
+                <div class="stepper-back-button-container">
+                  <button class="stepper-back-button" mat-icon-button type="button"
+                          (click)="transferStepper.previous()">
+                    <mat-icon>navigate_before</mat-icon>
+                  </button>
+                </div>
+                <div class="stepper-next-button-container">
+                  <button class="stepper-next-button" mat-icon-button type="submit"
+                          (click)="transferStepper.next()">
+                    <mat-icon>navigate_next</mat-icon>
+                  </button>
+                </div>
+              </div>
+            </mat-step>
+
+            <mat-step>
+              <ng-template matStepLabel>
+                <div class="step-label">
+                  <span>Finished</span>
+                </div>
+              </ng-template>
+
+              <ng-container *ngTemplateOutlet="sharedBookingForm"></ng-container>
+
+              <div class="stepper-button-container">
+                <div class="stepper-back-button-container">
+                  <button class="stepper-back-button" mat-icon-button type="button" (click)="accommodationStepper.previous()">
+                    <mat-icon>navigate_before</mat-icon>
+                  </button>
+                </div>
+                <div class="stepper-reset-button-container">
+                  <button class="stepper-reset-button" mat-icon-button type="reset">
+                    <mat-icon>clear</mat-icon>
+                  </button>
+                </div>
+              </div>
+            </mat-step>
+
+          </mat-stepper>
+
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+  }
+
+
+
+
+
+
+
+
+  <!--===================================Booking Summaries====================================-->
+
+  @if (isEnableAccommodationView) {
+    <mat-grid-tile [colspan]="4" [rowspan]="9">
+      <mat-card>
+        <mat-card-content>
+          <div class="booking-summary">
+            <div class="header">Booking Summary</div>
+
+            <!-- Main Booking Details Section -->
+            <div class="booking-details">
+              <div class="section">
+                <div class="hotel-name">{{selectedAccommodation?.name || 'No Selection'}}</div>
+                <div class="detail-row">
+                  <span class="detail-label">Location:</span>
+                  <span class="detail-value">
+                    {{ selectedAccommodation?.location ? selectedAccommodation?.location + ', Sri Lanka' : '' }}
+                  </span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label">Reference:</span>
+                  <span class="detail-value">{{selectedAccommodation?.reference || ''}}</span>
+                </div>
+              </div>
+
+              <div class="section">
+                <div class="section-title">Stay Details</div>
+                <div class="detail-row">
+                  <span class="detail-label">Check-in:</span>
+                  <span class="detail-value">{{checkInDate}}</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label">Check-out:</span>
+                  <span class="detail-value">{{checkOutDate}}</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label">Nights:</span>
+                  <span class="detail-value">{{totalNights > 0 ? totalNights : 0 }} nights</span>
+                </div>
+              </div>
+
+              <div class="section">
+                <div class="section-title">Room Details</div>
+                <div class="room-types-container">
+                  <!-- Fixed: Added trackBy function and caching -->
+                  @if (roomGuestConfiguration.length > 0) {
+                    @for (roomConfiguration of roomGuestConfiguration; track trackByRoomConfiguration($index, roomConfiguration)) {
+                      <div class="room-type-card">
+                        <div class="room-type-header">
+                          <span class="room-type-name">{{roomConfiguration.roomType.name}}</span>
+                          <span class="room-count-badge">{{roomConfiguration.roomCount}} rooms</span>
+                          <button mat-mini-fab color="primary" class="remove-room-btn" (click)="removeRoomFromConfiguration($index, roomConfiguration.roomType)">
+                            <mat-icon>remove</mat-icon>
+                          </button>
+                        </div>
+                        <div class="room-details">
+                          <!-- Fixed: Use cached method and trackBy -->
+                          @for (guest of getGuestEntriesCached(roomConfiguration.guests, $index); track trackByGuestType($index, guest)) {
+                            <div class="detail-row">
+                              <span class="detail-label">{{guest.type}}:</span>
+                              <span class="detail-value">{{guest.count}}</span>
+                            </div>
+                            <div class="detail-row">
+                              <span class="detail-label">Rate per night ({{guest.type}}):</span>
+                              <span class="detail-value">
+                                <!-- Fixed: Use cached room price -->
+                                @if (currencyTypeSymbolMap[getRoomPriceCached(roomConfiguration.roomType, guest.type).currencyType] === 'lkr'){
+                                  <mat-icon svgIcon="lkr"></mat-icon>
+                                } @else {
+                                  <mat-icon>{{currencyTypeSymbolMap[getRoomPriceCached(roomConfiguration.roomType, guest.type).currencyType]}}</mat-icon>
+                                }
+                                {{getRoomPriceCached(roomConfiguration.roomType, guest.type).price}}
+                              </span>
+                            </div>
+                          }
+                        </div>
+                      </div>
+                    }
+                  }
+                </div>
+
+                <!-- Fixed: Use cached total calculations -->
+                <div class="room-summary-totals">
+                  <div class="detail-row">
+                    <span class="detail-label">Total Rooms:</span>
+                    <span class="detail-value">{{totalRoomAndGuestCountCached.roomCount}}</span>
+                  </div>
+                  <div class="detail-row">
+                    <span class="detail-label">Total Guests:</span>
+                    <!-- Fixed: Added trackBy for keyvalue pipe -->
+                    @for (guest of totalRoomAndGuestCountCached.guestCounts | keyvalue; track trackByGuestCount($index, guest)) {
+                      <span class="detail-value">{{ guest.key + " " + guest.value }}</span>
+                    }
+                  </div>
+                </div>
+              </div>
+
+              <div class="section">
+                <!-- Fixed: Use cached booking amount calculation -->
+                @if (bookingItemGrossAmountCached) {
+                  <div class="section-title">Price Details</div>
+                  @for (priceDetails of bookingItemGrossAmountCached.roomSummaries; track trackByPriceDetails($index, priceDetails)) {
+                    <div class="detail-row">
+                      <span class="detail-label">{{priceDetails.roomTypeName + " ( " + priceDetails.roomCount + " x " + priceDetails.nights + " nights )"}}:</span>
+                      <span class="detail-value">{{priceDetails.totalRoomPrice.toFixed(2)}}</span>
+                    </div>
+                  }
+                  <div class="detail-row">
+                    <span class="detail-label">Discount amount :</span>
+                    <span class="detail-value">{{(accommodationDiscount > 0 ? accommodationDiscount : 0).toFixed(2)}}</span>
+                  </div>
+                }
+              </div>
+            </div>
+
+            <!-- Fixed: Use cached calculations -->
+            @if (bookingItemGrossAmountCached && selectedAccommodation) {
+              <div class="total-amount-section">
+                <div class="detail-row">
+                  <span class="detail-label">Total Amount:</span>
+                  <span class="detail-value total-price">
+                    {{(bookingItemGrossAmountCached.grandTotal).toFixed(2)}} {{currencyTypeMap[currencyCodeComputed() || 'LKR']}}</span>
+                </div>
+              </div>
+            }
+
+            <!-- Separate Booking Status Section -->
+            <div class="booking-status-section">
+              <div class="section-title">Booking Item Status</div>
+              <div class="detail-row">
+                <span class="detail-label">Status:</span>
+                <span class="detail-value" style="color: #28a745;">{{ bookingAccommodationItemStatus }}</span>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label">Booking Date:</span>
+                <span class="detail-value">{{ bookingDate | date:'MMM d, y' }}</span>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+  }
+
+  @if (isEnableTransferView) {
+    <mat-grid-tile [colspan]="4" [rowspan]="9">
+      <mat-card>
+        <mat-card-content>
+
+          <div class="booking-summary">
+            <div class="header">Booking Summary</div>
+
+            <!-- Main Booking Details Section -->
+            <div class="booking-details">
+              <div class="section">
+                <div class="transfer-header-name">{{selectedTransferContract?.supplier?.name ? selectedTransferContract?.supplier?.name + " Travels" : 'No Selection'}}</div>
+                <div class="detail-row">
+                  <span class="detail-label">Reference:</span>
+                  <span class="detail-value">{{selectedTransferContract?.reference || ''}}</span>
+                </div>
+              </div>
+
+              <div class="section">
+                <div class="section-title">Location Details</div>
+                <div class="detail-row">
+                  <span class="detail-label">Pickup:</span>
+                  <span class="detail-value">{{pickUpLocation}}</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label">Drop-off:</span>
+                  <span class="detail-value">{{dropLocation}}</span>
+                </div>
+              </div>
+
+              <div class="section">
+                <div class="section-title">Transfer Details</div>
+                <div class="detail-row">
+                  <span class="detail-label">Pickup Date:</span>
+                  <span class="detail-value">{{transferPickUpDate}}</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label">Return Date:</span>
+                  <span class="detail-value">{{transferDropOffDate}}</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label">Transfer type:</span>
+                  <span class="detail-value">{{selectedTransferType}}</span>
+                </div>
+              </div>
+
+              <div class="section">
+                <div class="section-title">Vehicle Details</div>
+                <div class="detail-row">
+                  <span class="detail-label">Vehicle Type:</span>
+                  <span class="detail-value">{{selectedTransferVehicleType}}</span>
+                </div>
+              </div>
+
+              <div class="section">
+                <div class="section-title">Passenger Details</div>
+                <div class="room-types-container">
+                  <!-- Fixed: Added trackBy function and caching -->
+                  @if (transferGuestConfiguration.length > 0) {
+                    @for (transferConfiguration of transferGuestConfiguration; track trackByTransferGuestConfiguration($index, transferConfiguration)) {
+                      <div class="room-type-card">
+                        <div class="room-type-header">
+                          <span class="room-type-name">{{transferConfiguration.paxType.name}}</span>
+                          <span class="room-count-badge">{{transferConfiguration.count}}</span>
+                          <button mat-mini-fab color="primary" class="remove-room-btn" (click)="removeGuestFromConfiguration($index)">
+                            <mat-icon>remove</mat-icon>
+                          </button>
+                        </div>
+                      </div>
+                    }
+                  }
+                </div>
+
+                <!-- Fixed: Use cached total calculations -->
+                <div class="transfer-passenger-summary-totals">
+                  <div class="detail-row">
+                    <span class="detail-label">Total Passenger:</span>
+                      <span class="detail-value">{{ getTotalTransferPaxCount() }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="section">
+                <!-- Fixed: Use cached booking amount calculation -->
+                @if (transferPriceConfiguration.length > 0 && selectedTransferContract) {
+                  <div class="section-title">Price Details</div>
+                  @for (priceDetails of transferPriceConfiguration; track $index) {
+                    <div class="detail-row">
+                      <span class="detail-label">{{ priceDetails.paxType.name + " ( " + getTransferRatePerPerson(priceDetails.paxType) + " x " + priceDetails.count + " )" }}:</span>
+                      <span class="detail-value">{{priceDetails.paxAmount.toFixed(2)}}</span>
+                    </div>
+                  }
+                  <div class="detail-row">
+                    <span class="detail-label">Discount amount :</span>
+                    <span class="detail-value">{{(transferDiscount > 0 ? transferDiscount : 0).toFixed(2)}}</span>
+                  </div>
+                }
+              </div>
+            </div>
+
+            <!-- Fixed: Use cached calculations -->
+            @if (selectedTransferContract && netAmountForBookedTransfer > 0) {
+              <div class="total-amount-section">
+                <div class="detail-row">
+                  <span class="detail-label">Total Amount:</span>
+                  <span class="detail-value total-price">
+                    {{netAmountForBookedTransfer.toFixed(2)}} {{currencyTypeMap[currencyCodeCached || 'LKR']}}</span>
+                </div>
+              </div>
+            }
+
+            <!-- Separate Booking Status Section -->
+            <div class="booking-status-section">
+              <div class="section-title">Booking Item Status</div>
+              <div class="detail-row">
+                <span class="detail-label">Status:</span>
+                <span class="detail-value" style="color: #28a745;">{{ bookingTransferItemStatus }}</span>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label">Booking Date:</span>
+                <span class="detail-value">{{ bookingDate | date:'MMM d, y' }}</span>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+  }
+
+  @if (isEnableGenericView) {
+    <mat-grid-tile [colspan]="4" [rowspan]="9">
+      <mat-card>
+        <mat-card-content>
+
+          <div class="booking-summary">
+            <div class="header">Booking Summary</div>
+
+            <!-- Main Booking Details Section -->
+            <div class="booking-details">
+              <div class="section">
+                <div class="generic-header-name">{{selectedGeneric?.name ? selectedGeneric?.name : 'No Selection'}}</div>
+                <div class="detail-row">
+                  <span class="detail-label">Reference:</span>
+                  <span class="detail-value">{{selectedGeneric?.reference || ''}}</span>
+                </div>
+              </div>
+
+              <div class="section">
+                <div class="section-title">Activity Details</div>
+                <div class="detail-row">
+                  <span class="detail-label">Start Date:</span>
+                  <span class="detail-value">{{genericChekInDate}}</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label">End Date:</span>
+                  <span class="detail-value">{{genericCheckOutDate}}</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label">Activity Type:</span>
+                  <span class="detail-value">{{selectedGenericType}}</span>
+                </div>
+              </div>
+
+              <div class="section">
+                <div class="section-title">Passenger Details</div>
+                <div class="room-types-container">
+                  <!-- Fixed: Added trackBy function and caching -->
+                  @if (genericGuestConfiguration.length > 0) {
+                    @for (genericConfiguration of genericGuestConfiguration; track trackByGenericGuestConfiguration($index, genericConfiguration)) {
+                      <div class="room-type-card">
+                        <div class="room-type-header">
+                          <span class="room-type-name">{{genericConfiguration.paxType.name}}</span>
+                          <span class="room-count-badge">{{genericConfiguration.count}}</span>
+                          <button mat-mini-fab color="primary" class="remove-room-btn" (click)="removeGuestFromGenericConfiguration($index)">
+                            <mat-icon>remove</mat-icon>
+                          </button>
+                        </div>
+                      </div>
+                    }
+                  }
+                </div>
+
+                <!-- Fixed: Use cached total calculations -->
+                <div class="transfer-passenger-summary-totals">
+                  <div class="detail-row">
+                    <span class="detail-label">Total Passenger:</span>
+                    <span class="detail-value">{{ getTotalGenericPaxCount() }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="section">
+                <!-- Fixed: Use cached booking amount calculation -->
+                @if (genericPriceConfiguration.length > 0 && selectedGeneric) {
+                  <div class="section-title">Price Details</div>
+                  @for (priceDetails of genericPriceConfiguration; track $index) {
+                    <div class="detail-row">
+                      <span class="detail-label">{{ priceDetails.paxType.name + " ( " + getAmountForGenericPaxTypeAndResident(priceDetails.paxType, priceDetails.residentType) + " x " + priceDetails.count + " )" }}:</span>
+                      <span class="detail-value">{{priceDetails.paxAmount.toFixed(2)}}</span>
+                    </div>
+                  }
+                  <div class="detail-row">
+                    <span class="detail-label">Discount amount :</span>
+                    <span class="detail-value">{{(genericDiscount > 0 ? genericDiscount : 0).toFixed(2)}}</span>
+                  </div>
+                }
+              </div>
+            </div>
+
+            <!-- Fixed: Use cached calculations -->
+            @if (selectedGeneric && netAmountForBookedGeneric > 0) {
+              <div class="total-amount-section">
+                <div class="detail-row">
+                  <span class="detail-label">Total Amount:</span>
+                  <span class="detail-value total-price">
+                    {{netAmountForBookedGeneric.toFixed(2)}} {{currencyTypeMap[currencyCodeCached || 'LKR']}}</span>
+                </div>
+              </div>
+            }
+
+            <!-- Separate Booking Status Section -->
+            <div class="booking-status-section">
+              <div class="section-title">Booking Item Status</div>
+              <div class="detail-row">
+                <span class="detail-label">Status:</span>
+                <span class="detail-value" style="color: #28a745;">{{ bookingGenericItemStatus }}</span>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label">Booking Date:</span>
+                <span class="detail-value">{{ bookingDate | date:'MMM d, y' }}</span>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+  }
+
+  @if (isEnableTourView) {
+    <mat-grid-tile [colspan]="4" [rowspan]="9">
+      <mat-card>
+        <mat-card-content>
+
+          <div class="booking-summary">
+            <div class="header">Booking Summary</div>
+
+            <!-- Main Booking Details Section -->
+            <div class="booking-details">
+              <div class="section">
+                <div class="tour-header-name">{{selectedTour?.name ? selectedTour?.name : 'No Selection'}}</div>
+                <div class="detail-row">
+                  <span class="detail-label">Reference:</span>
+                  <span class="detail-value">{{selectedTour?.reference || ''}}</span>
+                </div>
+              </div>
+
+              <div class="section">
+                <div class="section-title">Tour Details</div>
+                <div class="detail-row">
+                  <span class="detail-label">Start Date:</span>
+                  <span class="detail-value">{{selectedTour?.salesfrom ? selectedTour?.salesfrom : 'N/A' | date:'MMM d, y'}}</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label">End Date:</span>
+                  <span class="detail-value">{{selectedTour?.salesto ? selectedTour?.salesto : 'N/A' | date:'MMM d, y'}}</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label">Duration:</span>
+                  <span class="detail-value">{{ getTourDuration() }}</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label">Tour Type:</span>
+                  <span class="detail-value">{{ selectedTour?.tourtype ? selectedTour?.tourtype?.name : 'N/A' }}</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label">Tour Category:</span>
+                  <span class="detail-value">{{ selectedTour?.tourcategory ? selectedTour?.tourcategory?.name : 'N/A' }}</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label">Tour Theme:</span>
+                  <span class="detail-value">{{ selectedTour?.tourtheme ? selectedTour?.tourtheme?.name : 'N/A' }}</span>
+                </div>
+              </div>
+
+              <div class="section">
+                <div class="section-title">Passenger Details</div>
+                <div class="room-types-container">
+                  <div class="detail-row">
+                    <span class="detail-label">Max Capacity:</span>
+                    <span class="detail-value">{{ selectedTour?.maxpaxcount ? selectedTour?.maxpaxcount : 'N/A' }}</span>
+                  </div>
+                  <!-- Fixed: Added trackBy function and caching -->
+                  @if (tourGuestConfiguration.length > 0) {
+                    @for (tourConfiguration of tourGuestConfiguration; track $index) {
+                      <div class="room-type-card">
+                        <div class="room-type-header">
+                          <span class="room-type-name">{{tourConfiguration.paxType.name}}</span>
+                          <span class="room-count-badge">{{tourConfiguration.count}}</span>
+                          <button mat-mini-fab color="primary" class="remove-room-btn" (click)="removeGuestFromTourConfiguration($index)">
+                            <mat-icon>remove</mat-icon>
+                          </button>
+                        </div>
+                      </div>
+                    }
+                  }
+                </div>
+
+                <!-- Fixed: Use cached total calculations -->
+                <div class="transfer-passenger-summary-totals">
+                  <div class="detail-row">
+                    <span class="detail-label">Total Passenger:</span>
+                    <span class="detail-value">{{ getTotalTourPaxCount() }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="section">
+                <!-- Fixed: Use cached booking amount calculation -->
+                @if (tourPriceConfiguration.length > 0 && selectedTour) {
+                  <div class="section-title">Price Details</div>
+                  @for (priceDetails of tourPriceConfiguration; track $index) {
+                    <div class="detail-row">
+                      <span class="detail-label">{{ priceDetails.paxType.name + " ( " + getTourAmountForPaxType(priceDetails.paxType) + " x " + priceDetails.count + " )" }}:</span>
+                      <span class="detail-value">{{priceDetails.paxAmount.toFixed(2)}}</span>
+                    </div>
+                  }
+                  <div class="detail-row">
+                    <span class="detail-label">Discount amount :</span>
+                    <span class="detail-value">{{(tourDiscount > 0 ? tourDiscount : 0).toFixed(2)}}</span>
+                  </div>
+                }
+              </div>
+            </div>
+
+            <!-- Fixed: Use cached calculations -->
+            @if (selectedTour && netAmountForBookedTour > 0) {
+              <div class="total-amount-section">
+                <div class="detail-row">
+                  <span class="detail-label">Total Amount:</span>
+                  <span class="detail-value total-price">
+                    {{netAmountForBookedTour.toFixed(2)}} {{currencyTypeMap[currencyCodeCached || 'LKR']}}</span>
+                </div>
+              </div>
+            }
+
+            <!-- Separate Booking Status Section -->
+            <div class="booking-status-section">
+              <div class="section-title">Booking Item Status</div>
+              <div class="detail-row">
+                <span class="detail-label">Status:</span>
+                <span class="detail-value" style="color: #28a745;">{{ bookingGenericItemStatus }}</span>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label">Booking Date:</span>
+                <span class="detail-value">{{ bookingDate | date:'MMM d, y' }}</span>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+  }
+
+
+
+  <!--=============================Booking Details View=================================================-->
+  @if (isEnableBookingView) {
+    <mat-grid-tile [colspan]="12" [rowspan]="9">
+      <mat-card>
+        <mat-card-content>
+          <app-booking-view></app-booking-view>
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+  }
+
+  <!--============================Shared Itinerary Selection===========================================-->
+  <ng-template #sharedItinerarySelection>
+    <div class="service-options-container">
+
+      <div class="service-buttons">
+        <div class="service-button hotel"
+             (click)="selectedDisplayView('accomm')">
+          <mat-icon>hotel</mat-icon>
+          <span class="tooltiptext">Accommodation</span>
+        </div>
+
+        <div class="service-button car"
+             (click)="selectedDisplayView('transfer')">
+          <mat-icon>airport_shuttle</mat-icon>
+          <span class="tooltiptext">Car</span>
+        </div>
+
+        <div class="service-button activity"
+             (click)="selectedDisplayView('generic')">
+          <mat-icon>event</mat-icon>
+          <span class="tooltiptext">Activities</span>
+        </div>
+
+        <div class="service-button activity"
+             (click)="selectedDisplayView('tour')">
+          <mat-icon>explore</mat-icon>
+          <span class="tooltiptext">Tour</span>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+
+  <!--============================Shared Client Selection===========================================-->
+  <ng-template #sharedClientSelection>
+    <mat-card>
+      <mat-card-content>
+
+        <div class="client-filter-container">
+          <!-- Action Buttons Section -->
+          <div class="action-cards-container">
+            <mat-card class="action-card add-new-card" >
+              <div class="card-content"  (click)="addNewClient()">
+                <div class="icon-container">
+                  <mat-icon class="card-icon">person_add</mat-icon>
+                </div>
+                <div class="text-content">
+                  <h3 class="card-title">Add New Client</h3>
+                  <p class="card-subtitle">Register a new client for booking</p>
+                </div>
+              </div>
+            </mat-card>
+
+            <mat-card class="action-card dummy-card" >
+              <div class="card-content" (click)="proceedAsDummyClient()">
+                <div class="icon-container">
+                  <mat-icon class="card-icon">person_off</mat-icon>
+                </div>
+                <div class="text-content">
+                  <h3 class="card-title">Proceed as Dummy</h3>
+                  <p class="card-subtitle">Continue without client details</p>
+                </div>
+              </div>
+            </mat-card>
+          </div>
+
+          <!-- Search and Navigation Section -->
+          <div class="search-nav-container">
+            <mat-form-field appearance="outline" class="search-field">
+              <mat-label>Search Clients</mat-label>
+              <input matInput
+                     placeholder="Search by name, email, or phone"
+                     (input)="filterClients($event)">
+              <mat-icon matSuffix>search</mat-icon>
+            </mat-form-field>
+
+            <button mat-raised-button class="back-button" (click)="goBack()">
+              <mat-icon>arrow_back</mat-icon>
+              Go Back
+            </button>
+          </div>
+        </div>
+
+        <div class="client-container">
+
+          <div class="search-results-header">
+            <div class="result-header">
+              Clients
+            </div>
+            <div class="loading">
+              <img [src]="clientLoadImageURL" alt="loading-gif">
+            </div>
+            <div class="result-count">
+              Item found : {{ filteredClients.length }}
+            </div>
+          </div>
+
+          <div class="client-accordion-container">
+            <mat-accordion>
+              @for (client of filteredClients; track client.id) {
+                <mat-expansion-panel>
+
+                  <mat-expansion-panel-header>
+                    <mat-panel-title>
+                      <mat-icon>person</mat-icon>
+                      <div class="client-basic-detail-container">
+                        <div class="client-name">{{ client.fullname }}</div>
+                        <div class="client-email">{{ client.customerContacts[0]?.email }}</div>
+                        <div class="client-phone">{{ client.customerContacts[0]?.mobile }}</div>
+                      </div>
+                    </mat-panel-title>
+
+                    <mat-panel-description>
+                      <div class="panel-description-container">
+                        <div class="quick-client-actions">
+                          <button mat-icon-button class="quick-client-action-button select-btn" (click)="selectClient(client)">
+                            <mat-icon>check</mat-icon>
+                          </button>
+                          <button mat-icon-button class="quick-client-action-button edit-btn">
+                            <mat-icon>edit</mat-icon>
+                          </button>
+                          <button mat-icon-button class="quick-client-action-button history-btn">
+                            <mat-icon>history</mat-icon>
+                          </button>
+                        </div>
+                        <div class="last-booking">
+                          <mat-icon>event</mat-icon>
+                          <span>Last Booking</span>
+                          <div class="booking-date">2024-12-15</div>
+                        </div>
+                      </div>
+                    </mat-panel-description>
+                  </mat-expansion-panel-header>
+
+                  <!-- Panel Content -->
+                  <div class="client-panel-content">
+                    <div class="content-grid">
+
+                      <!-- Basic Information -->
+                      <div class="info-section">
+                        <h3 class="section-title">
+                          <mat-icon>person_outline</mat-icon>
+                          Basic Information
+                        </h3>
+                        <div class="info-grid">
+                          <div class="info-item">
+                            <label>Full Name:</label>
+                            <span>{{ client.fullname }}</span>
+                          </div>
+                          <div class="info-item">
+                            <label>Calling Name:</label>
+                            <span>{{ client.callingname }}</span>
+                          </div>
+                          <div class="info-item">
+                            <label>Customer Code:</label>
+                            <span>{{ client.code }}</span>
+                          </div>
+                          <div class="info-item">
+                            <label>Date of Birth:</label>
+                            <span>{{ client.dobirth | date:'dd/MM/yyyy' }}</span>
+                          </div>
+                          <div class="info-item">
+                            <label>Gender:</label>
+                            <span>{{ client.gender?.name }}</span>
+                          </div>
+                          <div class="info-item">
+                            <label>Resident Type:</label>
+                            <span>{{ client.residenttype?.name }}</span>
+                          </div>
+                          @if (client.description) {
+                            <div class="info-item full-width">
+                              <label>Description:</label>
+                              <span>{{ client.description }}</span>
+                            </div>
+                          }
+                        </div>
+                      </div>
+
+                      <!-- Contact Information -->
+                      <div class="info-section">
+                        <h3 class="section-title">
+                          <mat-icon>contact_phone</mat-icon>
+                          Contact Information
+                        </h3>
+                        @for (contact of client.customerContacts; track contact.id) {
+                          <div class="contact-card">
+                            <div class="info-grid">
+                              <div class="info-item">
+                                <label>Mobile:</label>
+                                <span>{{ contact.mobile }}</span>
+                              </div>
+                              <div class="info-item">
+                                <label>Landline:</label>
+                                <span>{{ contact.land || 'N/A' }}</span>
+                              </div>
+                              <div class="info-item">
+                                <label>Email:</label>
+                                <span>{{ contact.email }}</span>
+                              </div>
+                              <div class="info-item">
+                                <label>Emergency Contact:</label>
+                                <span>{{ contact.emergencyContactNumber || 'N/A' }}</span>
+                              </div>
+                              <div class="info-item full-width">
+                                <label>Address:</label>
+                                <span>
+                        {{ contact.addressLine1 }}
+                                  @if (contact.addressLine2) {
+                                    <br>{{ contact.addressLine2 }}
+                                  }
+                                  @if (contact.city || contact.postalCode) {
+                                    <br>{{ contact.city }} {{ contact.postalCode }}
+                                  }
+                                  @if (contact.country) {
+                                    <br>{{ contact.country }}
+                                  }
+                      </span>
+                              </div>
+                            </div>
+                          </div>
+                        }
+                      </div>
+
+                      <!-- Identity Information -->
+                      @if (client.customerIdentities && client.customerIdentities.length > 0) {
+                        <div class="info-section">
+                          <h3 class="section-title">
+                            <mat-icon>badge</mat-icon>
+                            Identity Information
+                          </h3>
+                          @for (identity of client.customerIdentities; track identity.id) {
+                            <div class="identity-card">
+                              <div class="info-grid">
+                                @if (identity.nic) {
+                                  <div class="info-item">
+                                    <label>NIC:</label>
+                                    <span>{{ identity.nic }}</span>
+                                  </div>
+                                }
+                                @if (identity.passportNo) {
+                                  <div class="info-item">
+                                    <label>Passport No:</label>
+                                    <span>{{ identity.passportNo }}</span>
+                                  </div>
+                                }
+                                @if (identity.passportExpiryDate) {
+                                  <div class="info-item">
+                                    <label>Passport Expiry:</label>
+                                    <span>{{ identity.passportExpiryDate | date:'dd/MM/yyyy' }}</span>
+                                  </div>
+                                }
+                              </div>
+                            </div>
+                          }
+                        </div>
+                      }
+
+                      <!-- Passengers -->
+                      @if (client.passengers && client.passengers.length > 0) {
+                        <div class="info-section full-width">
+                          <h3 class="section-title">
+                            <mat-icon>groups</mat-icon>
+                            Passengers
+                          </h3>
+                          <div class="passengers-grid">
+                            @for (passenger of client.passengers; track passenger.id) {
+                              <div class="passenger-card">
+                                <div class="passenger-header">
+                                  <mat-icon>person</mat-icon>
+                                  <span class="passenger-name">{{ passenger.name }}</span>
+                                </div>
+                                <div class="passenger-details">
+                                  <div class="detail-item">
+                                    <small>Code:</small>
+                                    <span>{{ passenger.code }}</span>
+                                  </div>
+                                  <div class="detail-item">
+                                    <small>Age:</small>
+                                    <span>{{ passenger.age }}</span>
+                                  </div>
+                                  <div class="detail-item">
+                                    <small>Relationship:</small>
+                                    <span>{{ passenger.relationship?.name || 'N/A' }}</span>
+                                  </div>
+                                  <div class="detail-item">
+                                    <small>Passenger Type:</small>
+                                    <span>{{ passenger.paxtype?.name || 'N/A' }}</span>
+                                  </div>
+                                  <div class="detail-item">
+                                    <small>Resident Type:</small>
+                                    <span>{{ passenger.residenttype?.name || 'N/A' }}</span>
+                                  </div>
+                                </div>
+                              </div>
+                            }
+                          </div>
+                        </div>
+                      }
+
+                      <!-- Action Buttons -->
+                      <div class="action-section full-width">
+                        <div class="action-buttons">
+                          <button mat-raised-button color="primary" class="action-btn select-btn"
+                                  (click)="selectClient(client)"
+                          >
+                            <mat-icon>check</mat-icon>
+                            Select Client
+                          </button>
+                          <button mat-stroked-button class="action-btn edit-btn">
+                            <mat-icon>edit</mat-icon>
+                            Edit Details
+                          </button>
+                          <button mat-stroked-button class="action-btn history-btn">
+                            <mat-icon>history</mat-icon>
+                            View History
+                          </button>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+
+                </mat-expansion-panel>
+              }
+            </mat-accordion>
+          </div>
+
+        </div>
+
+      </mat-card-content>
+    </mat-card>
+  </ng-template>
+
+  <!--====================================Shared Booking Form=========================================-->
+  <ng-template #sharedBookingForm>
+    <div class="booking-form">
+
+      <form [formGroup]="bookingForm">
+
+        <mat-form-field appearance="outline">
+          <mat-label>Select a User</mat-label>
+          <input type="text"
+                 matInput
+                 formControlName="user"
+                 [matAutocomplete]="auto">
+          <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [displayWith]="displayUserName">
+            @for (user of filteredUserList | async; track user.id) {
+              <mat-option [value]="user">{{user.employee.callingname}}</mat-option>
+            }
+          </mat-autocomplete>
+          <mat-icon matIconSuffix>verified_user</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Code</mat-label>
+          <input matInput formControlName="code">
+          <mat-icon matIconSuffix>confirmation_number</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Gross Amount</mat-label>
+          <input matInput formControlName="grossamount">
+          <mat-icon matIconSuffix>payments</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Discounted Amount</mat-label>
+          <input matInput formControlName="discountamount">
+          <mat-icon matIconSuffix>percent</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Net Amount</mat-label>
+          <input matInput formControlName="netamount">
+          <mat-icon matIconSuffix>calculate</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Total Paid</mat-label>
+          <input matInput formControlName="totalpaid">
+          <mat-icon matIconSuffix>credit_score</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Balance</mat-label>
+          <input matInput formControlName="balance">
+          <mat-icon matIconSuffix>account_balance</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Select Departure, End Dates</mat-label>
+          <mat-date-range-input
+            [rangePicker]="DepartureAndEndDatePicker"
+            [min]="minDepartureDate"
+
+          >
+            <input matStartDate placeholder="Departure Date" formControlName="departuredate">
+            <input matEndDate placeholder="End Date" formControlName="enddate">
+          </mat-date-range-input>
+          <mat-datepicker-toggle matIconSuffix [for]="DepartureAndEndDatePicker"></mat-datepicker-toggle>
+          <mat-date-range-picker #DepartureAndEndDatePicker></mat-date-range-picker>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Select a Booking Status</mat-label>
+          <mat-select formControlName="bookingstatus">
+            <mat-option [value]="null">Not selected</mat-option>
+            @for (bookingStatus of bookingStatuses; track bookingStatus.id) {
+              <mat-option [value]="bookingStatus">{{ bookingStatus.name }}</mat-option>
+            }
+          </mat-select>
+          <mat-icon matIconSuffix>event_note</mat-icon>
+        </mat-form-field>
+      </form>
+
+      <div class="control-button-panel">
+        <button class="control-add-btn" mat-raised-button (click)="save()"
+                [disabled]="!(enableAdd && hasInsertAuthority && !isEnableBookingDataModify)">Add
+        </button>
+        <button class="control-clear-btn" mat-raised-button (click)="clear()">Clear</button>
+        <button class="control-update-btn" mat-raised-button (click)="update()"
+                [disabled]="!isEnableBookingDataModify && !(enableUpdate && hasUpdateAuthority)">Update
+        </button>
+<!--        <button class="control-delete-btn" mat-raised-button-->
+<!--                [disabled]="!(enableDelete && hasDeleteAuthority)">Delete-->
+<!--        </button>-->
+        <button class="control-payment-btn" mat-raised-button (click)="payment()">Payment
+        </button>
+      </div>
+
+    </div>
+  </ng-template>
+
+  <!--====================================Shared Passenger Form=========================================-->
+  <ng-template #sharedPassengerForm>
+    <div class="booking-passenger-form">
+        @if (bookingPassengers.length > 0) {
+          <av-data-table
+            [TableHeaders]="passengerTableHeaders"
+            [TableColumns]="passengerTableColumns"
+            [Data]="bookingPassengers"
+          >
+          </av-data-table>
+        } @else {
+          <div class="no-selected-client">No Selected Client... Please select a Client</div>
+
+          <div class="client-selection-container">
+            <ng-container *ngTemplateOutlet="sharedClientSelection"></ng-container>
+          </div>
+        }
+    </div>
+  </ng-template>
+
+  <!--====================================Shared Payment Container=======================================-->
+  <ng-template #sharedPaymentContainer>
+    <div class="payment-container">
+      <div class="payment-header">
+        <div class="payment-title">
+          Add Payment
+        </div>
+        <div class="panel-close">
+          <button mat-mini-fab (click)="closePaymentDialog()">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+      </div>
+      <app-client-payment [showTemporaryPaymentSaveButton]="true"></app-client-payment>
+    </div>
+  </ng-template>
+
+  <!--====================================Shared Booking Item Container=======================================-->
+  <ng-template #sharedBookingItems>
+    @if (storedBookingAccommodations.length > 0) {
+      <div class="booking-item-table">
+        <div class="booking-item-table-header">Accommodations</div>
+          <av-data-table
+            (onItemRemoved)="removeAccommodationFromBooking($event)"
+            [TableHeaders]="bookedAccommodationTableHeaders"
+            [TableColumns]="bookedAccommodationTableColumns"
+            [EnableActionColumn]="true"
+            [EnableButtonDelete]="true"
+            [DisableRemove]="isEnableBookingDataModify"
+            [Data]="storedBookingAccommodations"
+          >
+          </av-data-table>
+      </div>
+    }
+
+    @if (storedBookingTransferContracts.length > 0) {
+      <div class="booking-item-table">
+        <div class="booking-item-table-header">Transfers</div>
+        <av-data-table
+          (onItemRemoved)="removeTransferFromBooking($event)"
+          [TableHeaders]="bookedTransferTableHeaders"
+          [TableColumns]="bookedTransferTableColumns"
+          [EnableActionColumn]="true"
+          [EnableButtonDelete]="true"
+          [DisableRemove]="isEnableBookingDataModify"
+          [Data]="storedBookingTransferContracts"
+        >
+        </av-data-table>
+      </div>
+    }
+
+    @if (storedBookingGenerics.length > 0) {
+      <div class="booking-item-table">
+        <div class="booking-item-table-header">Activities</div>
+        <av-data-table
+          (onItemRemoved)="removeGenericFromBooking($event)"
+          [TableHeaders]="bookedGenericTableHeaders"
+          [TableColumns]="bookedGenericTableColumns"
+          [EnableActionColumn]="true"
+          [EnableButtonDelete]="true"
+          [DisableRemove]="isEnableBookingDataModify"
+          [Data]="storedBookingGenerics"
+        >
+        </av-data-table>
+      </div>
+    }
+
+    @if (storedBookingTours.length > 0) {
+      <div class="booking-item-table">
+        <div class="booking-item-table-header">Tours</div>
+        <av-data-table
+          (onItemRemoved)="removeTourFromBooking($event)"
+          [TableHeaders]="bookedTourTableHeaders"
+          [TableColumns]="bookedTourTableColumns"
+          [EnableActionColumn]="true"
+          [EnableButtonDelete]="true"
+          [DisableRemove]="isEnableBookingDataModify"
+          [Data]="storedBookingTours"
+        >
+        </av-data-table>
+      </div>
+    }
+
+
+  </ng-template>
+
+
+
+</mat-grid-list>

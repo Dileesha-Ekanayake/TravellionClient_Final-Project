@@ -1,0 +1,478 @@
+<div class="back-button">
+  <button mat-raised-button color="primary" (click)="backToBookings()">
+    <mat-icon>arrow_back</mat-icon>
+    Back to Bookings
+  </button>
+</div>
+
+@if (isEnableBookingGridView) {
+
+<!--<mat-card>-->
+<!--  <mat-card-content>-->
+
+  <div class="table-header-section">
+    <mat-form-field style="padding-top: 10px; width: 100%" appearance="outline" class="search-input">
+      <mat-label>Filter Here</mat-label>
+      <input matInput (keyup)="filterTable($event)" #input>
+      <mat-icon matSuffix style="color: black !important;">filter_list</mat-icon>
+    </mat-form-field>
+    <div class="loading">
+      <img [src]="bookingLoadingImageURL" alt="loading-gif">
+    </div>
+    <div class="item-count-label">
+      <span>Total Bookings : </span>
+      <mat-form-field appearance="outline" class="item-count-input">
+        <input matInput readonly type="number" placeholder="0" value="{{ filteredBookings.length }}">
+      </mat-form-field>
+    </div>
+    <div class="view-selection-btns">
+      <button mat-stroked-button [ngClass]="{'active' : isBookingTableView}" (click)="setBookingGridOrTableView('table')">
+        <mat-icon>data_table</mat-icon>
+      </button>
+      <button mat-stroked-button [ngClass]="{'active' : isBookingGridView}" (click)="setBookingGridOrTableView('grid')">
+        <mat-icon>table</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  @if (isBookingGridView) {
+
+    <div class="booking-grid-card-container">
+      @for (booking of filteredBookings; track booking.id) {
+        <div class="booking-grid-card-container">
+          <div class="booking-grid-card">
+            <!-- Header Section -->
+            <div class="booking-grid-card-header"
+                 style="background: linear-gradient(135deg, #E3F2FD, #BBDEFB);">
+              <div class="booking-grid-card-customer-info">
+                <h3 class="booking-grid-card-customer-name">{{ getLeadPassengerName(booking) }}</h3>
+                <span class="booking-grid-card-code">{{ booking.code }}</span>
+              </div>
+              <span class="booking-grid-card-status"
+                    [class]="'status-' + booking.bookingstatus.name.toLowerCase()">
+                {{ booking.bookingstatus.name }}
+              </span>
+            </div>
+
+            <div class="booking-details">
+              <div class="booking-detail-row">
+                <mat-icon class="booking-detail-icon">event</mat-icon>
+                <span class="booking-detail-text">{{ booking.departuredate | date:'yyyy-MM-dd' }}
+                  - {{ booking.enddate | date:'yyyy-MM-dd' }}</span>
+              </div>
+              <div class="booking-detail-row">
+                <mat-icon class="booking-detail-icon">hotel</mat-icon>
+                <span class="booking-detail-text">{{ getBookingDuration(booking) - 1 }}
+                  Nights {{ getBookingDuration(booking) }} Days Package</span>
+              </div>
+              <div class="booking-detail-row">
+                <mat-icon class="booking-detail-icon">group</mat-icon>
+                <span class="booking-detail-text">{{ booking.bookingpassengers.length }} guests</span>
+              </div>
+              <div class="booking-detail-row">
+                <mat-icon class="booking-detail-icon">location_city</mat-icon>
+                <span class="booking-detail-text">{{ getItineraryCount(booking).accommCount }}
+                  accommodations</span>
+              </div>
+              <div class="booking-detail-row">
+                <mat-icon class="booking-detail-icon">commute</mat-icon>
+                <span class="booking-detail-text">{{ getItineraryCount(booking).transferCount }}
+                  transfers</span>
+              </div>
+              <div class="booking-detail-row">
+                <mat-icon class="booking-detail-icon">event</mat-icon>
+                <span class="booking-detail-text">{{ getItineraryCount(booking).genericCount }}
+                  activities</span>
+              </div>
+              <div class="booking-detail-row">
+                <mat-icon class="booking-detail-icon">explore</mat-icon>
+                <span class="booking-detail-text">{{ getItineraryCount(booking).tourCount }} tours</span>
+              </div>
+              <p class="booking-detail-description">A {{ getBookingDuration(booking) - 1 }}
+                night, {{ getBookingDuration(booking) }} day trip exploring key attractions.</p>
+              <div class="booking-price">
+                <span class="price-label">Price</span>
+                <span class="price-amount">${{ booking.netamount }}</span>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="booking-actions">
+              <button class="primary-btn"
+                      style="background: linear-gradient(90deg, #007BFF, #0056B3); box-shadow: 0 2px 4px rgba(0, 123, 255, 0.3);"
+                      (click)="selectRow(booking)">
+                View Details
+              </button>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  @if (isBookingTableView) {
+    <mat-table [dataSource]="bookingData">
+
+      @for (column of columns; track columns; let i = $index) {
+        <ng-container [matColumnDef]="column">
+          <!-- Header Cell -->
+          <mat-header-cell *matHeaderCellDef> {{ headers[i] }}</mat-header-cell>
+          <!-- Normal Data Cells -->
+          <mat-cell *matCellDef="let element">
+            @if (column === 'modify/view') {
+              <!-- Action Buttons -->
+              <div class="tbl-btn-container">
+                <button mat-icon-button class="modify-btn">
+                  <mat-icon>border_color</mat-icon>
+                </button>
+                <button mat-icon-button class="view-btn">
+                  <mat-icon>remove_red_eye</mat-icon>
+                </button>
+              </div>
+            } @else if (column === 'guest') {
+              {{ getLeadPassengerName(element) }}
+            } @else {
+              {{ element[column]?.name || element[column] }}
+            }
+          </mat-cell>
+        </ng-container>
+      }
+
+      <mat-header-row *matHeaderRowDef="columns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: columns;" (click)="selectRow(row)"
+               [ngClass]="{'selected-row': row === selectedBookingRow}"></mat-row>
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell" colspan="4">No data matching the filter "{{ input.value }}"</td>
+      </tr>
+
+    </mat-table>
+
+    <mat-paginator [length]="20" [pageSize]="5" [pageSizeOptions]="[3,5,10,20]"
+                   showFirstLastButtons></mat-paginator>
+  }
+<!--  </mat-card-content>-->
+<!--  </mat-card>-->
+
+}
+
+@if (isEnableBookingDetailView && booking != null) {
+
+  <div class="booking-details-container" #bookingDetailsContainer>
+    <!-- Main Content -->
+    <div class="booking-main-content">
+      <!-- Booking Header -->
+      <div class="booking-header">
+        <div class="booking-header-info">
+          <h1 class="booking-title">Booking #{{ booking.code }}</h1>
+          <div class="booking-meta">
+              <span class="booking-dates">
+                <i class="icon-calendar"></i>
+                {{ booking.departuredate | date }} - {{ booking.enddate | date }}
+              </span>
+            <span class="booking-status" [ngClass]="'status-' + booking.bookingstatus.name.toLowerCase()">
+                {{ booking.bookingstatus.name }}
+              </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Passengers Section -->
+      <div class="booking-section">
+        <div class="section-header">
+          <h2 class="section-title">Passengers</h2>
+          <span class="section-count">{{ booking.bookingpassengers.length }}</span>
+        </div>
+        <div class="passengers-grid">
+          @for (passenger of booking.bookingpassengers; track passenger.id) {
+            <div class="passenger-card">
+              <div class="passenger-info">
+                <h3 class="passenger-name">{{ passenger.name }}</h3>
+                <div class="passenger-details">
+                  <span class="passenger-code">{{ passenger.code }}</span>
+                  <span class="passenger-age">Age: {{ passenger.age }}</span>
+                  @if (passenger.leadpassenger) {
+                    <span class="lead-passenger-badge">Lead Passenger</span>
+                  }
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Accommodations Section -->
+      @if (booking.bookingaccommodations && booking.bookingaccommodations.length > 0) {
+        <div class="booking-section">
+          <div class="section-header">
+            <h2 class="section-title">Accommodations</h2>
+            <span class="section-count">{{ booking.bookingaccommodations.length }}</span>
+          </div>
+          <div class="accommodations-list">
+            @for (accommodation of booking.bookingaccommodations; track accommodation.id) {
+              <div class="accommodation-card">
+                <div class="accommodation-header">
+                  <h3 class="accommodation-name">{{ accommodation.accommodation.name }}</h3>
+                  <div class="accommodation-status">
+                      <span class="status-badge"
+                            [ngClass]="'status-' + accommodation.bookingitemstatus.name.toLowerCase()">
+                        {{ accommodation.bookingitemstatus.name }}
+                      </span>
+                  </div>
+                </div>
+                <div class="accommodation-details">
+                  <div class="accommodation-dates">
+                    <span class="date-label">Check-in:</span>
+                    <span class="date-value">{{ accommodation.fromdatetime | date:'medium' }}</span>
+                    <span class="date-label">Check-out:</span>
+                    <span class="date-value">{{ accommodation.todatetime | date:'medium' }}</span>
+                  </div>
+                  <div class="accommodation-pricing">
+                    <div class="price-item">
+                      <span class="price-label">Total:</span>
+                      <span class="price-value">{{ accommodation.totalamount | currency }}</span>
+                    </div>
+                    <div class="price-item">
+                      <span class="price-label">Discount:</span>
+                      <span class="price-value discount">-{{ accommodation.discountamount | currency }}</span>
+                    </div>
+                    <div class="price-item">
+                      <span class="price-label">Supplier:</span>
+                      <span class="price-value">{{ accommodation.supplieramount | currency }}</span>
+                    </div>
+                  </div>
+                </div>
+                @if (accommodation.bookingaccommodationrooms.length > 0) {
+                  <div class="accommodation-rooms">
+                    <h4 class="rooms-title">Rooms</h4>
+                    <div class="rooms-grid">
+                      @for (room of accommodation.bookingaccommodationrooms; track room.id) {
+                        <div class="room-item">
+                          <div class="room-details">
+                            <span class="room-type">{{ room.roomtype }}</span>
+                            <span class="room-pax">{{ room.paxtype }}</span>
+                            <span class="room-count">x{{ room.count }}</span>
+                          </div>
+                          <div class="room-amount">{{ room.amount | currency }}</div>
+                        </div>
+                      }
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Transfers Section -->
+      @if (booking.bookingtransfers && booking.bookingtransfers.length > 0) {
+        <div class="booking-section">
+          <div class="section-header">
+            <h2 class="section-title">Transfers</h2>
+            <span class="section-count">{{ booking.bookingtransfers.length }}</span>
+          </div>
+          <div class="transfers-list">
+            @for (transfer of booking.bookingtransfers; track transfer.id) {
+              <div class="transfer-card">
+                <div class="transfer-header">
+                  <h3 class="transfer-name">{{ transfer.transfercontract.reference }}</h3>
+                  <span class="status-badge"
+                        [ngClass]="'status-' + transfer.bookingitemstatus.name.toLowerCase()">
+                        {{ transfer.bookingitemstatus.name }}
+                  </span>
+                </div>
+                <div class="transfer-details">
+                  <div class="transfer-timing">
+                    <span class="timing-label">From:</span>
+                    <span class="timing-value">{{ transfer.fromdatetime | date:'medium' }}</span>
+                    <span class="timing-label">To:</span>
+                    <span class="timing-value">{{ transfer.todatetime | date:'medium' }}</span>
+                  </div>
+                  <div class="transfer-pricing">
+                    <div class="price-item">
+                      <span class="price-label">Total:</span>
+                      <span class="price-value">{{ transfer.totalamount | currency }}</span>
+                    </div>
+                    <div class="price-item">
+                      <span class="price-label">Discount:</span>
+                      <span class="price-value discount">-{{ transfer.discountamount | currency }}</span>
+                    </div>
+                    <div class="price-item">
+                      <span class="price-label">Supplier:</span>
+                      <span class="price-value">{{ transfer.supplieramount | currency }}</span>
+                    </div>
+                  </div>
+                </div>
+                @if (transfer.bookingtransferdetails.length > 0) {
+                  <div class="transfer-details-list">
+                    <h4 class="details-title">Transfer Details</h4>
+                    @for (detail of transfer.bookingtransferdetails; track detail.id) {
+                      <div class="transfer-detail-item">
+                        <div class="detail-route">
+                          <span class="pickup">{{ detail.pickuplocation }}</span>
+                          <i class="icon-arrow-right">
+                            <mat-icon style="color: #1a202c !important;">arrow_forward</mat-icon>
+                          </i>
+                          <span class="drop">{{ detail.droplocation }}</span>
+                        </div>
+                        <div class="detail-pax">
+                          <span class="pax-type">{{ detail.paxtype }}</span>
+                          <span class="pax-count">x{{ detail.paxcount }}</span>
+                        </div>
+                        <div class="detail-amount">{{ detail.totalamount | currency }}</div>
+                      </div>
+                    }
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Generic Services Section -->
+      @if (booking.bookinggenerics && booking.bookinggenerics.length > 0) {
+        <div class="booking-section">
+          <div class="section-header">
+            <h2 class="section-title">Generic Services</h2>
+            <span class="section-count">{{ booking.bookinggenerics.length }}</span>
+          </div>
+          <div class="generics-list">
+            @for (generic of booking.bookinggenerics; track generic.id) {
+              <div class="generic-card">
+                <div class="generic-header">
+                  <h3 class="generic-name">{{ generic.generic.name }}</h3>
+                  <span class="status-badge"
+                        [ngClass]="'status-' + generic.bookingitemstatus.name.toLowerCase()">
+                          {{ generic.bookingitemstatus.name }}
+                    </span>
+                </div>
+                <div class="generic-details">
+                  <div class="generic-timing">
+                    <span class="timing-label">From:</span>
+                    <span class="timing-value">{{ generic.fromdatetime | date:'medium' }}</span>
+                    <span class="timing-label">To:</span>
+                    <span class="timing-value">{{ generic.todatetime | date:'medium' }}</span>
+                  </div>
+                  <div class="generic-pricing">
+                    <div class="price-item">
+                      <span class="price-label">Total:</span>
+                      <span class="price-value">{{ generic.totalamount | currency }}</span>
+                    </div>
+                    <div class="price-item">
+                      <span class="price-label">Discount:</span>
+                      <span class="price-value discount">-{{ generic.discountamount | currency }}</span>
+                    </div>
+                    <div class="price-item">
+                      <span class="price-label">Supplier:</span>
+                      <span class="price-value">{{ generic.supplieramount | currency }}</span>
+                    </div>
+                  </div>
+                </div>
+                @if (generic.bookinggenericpaxes.length > 0) {
+                  <div class="generic-paxes">
+                    <h4 class="paxes-title">Passenger Details</h4>
+                    <div class="paxes-grid">
+                      @for (pax of generic.bookinggenericpaxes; track pax.id) {
+                        <div class="pax-item">
+                          <span class="pax-type">{{ pax.paxtype }}</span>
+                          <span class="pax-count">x{{ pax.paxcount }}</span>
+                          <span class="pax-amount">{{ pax.amount | currency }}</span>
+                        </div>
+                      }
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Tours Section -->
+      @if (booking.bookingtours && booking.bookingtours.length > 0) {
+        <div class="booking-section">
+          <div class="section-header">
+            <h2 class="section-title">Tours</h2>
+            <span class="section-count">{{ booking.bookingtours.length }}</span>
+          </div>
+          <div class="tours-list">
+            @for (tour of booking.bookingtours; track tour.id) {
+              <div class="tour-card">
+                <div class="tour-header">
+                  <h3 class="tour-name">{{ tour.tourcontract.name }}</h3>
+                  <span class="status-badge" [ngClass]="'status-' + tour.bookingitemstatus.name.toLowerCase()">
+                      {{ tour.bookingitemstatus.name }}
+                    </span>
+                </div>
+                <div class="tour-details">
+                  <div class="tour-amount">
+                    <span class="amount-label">Total Amount:</span>
+                    <span class="amount-value">{{ tour.totalamount | currency }}</span>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Sidebar Price Details -->
+    <div class="booking-sidebar">
+      <div class="price-summary-card">
+        <h3 class="summary-title">Price Summary</h3>
+
+        <div class="price-breakdown">
+          <div class="price-row">
+            <span class="price-label">Gross Amount</span>
+            <span class="price-value">{{ booking.grossamount | currency }}</span>
+          </div>
+          <div class="price-row discount-row">
+            <span class="price-label">Discount</span>
+            <span class="price-value discount">-{{ booking.discountamount | currency }}</span>
+          </div>
+          <div class="price-row total-row">
+            <span class="price-label">Net Amount</span>
+            <span class="price-value">{{ booking.netamount | currency }}</span>
+          </div>
+        </div>
+
+        <div class="payment-breakdown">
+          <h4 class="breakdown-title">Payment Status</h4>
+          <div class="payment-row">
+            <span class="payment-label">Total Paid</span>
+            <span class="payment-value paid">{{ booking.totalpaid | currency }}</span>
+          </div>
+          <div class="payment-row">
+            <span class="payment-label">Balance Due</span>
+            <span class="payment-value" [ngClass]="booking.balance > 0 ? 'due' : 'paid'">
+              {{ booking.balance | currency }}
+            </span>
+          </div>
+        </div>
+
+        <div class="payment-progress">
+          <div class="progress-bar">
+            <div class="progress-fill" [style.width.%]="(booking.totalpaid / booking.netamount) * 100"></div>
+          </div>
+          <span class="progress-text">
+            {{ (booking.totalpaid / booking.netamount) * 100 | number:'1.0-0' }}% Paid
+          </span>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="quick-actions-card">
+        <h3 class="actions-title">Quick Actions</h3>
+        <div class="actions-buttons">
+          <button class="action-btn primary" (click)="modiFyBooking(booking)">Edit Booking</button>
+          <button class="action-btn secondary" (click)="generateBookingPDF()">Print Invoice</button>
+          <button class="action-btn secondary" (click)="generateBookingPDF()">Download PDF</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+}

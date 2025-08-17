@@ -1,0 +1,13 @@
+<form [formGroup]="innertable">
+  <av-data-table
+    [TableHeaders]="headers"
+    [TableColumns]="columns"
+    [EnableActionColumn]="true"
+    [EnableButtonDelete]="true"
+    [EnableButtonModify]="true"
+    [Data]="employees"
+    formControlName="innertable"
+  >
+  </av-data-table>
+
+</form>

@@ -1,0 +1,190 @@
+/* You can add global styles to this file, and also import other style files */
+@font-face {
+  font-family: 'Material Icons';
+  src: url('/fonts/font-icon/MaterialSymbolsOutlined_Filled-Regular.ttf') format('truetype');
+}
+
+/* OpenSans Font */
+@font-face {
+  font-family: 'Open Sans';
+  src: url('/fonts/font-text/OpenSans-Italic-VariableFont_wdth,wght.ttf') format('truetype');
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: 'Open Sans';
+  src: url('/fonts/font-text/OpenSans-VariableFont_wdth,wght.ttf') format('truetype');
+  font-style: normal;
+  font-weight: normal;
+}
+
+/* Oxygen Font */
+@font-face {
+  font-family: 'Oxygen';
+  src: url('/fonts/font-text/Oxygen.otf') format('opentype');
+  font-style: normal;
+  font-weight: normal;
+}
+
+/* Roboto Font */
+@font-face {
+  font-family: 'Roboto';
+  src: url('/fonts/font-text/Roboto-Italic-VariableFont_wdth,wght.ttf') format('truetype');
+  font-style: italic;
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: 'Roboto';
+  src: url('/fonts/font-text/Roboto-VariableFont_wdth,wght.ttf') format('truetype');
+  font-style: normal;
+  font-weight: normal;
+}
+
+/* Playfair Display Font */
+@font-face {
+  font-family: 'Playfair Display';
+  src: url('/fonts/font-text/PlayfairDisplay-Regular.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: 'Playfair Display';
+  src: url('/fonts/font-text/PlayfairDisplay-Bold.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 700;
+}
+
+/* Montserrat Font */
+@font-face {
+  font-family: 'Montserrat';
+  src: url('/fonts/font-text/Montserrat-Light.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 300;
+}
+
+@font-face {
+  font-family: 'Montserrat';
+  src: url('/fonts/font-text/Montserrat-Regular.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: 'Montserrat';
+  src: url('/fonts/font-text/Montserrat-SemiBold.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 600;
+}
+
+/* Cormorant Garamond Font */
+@font-face {
+  font-family: 'Cormorant Garamond';
+  src: url('/fonts/font-text/CormorantGaramond-Medium.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: 'Cormorant Garamond';
+  src: url('/fonts/font-text/CormorantGaramond-SemiBold.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 600;
+}
+
+/* Lobster Font */
+@font-face {
+  font-family: 'Lobster';
+  src: url('/fonts/font-text/Lobster-Regular.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 400;
+}
+
+/* Pacifico Font */
+@font-face {
+  font-family: 'Pacifico';
+  src: url('/fonts/font-text/Pacifico-Regular.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 400;
+}
+
+/* Kaushan Script Font */
+@font-face {
+  font-family: 'Kaushan Script';
+  src: url('/fonts/font-text/KaushanScript-Regular.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 400;
+}
+
+/* Quicksand Font */
+@font-face {
+  font-family: 'Quicksand';
+  src: url('/fonts/font-text/Quicksand-Light.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 300;
+}
+
+@font-face {
+  font-family: 'Quicksand';
+  src: url('/fonts/font-text/Quicksand-Regular.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: 'Quicksand';
+  src: url('/fonts/font-text/Quicksand-Medium.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: 'Quicksand';
+  src: url('/fonts/font-text/Quicksand-SemiBold.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 600;
+}
+
+@font-face {
+  font-family: 'Quicksand';
+  src: url('/fonts/font-text/Quicksand-Bold.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 700;
+}
+
+/* Shrikhand Font */
+@font-face {
+  font-family: 'Shrikhand';
+  src: url('/fonts/font-text/Shrikhand-Regular.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 400;
+}
+
+/* Patrick Hand Font */
+@font-face {
+  font-family: 'Patrick Hand';
+  src: url('/fonts/font-text/PatrickHand-Regular.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 400;
+}
+
+
+.material-icons {
+  font-family: 'Material Icons', fallback, sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 24px;
+  display: inline-block;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  white-space: nowrap;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+}
+
+
+html, body { height: 100%; width: 100% }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif;}

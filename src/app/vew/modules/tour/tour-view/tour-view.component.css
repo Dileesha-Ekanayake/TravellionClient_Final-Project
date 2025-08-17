@@ -1,0 +1,642 @@
+/*=====================================================Global Styles================================================*/
+mat-grid-list {
+  background: rgb(2, 0, 36);
+  background: linear-gradient(180deg, rgba(2, 0, 36, 1) 0%, rgba(95, 153, 245, 0.02) 0%, rgba(95, 153, 245, 0.1) 100%);
+}
+
+mat-card {
+  width: 100%;
+  height: 100%;
+  background: white;
+  border: unset;
+  box-shadow: unset;
+  margin: 0.2rem;
+}
+
+mat-grid-tile {
+  margin: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: slideInUp 0.6s ease-out;
+  animation-fill-mode: both;
+}
+
+mat-grid-tile:nth-child(1) { animation-delay: 0.1s; }
+mat-grid-tile:nth-child(2) { animation-delay: 0.2s; }
+mat-grid-tile:nth-child(3) { animation-delay: 0.3s; }
+mat-grid-tile:nth-child(4) { animation-delay: 0.4s; }
+mat-grid-tile:nth-child(5) { animation-delay: 0.5s; }
+mat-grid-tile:nth-child(6) { animation-delay: 0.6s; }
+mat-grid-tile:nth-child(7) { animation-delay: 0.7s; }
+mat-grid-tile:nth-child(8) { animation-delay: 0.8s; }
+mat-grid-tile:nth-child(9) { animation-delay: 0.9s; }
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+mat-card form {
+  background: unset;
+}
+
+mat-card-content {
+  background: unset;
+  overflow: auto;
+  height: 100%;
+}
+
+
+.title {
+  display: flex;
+  font-weight: 600;
+  font-size: 1.75rem;
+  white-space: nowrap;
+  color: #2c3e50;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+/*=======================================================Navigation===================================================*/
+.breadCrumbCard {
+  box-shadow: unset;
+}
+
+.breadCrumbCard mat-card-content{
+  margin-top: 4px;
+}
+
+/*====================================================================================================================*/
+.back-button button {
+  background: rgba(30, 144, 255, 0.14);
+  box-shadow: unset;
+  border-radius: 15px;
+}
+
+.booking-details-container {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2.5rem;
+  font-family: -apple-system, BlinkMacSystemFont, 'Inter', Roboto, sans-serif;
+  /*background: #fafafa;*/
+  min-height: 100vh;
+}
+
+.booking-main-content {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.booking-main-content:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+.booking-header {
+  background: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 2rem;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+}
+
+.booking-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 1rem 0;
+  letter-spacing: -0.025em;
+}
+
+.booking-meta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.booking-dates {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #6b7280;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.booking-status {
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.booking-status:hover {
+  transform: scale(1.05);
+}
+
+.status-confirmed { background: #ccfbf1; color: #0d9488; }
+.status-pending { background: #fef3c7; color: #b45309; }
+.status-cancelled { background: #fee2e2; color: #dc2626; }
+
+.booking-section {
+  padding: 2rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.booking-section:last-child {
+  border-bottom: none;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.section-title {
+  font-size: 1.625rem;
+  font-weight: 600;
+  color: #111827;
+  margin: 0;
+  letter-spacing: -0.025em;
+}
+
+.section-subheader {
+  font-size: 1.375rem;
+  font-weight: 600;
+  color: #111827;
+  margin: 1.5rem 0 1rem 0;
+  letter-spacing: -0.025em;
+}
+
+.section-count {
+  background: #e5e7eb;
+  color: #374151;
+  padding: 0.4rem 1rem;
+  border-radius: 9999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.passengers-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.25rem;
+}
+
+.passenger-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.passenger-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.passenger-name {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 0.5rem 0;
+}
+
+.passenger-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.passenger-code, .passenger-age {
+  color: #6b7280;
+  font-size: 0.85rem;
+}
+
+.lead-passenger-badge {
+  background: #1e40af;
+  color: white;
+  padding: 0.3rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  transition: transform 0.2s ease;
+}
+
+.lead-passenger-badge:hover {
+  transform: scale(1.05);
+}
+
+.accommodations-list, .transfers-list, .generics-list, .tours-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.accommodation-card, .transfer-card, .generic-card, .tour-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.accommodation-card:hover, .transfer-card:hover, .generic-card:hover, .tour-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.accommodation-header, .transfer-header, .generic-header, .tour-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.accommodation-name, .transfer-name, .generic-name, .tour-name {
+  font-size: 1.375rem;
+  font-weight: 600;
+  color: #111827;
+  margin: 0;
+}
+
+.status-badge {
+  padding: 0.3rem 0.9rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  transition: transform 0.2s ease;
+}
+
+.status-badge:hover {
+  transform: scale(1.05);
+}
+
+.accommodation-details, .transfer-details, .generic-details, .tour-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.accommodation-dates, .transfer-timing, .generic-timing {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.date-label, .timing-label {
+  color: #6b7280;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.date-value, .timing-value {
+  color: #111827;
+  font-size: 0.85rem;
+}
+
+.accommodation-pricing, .transfer-pricing, .generic-pricing {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.price-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.price-label {
+  color: #6b7280;
+  font-size: 0.85rem;
+}
+
+.price-value {
+  color: #111827;
+  font-weight: 500;
+}
+
+.price-value.discount {
+  color: #dc2626;
+}
+
+.accommodation-rooms, .transfer-details-list, .generic-paxes {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.rooms-title, .details-title, .paxes-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 0.75rem 0;
+}
+
+.rooms-grid, .paxes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+}
+
+.room-item, .pax-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 0.75rem;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.room-item:hover, .pax-item:hover {
+  background: #f3f4f6;
+  transform: translateY(-2px);
+}
+
+.room-details {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.room-type, .room-pax, .pax-type {
+  color: #6b7280;
+  font-size: 0.85rem;
+}
+
+.room-count, .pax-count {
+  background: #e5e7eb;
+  padding: 0.25rem 0.65rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.room-amount, .pax-amount {
+  font-weight: 600;
+  color: #111827;
+}
+
+.transfer-detail-item {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 1rem;
+  align-items: center;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.transfer-detail-item:hover {
+  background: #f3f4f6;
+  transform: translateY(-2px);
+}
+
+.detail-route {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.pickup, .drop {
+  color: #111827;
+  font-size: 0.85rem;
+}
+
+.detail-pax {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.pax-type {
+  color: #6b7280;
+  font-size: 0.85rem;
+}
+
+.detail-amount {
+  font-weight: 600;
+  color: #111827;
+}
+
+.tour-amount {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.amount-label {
+  color: #6b7280;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.amount-value {
+  color: #111827;
+  font-weight: 600;
+  font-size: 1.125rem;
+}
+
+.generic-description {
+  color: #6b7280;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.booking-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.price-summary-card, .quick-actions-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.price-summary-card:hover, .quick-actions-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+.summary-title, .actions-title {
+  font-size: 1.375rem;
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 1rem 0;
+}
+
+.price-breakdown {
+  margin-bottom: 1.5rem;
+}
+
+.price-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.price-row:last-child {
+  border-bottom: none;
+}
+
+.discount-row .price-value {
+  color: #dc2626;
+}
+
+.total-row {
+  border-top: 2px solid #e5e7eb;
+  font-weight: 600;
+  font-size: 1.125rem;
+}
+
+.payment-breakdown {
+  margin-bottom: 1.5rem;
+}
+
+.breakdown-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 0.75rem 0;
+}
+
+.payment-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+}
+
+.payment-value.paid {
+  color: #0d9488;
+}
+
+.payment-value.due {
+  color: #dc2626;
+}
+
+.payment-progress {
+  text-align: center;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 10px;
+  background: #e5e7eb;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+
+.progress-fill {
+  height: 100%;
+  background: #0d9488;
+  transition: width 0.5s ease-in-out;
+}
+
+.progress-text {
+  font-size: 0.85rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.actions-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.action-btn {
+  padding: 0.75rem 1.25rem;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
+}
+
+.action-btn.primary {
+  background: #1e40af;
+  color: white;
+}
+
+.action-btn.primary:hover {
+  background: #1e3a8a;
+  transform: translateY(-2px);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+.action-btn.secondary {
+  background: #f3f4f6;
+  color: #374151;
+  border-color: #d1d5db;
+}
+
+.action-btn.secondary:hover {
+  background: #e5e7eb;
+  transform: translateY(-2px);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 1024px) {
+  .booking-details-container {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding: 1.25rem;
+  }
+
+  .accommodation-details, .transfer-details, .generic-details, .tour-details {
+    grid-template-columns: 1fr;
+  }
+
+  .passengers-grid, .rooms-grid, .paxes-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .transfer-detail-item {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+}

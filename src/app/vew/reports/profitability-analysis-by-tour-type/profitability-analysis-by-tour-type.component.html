@@ -1,0 +1,157 @@
+<mat-grid-list gutterSize="10px" [cols]="12" rowHeight="4rem">
+
+  <mat-grid-tile [colspan]="4" [rowspan]="2">
+    <mat-card>
+      <mat-card-content>
+        <div class="data-container">
+          <div class="header-container">
+            <div class="header-title">Total Bookings</div>
+            <div class="header-icon icon-1">
+              <mat-icon>
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                     fill="#FFFFFF">
+                  <path
+                    d="M438-226 296-368l58-58 84 84 168-168 58 58-226 226ZM200-80q-33 0-56.5-23.5T120-160v-560q0-33 23.5-56.5T200-800h40v-80h80v80h320v-80h80v80h40q33 0 56.5 23.5T840-720v560q0 33-23.5 56.5T760-80H200Zm0-80h560v-400H200v400Zm0-480h560v-80H200v80Zm0 0v-80 80Z"/>
+                </svg>
+              </mat-icon>
+            </div>
+          </div>
+          <div class="data-content">
+            <div class="data-item-value">{{ totalBookingTours }}</div>
+<!--            <div class="data-item-rate up-value">12.5% from last month</div>-->
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+
+  <mat-grid-tile [colspan]="4" [rowspan]="2">
+    <mat-card>
+      <mat-card-content>
+        <div class="data-container">
+          <div class="header-container">
+            <div class="header-title">Revenue</div>
+            <div class="header-icon icon-2">
+              <mat-icon>attach_money</mat-icon>
+            </div>
+          </div>
+          <div class="data-content">
+            <div class="data-item-value">{{ totalRevenue | currency }}</div>
+<!--            <div class="data-item-rate up-value">8.3% from last month</div>-->
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+
+  <mat-grid-tile [colspan]="4" [rowspan]="2">
+    <mat-card>
+      <mat-card-content>
+        <div class="data-container">
+          <div class="header-container">
+            <div class="header-title">Supplier Amount</div>
+            <div class="header-icon icon-2">
+              <mat-icon>attach_money</mat-icon>
+            </div>
+          </div>
+          <div class="data-content">
+            <div class="data-item-value">{{ totalSupplierAmount | currency }}</div>
+            <!--            <div class="data-item-rate up-value">8.3% from last month</div>-->
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+
+  <mat-grid-tile [colspan]="12" [rowspan]="8">
+    <mat-card>
+      <mat-card-content>
+        <av-chart-js
+          [chartType]="'bar'"
+          chartTitle="Revenue ($) Comparison"
+          [labels]="tourCategoryLabels"
+          [datasets]="tourCategoryDataSets"
+          [legend]="'top'"
+          [dualYAxis]="true"
+          [maintainAspectRatio]="false"
+          [show_print_button]="true"
+        >
+        </av-chart-js>
+      </mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+
+<!--  <mat-grid-tile [colspan]="12" [rowspan]="8">-->
+<!--    <mat-card>-->
+<!--      <mat-card-content>-->
+<!--        <chart-js-->
+<!--          [chartType]="'bar'"-->
+<!--          chartTitle="Revenue vs Cost Analysis"-->
+<!--          [labels]="tourCategories"-->
+<!--          [datasets]="tourCategoryRevenueDatasets"-->
+<!--          [legend]="'top'"-->
+<!--          [dualYAxis]="true"-->
+<!--          [maintainAspectRatio]="false"-->
+<!--          [show_print_button]="true"-->
+<!--        >-->
+<!--        </chart-js>-->
+<!--      </mat-card-content>-->
+<!--    </mat-card>-->
+<!--  </mat-grid-tile>-->
+
+  <mat-grid-tile [colspan]="12" [rowspan]="8">
+    <mat-card>
+      <mat-card-content>
+        <av-chart-js
+          [chartType]="'bar'"
+          chartTitle="Revenue ($) Comparison"
+          [labels]="tourThemeLabels"
+          [datasets]="tourThemeDataSets"
+          [legend]="'top'"
+          [dualYAxis]="true"
+          [maintainAspectRatio]="false"
+          [show_print_button]="true"
+        >
+        </av-chart-js>
+      </mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+
+<!--  <mat-grid-tile [colspan]="12" [rowspan]="8">-->
+<!--    <mat-card>-->
+<!--      <mat-card-content>-->
+<!--        <chart-js-->
+<!--          [chartType]="'bar'"-->
+<!--          chartTitle="Revenue vs Cost Analysis"-->
+<!--          [labels]="tourThemes"-->
+<!--          [datasets]="tourThemeRevenueDatasets"-->
+<!--          [legend]="'top'"-->
+<!--          [dualYAxis]="true"-->
+<!--          [maintainAspectRatio]="false"-->
+<!--          [show_print_button]="true"-->
+<!--        >-->
+<!--        </chart-js>-->
+<!--      </mat-card-content>-->
+<!--    </mat-card>-->
+<!--  </mat-grid-tile>-->
+
+
+  <mat-grid-tile [colspan]="12" [rowspan]="8">
+    <mat-card>
+      <mat-card-content>
+        <av-chart-js
+          [chartType]="'bar'"
+          chartTitle="Revenue ($) Comparison"
+          [labels]="tourTypeLabels"
+          [datasets]="tourTypeDataSets"
+          [legend]="'top'"
+          [dualYAxis]="true"
+          [maintainAspectRatio]="false"
+          [show_print_button]="true"
+        >
+        </av-chart-js>
+      </mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+
+</mat-grid-list>

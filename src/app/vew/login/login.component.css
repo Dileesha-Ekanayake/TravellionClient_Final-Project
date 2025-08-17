@@ -1,0 +1,635 @@
+/*@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap');*/
+/*@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap');*/
+/*@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&display=swap');*/
+/*@import url('https://fonts.googleapis.com/css2?family=Lobster&family=Pacifico&display=swap');*/
+/*@import url('https://fonts.googleapis.com/css2?family=Kaushan+Script&family=Lobster&family=Pacifico&display=swap');*/
+/*@import url('https://fonts.googleapis.com/css2?family=Kaushan+Script&family=Lobster&family=Pacifico&family=Quicksand:wght@300..700&display=swap');*/
+/*@import url('https://fonts.googleapis.com/css2?family=Kaushan+Script&family=Lobster&family=Pacifico&family=Quicksand:wght@300..700&family=Shrikhand&display=swap');*/
+/*@import url('https://fonts.googleapis.com/css2?family=Kaushan+Script&family=Lobster&family=Pacifico&family=Patrick+Hand&family=Quicksand:wght@300..700&family=Shrikhand&display=swap');*/
+
+/*===============================Global=================================*/
+
+mat-grid-list {
+  overflow: hidden !important;
+}
+
+mat-form-field {
+  width: 100% !important;
+  --mat-form-field-container-height: 45px !important;
+  --mat-form-field-container-vertical-padding: 8px !important;
+}
+
+::ng-deep .mdc-text-field{
+  border-bottom-right-radius: 4px !important;
+  border-bottom-left-radius: 4px !important;
+}
+
+::ng-deep .mdc-floating-label{
+  color: #000000 !important;
+}
+
+
+.mat-mdc-form-field-flex {
+  background: transparent;
+}
+
+.mdc-notched-outline {
+  /*border-color: rgba(255, 255, 255, 0.2);*/
+}
+
+::ng-deep .mat-mdc-input-element {
+  color: #020202 !important;
+}
+
+::ng-deep .mat-mdc-form-field-label {
+  /*color: rgba(255, 255, 255, 0.7);*/
+}
+
+mat-icon {
+  color: rgb(19, 16, 10) !important;
+}
+
+/*::ng-deep .mdc-floating-label{*/
+/*  color: white !important;*/
+/*}*/
+
+/*::ng-deep .mat-mdc-text-field-wrapper {*/
+/*  background: rgba(61, 56, 77, 0.66);*/
+/*}*/
+
+/*.mat-mdc-form-field-flex {*/
+/*  background: transparent;*/
+/*}*/
+
+/*.mdc-notched-outline {*/
+/*  !*border-color: rgba(255, 255, 255, 0.2);*!*/
+/*}*/
+
+/*::ng-deep .mat-mdc-input-element {*/
+/*  color: white !important;*/
+/*}*/
+
+/*::ng-deep .mat-mdc-form-field-label {*/
+/*  !*color: rgba(255, 255, 255, 0.7);*!*/
+/*}*/
+
+/* For Firefox */
+* {
+  scrollbar-width: none !important;
+}
+
+/* For IE/Edge */
+* {
+  -ms-overflow-style: none !important;
+}
+
+/* Make sure the card is centered horizontally and vertically */
+mat-grid-tile {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/*=================================================Log-in=================================================*/
+
+.login-background {
+  background-image: url('../../../../public/login-background.jpg');
+  background-size: cover;
+  background-position: center;
+  padding: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden !important;
+  position: relative;
+}
+
+.login-background::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.3); /* Semi-transparent overlay */
+  filter: blur(2px) brightness(0.9) saturate(1.2); /* Subtle blur, slightly darkened, enhanced colors */
+  z-index: 1;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+.main-card {
+  top: 0;
+  width: 70% !important;  /* Fixed width as requested */
+  height: 90vh !important;  /* Fixed height as requested */
+  display: flex;
+  flex-direction: row;
+  background: rgba(255, 255, 255, 0.93);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 2px solid rgb(19, 16, 10);
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  z-index: 2;
+}
+
+.illustration-header {
+  flex: 0 0 40%;
+  padding: 10px;
+  margin: 10px;
+  border-radius: 30px 30px 30px 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: auto !important;
+
+  .header-content {
+
+    margin: unset;
+    padding: unset;
+    .login-cover-image {
+      display: flex;
+      justify-content: center;
+      width: 120%;
+      height: 580px;
+      object-fit: cover;
+      border-radius: 20px;
+    }
+  }
+}
+
+.form-content {
+  flex: 1;
+  padding: 1.5rem 2rem 0 6rem;
+  overflow-y: hidden;
+}
+
+.form-content .brand-name{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1rem;
+  font-family: "Pacifico", cursive;
+  font-weight: 400;
+  font-size: 2rem;
+  color: #000000;
+  text-align: center;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;  /* Reduced gap */
+  max-width: 400px;
+  margin: 0 auto;
+  height: 100%;
+  transition: opacity 0.3s ease;
+}
+
+.auth-options {
+  position: relative;
+  display: flex;
+  justify-content: center; /* Center the buttons */
+  gap: 1rem;
+  margin-bottom: 1rem;
+  align-items: center;
+}
+
+.auth-options .auth-button {
+  border: 2px solid #000000;
+  padding: 0.4rem 1.5rem;
+  border-radius: 12px;
+  color: #000000;
+  background: rgb(255, 255, 255);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2) !important;
+}
+
+.auth-options .back-to-home {
+  position: absolute;
+  right: 0; /* Send to far right */
+
+  button {
+    background: #000000 !important;
+    color: white !important;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2) !important;
+  }
+
+  mat-icon{
+    color: white !important;
+  }
+}
+
+.active {
+  background: #13100a !important;
+  color: white !important;
+  border: 2px solid #ffffff !important;
+}
+
+.form-title {
+  color: #000000 !important;
+  font-size: 1.5rem;  /* Reduced size */
+  margin-bottom: 1rem;  /* Reduced margin */
+  font-weight: 600;
+  text-align: center;
+}
+
+.user-options {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.remember-me {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.forgot-password {
+  text-align: right;
+  margin: 0px;
+  color: rgb(19, 16, 10);
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+}
+
+.forgot-password:hover {
+  color: rgb(19, 16, 10);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.disableForget{
+  cursor: not-allowed !important;
+  opacity: 0.5 !important;
+}
+
+.sign-in-button {
+  border: 1px solid #e0e0e0;
+  width: 100%;
+  padding: 1rem;  /* Reduced padding */
+  border-radius: 12px;
+  background: #000000 !important;
+  color: white !important;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+  margin-top: 20px; /* Push button to bottom */
+}
+
+.social-login {
+  margin-top: 1rem;  /* Reduced margin */
+  text-align: center;
+
+  .divider {
+    display: block;
+    color: rgb(19, 16, 10);
+    font-size: 0.9rem;
+    margin-bottom: 0.8rem;
+    position: relative;
+
+    &::before,
+    &::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      width: 25%;
+      height: 1px;
+      background: rgb(0, 103, 255);
+    }
+
+    &::before {
+      left: 0;
+    }
+
+    &::after {
+      right: 0;
+    }
+  }
+
+  .social-buttons {
+    display: flex;
+    align-self: center;
+    justify-content: center;
+    gap: 0.8rem;  /* Reduced gap */
+
+  }
+}
+
+
+.login-opt-btn{
+
+  transition: background-color .3s, box-shadow .3s;
+  padding: 12px 16px 12px 42px;
+  border: 1px solid white;
+  border-radius: 5px;
+  box-shadow: 0 -1px 0 rgba(0, 0, 0, .04), 0 1px 1px rgba(0, 0, 0, .25);
+
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",sans-serif;
+
+  background-color: #2d293a;
+  background-repeat: no-repeat;
+  background-position: 12px 11px;
+
+  &:hover {
+    box-shadow: 0 -1px 0 rgba(0, 0, 0, .04), 0 1px 1px rgba(0, 0, 0, .25);
+  }
+
+  &:active {
+    background-color: #eeeeee;
+    color: #000000;
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow:
+      0 -1px 0 rgba(0, 0, 0, .04),
+      0 1px 1px rgba(0, 0, 0, .25),
+      0 0 0 2px #c8dafc;
+  }
+
+  &:disabled {
+    filter: grayscale(100%);
+    background-color: #ebebeb;
+    box-shadow: 0 -1px 0 rgba(0, 0, 0, .04), 0 1px 1px rgba(0, 0, 0, .25);
+    cursor: not-allowed;
+  }
+
+}
+
+.login-with-google-btn {
+  display: flex;
+  justify-content: center;
+  background-image: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgiIGhlaWdodD0iMTgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGcgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj48cGF0aCBkPSJNMTcuNiA5LjJsLS4xLTEuOEg5djMuNGg0LjhDMTMuNiAxMiAxMyAxMyAxMiAxMy42djIuMmgzYTguOCA4LjggMCAwIDAgMi42LTYuNnoiIGZpbGw9IiM0Mjg1RjQiIGZpbGwtcnVsZT0ibm9uemVybyIvPjxwYXRoIGQ9Ik05IDE4YzIuNCAwIDQuNS0uOCA2LTIuMmwtMy0yLjJhNS40IDUuNCAwIDAgMS04LTIuOUgxVjEzYTkgOSAwIDAgMCA4IDV6IiBmaWxsPSIjMzRBODUzIiBmaWxsLXJ1bGU9Im5vbnplcm8iLz48cGF0aCBkPSJNNCAxMC43YTUuNCA1LjQgMCAwIDEgMC0zLjRWNUgxYTkgOSAwIDAgMCAwIDhsMy0yLjN6IiBmaWxsPSIjRkJCQzA1IiBmaWxsLXJ1bGU9Im5vbnplcm8iLz48cGF0aCBkPSJNOSAzLjZjMS4zIDAgMi41LjQgMy40IDEuM0wxNSAyLjNBOSA5IDAgMCAwIDEgNWwzIDIuNGE1LjQgNS40IDAgMCAxIDUtMy43eiIgZmlsbD0iI0VBNDMzNSIgZmlsbC1ydWxlPSJub256ZXJvIi8+PHBhdGggZD0iTTAgMGgxOHYxOEgweiIvPjwvZz48L3N2Zz4=);
+
+}
+
+.login-with-github-btn {
+  display: flex;
+  align-items: center;
+  align-self: center;
+  gap: 0.8rem;
+  padding: 9.5px 16px 9px 15px;
+}
+
+/*=================================================Sign-Up=================================================*/
+
+.signUp-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;  /* Reduced gap */
+  max-width: 400px;
+  margin: 0 auto;
+  height: 100%;
+  transition: opacity 0.3s ease;
+}
+
+.form-title {
+  color: white;
+  font-size: 1.5rem;  /* Reduced size */
+  margin-bottom: 1rem;  /* Reduced margin */
+  font-weight: 600;
+  text-align: center;
+}
+
+.sign-up-button {
+  border: 1px solid #e0e0e0;
+  width: 100%;
+  padding: 1rem;  /* Reduced padding */
+  border-radius: 12px;
+  background: #000000 !important;
+  color: white !important;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+  margin-top: 20px; /* Push button to bottom */
+}
+
+/*=================================================Reset-Password=================================================*/
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;  /* Reduced gap */
+  max-width: 400px;
+  margin: 0 auto;
+  height: 100%;
+  transition: opacity 0.3s ease;
+}
+
+.form-title {
+  color: white;
+  font-size: 1.5rem;  /* Reduced size */
+  margin-bottom: 1rem;  /* Reduced margin */
+  font-weight: 600;
+  text-align: center;
+}
+
+.next-button{
+  border: 1px solid #e0e0e0;
+  width: 100%;
+  padding: 1rem;  /* Reduced padding */
+  border-radius: 12px;
+  background: #070707 !important;
+  color: white !important;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+  margin-top: 20px; /* Push button to bottom */
+}
+
+.back-button{
+  border: 1px solid #e0e0e0;
+  width: 100%;
+  padding: 1rem;  /* Reduced padding */
+  border-radius: 12px;
+  background: #000000 !important;
+  color: white !important;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+  margin-top: 20px; /* Push button to bottom */
+}
+
+.resend-button{
+  border: 1px solid #e0e0e0;
+  width: 50%;
+  padding: 1rem;  /* Reduced padding */
+  border-radius: 12px;
+  background: #000000 !important;
+  color: white !important;
+  font-size: 1rem;
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+  margin-top: 20px; /* Push button to bottom */
+}
+
+.verify-button{
+  border: 1px solid #e0e0e0;
+  width: 40%;
+  padding: 1rem;  /* Reduced padding */
+  margin-left: 2.5rem;
+  border-radius: 12px;
+  background: #000000 !important;
+  color: white !important;
+  font-size: 1rem;
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+  margin-top: 20px; /* Push button to bottom */
+}
+
+.reset-card {
+  max-width: 600px;
+  margin: 20px auto;
+  background: unset;
+  box-shadow: unset;
+  top: -50px;
+}
+.reset-card-title {
+  font-size: 1rem;
+  text-align: center;
+  margin-bottom: 24px !important;
+  color: white;
+}
+
+.options-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.option-card {
+  cursor: pointer;
+  background-color: rgba(0, 103, 255, 0.77);
+  transition: all 0.3s ease;
+  border: 1px solid #e0e0e0;
+  box-shadow: none !important;
+}
+
+.option-card:hover {
+  background-color: #fafafa;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important;
+}
+
+.option-card:hover .text-container h3{
+  color: rgba(0, 0, 0, 0.87) !important;
+}
+.option-card:hover .text-container p{
+  color: rgba(0, 0, 0, 0.87) !important;
+}
+
+
+.option-content {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #f5f5f5;
+}
+
+.icon-container mat-icon {
+  color: #1976d2;
+}
+
+.text-container {
+  flex: 1;
+  padding: unset;
+  margin: unset;
+}
+
+.text-container h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+  /*color: rgba(0, 0, 0, 0.87);*/
+  color: white;
+}
+
+.text-container p {
+  margin: 4px 0 0;
+  font-size: 14px;
+  /*color: rgba(0, 0, 0, 0.6);*/
+  color: white !important;
+}
+
+.chevron {
+  color: rgba(0, 0, 0, 0.38);
+}
+
+button:disabled {
+  opacity: 0.5;
+}
+
+.reset-code-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 12px; /* Adds space between input fields */
+}
+
+.reset-code-container mat-form-field {
+  display: inline-flex;
+  flex-direction: row;
+  width: 60px !important; /* Fixed width instead of percentage for better control */
+}
+
+/* Center the input text */
+.reset-code-container input {
+  text-align: center;
+}
+
+/*.forgot-password {*/
+/*  text-align: right;*/
+/*  margin: 0px;*/
+/*  color: rgb(19, 16, 10);*/
+/*  font-size: 0.9rem;*/
+/*}*/
+
+/*.forgot-password:hover {*/
+/*  color: rgb(19, 16, 10);*/
+/*  text-decoration: underline;*/
+/*  cursor: pointer;*/
+/*}*/

@@ -1,0 +1,230 @@
+<mat-grid-list [cols]="8" rowHeight="7.2rem" class="login-background">
+  <mat-grid-tile [colspan]="8" [rowspan]="6">
+    <mat-card class="main-card">
+      <!-- Left side with illustration -->
+      <mat-card-header class="illustration-header">
+        <mat-card-title>
+          <div class="header-content">
+            <img src="login-cover-main.jpg" alt="cover" class="login-cover-image">
+          </div>
+        </mat-card-title>
+      </mat-card-header>
+
+      <!-- Right side with login form -->
+      <mat-card-content class="form-content">
+        <div class="brand-name">Travellion</div>
+        <div class="auth-options">
+          <button class="auth-button" mat-button [ngClass]="{ 'active': isSignInActive }"
+                  (click)="toggleAuth('signIn')">Sign In
+          </button>
+          <button class="auth-button" mat-button [ngClass]="{ 'active': !isSignInActive }"
+                  (click)="toggleAuth('signUp')">Sign Up
+          </button>
+
+          <div class="back-to-home">
+            <button mat-mini-fab (click)="goToHome()">
+              <mat-icon>home</mat-icon>
+            </button>
+          </div>
+        </div>
+
+
+        <!--==============================Log-In==============================-->
+
+        @if (isSignInActive && !isForgetPassword) {
+          <form [formGroup]="loginform" class="login-form">
+
+            <h2 class="form-title">Sign In</h2>
+
+            <div class="form-fields">
+              <mat-form-field appearance="outline">
+                <mat-label>Username</mat-label>
+                <input matInput formControlName="username" autocomplete="off">
+                <mat-icon matSuffix>person_outline</mat-icon>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Password</mat-label>
+                <input matInput type="password" formControlName="password">
+                <mat-icon matSuffix>lock_outline</mat-icon>
+              </mat-form-field>
+            </div>
+
+            <div class="user-options">
+              <div class="remember-me">
+                <section class="example-section">
+                  <mat-checkbox (change)="rememberMe()" class="example-margin">Remember Me</mat-checkbox>
+                </section>
+              </div>
+              <div class="forgot-password" [ngClass]="{'disableForget' : enableForgetPassword}">
+              <span
+                (click)="!enableForgetPassword ? forgetPassword() : null">{{ startCountDown ? "Forgotten Password ? : " + displayTime : "Forgotten Password ?" }}</span>
+              </div>
+            </div>
+
+            <button mat-raised-button class="sign-in-button" (click)="authenticate()">
+              Sign In
+              <mat-icon>arrow_forward</mat-icon>
+            </button>
+
+            <div class="social-login">
+              <span class="divider">Or continue with</span>
+              <div class="social-buttons">
+                <button type="button" class="login-opt-btn login-with-google-btn" (click)="oAuth2Redirect()">
+                  Google
+                </button>
+
+<!--                <button type="button" class="login-opt-btn login-with-github-btn" (click)="oAuth2Redirect()">-->
+<!--                  <i class="fa fa-github" style="font-size:24px"></i>-->
+<!--                  Github-->
+<!--                </button>-->
+              </div>
+            </div>
+          </form>
+        }
+
+        <!--==============================Sign-Up==============================-->
+
+        @if (!isSignInActive && !isForgetPassword) {
+
+          <form [formGroup]="signUpForm" class="signUp-form">
+            <h2 class="form-title">Sign Up</h2>
+            <div class="form-fields">
+              <mat-form-field appearance="outline">
+                <mat-label>Username</mat-label>
+                <input matInput formControlName="username" autocomplete="off">
+                <mat-icon matSuffix>person_outline</mat-icon>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Password</mat-label>
+                <input matInput type="password" formControlName="password">
+                <mat-icon matSuffix>lock_outline</mat-icon>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Confirm Password</mat-label>
+                <input matInput type="password" formControlName="confirmPassword">
+                <mat-icon matSuffix>lock_outline</mat-icon>
+              </mat-form-field>
+            </div>
+            <button mat-raised-button class="sign-up-button" (click)="signup()">
+              Sign Up
+              <mat-icon>arrow_forward</mat-icon>
+            </button>
+          </form>
+        }
+
+        <!--==============================Reset-Password==============================-->
+
+        @if (isForgetPassword) {
+
+          <form class="login-form">
+            <h2 class="form-title">Reset Password</h2>
+
+            <!-- Username Step -->
+            @if (step === 1) {
+              <div>
+                <mat-form-field appearance="outline">
+                  <mat-label>Enter User Name</mat-label>
+                  <input matInput [(ngModel)]="username">
+                </mat-form-field>
+
+                <button class="next-button" mat-raised-button (click)="goToNextStep()">Next</button>
+              </div>
+            }
+
+            <!-- Option Selection Step -->
+            @if (step === 2) {
+              <mat-card class="reset-card">
+                <mat-card-header>
+                  <mat-card-title class="reset-card-title" style="font-size: 1rem">
+                    Choose how you want to reset password
+                  </mat-card-title>
+                </mat-card-header>
+
+                <mat-card-content>
+                  <div class="options-container">
+                    <!-- Email Option -->
+                    <mat-card class="option-card" (click)="selectOption('email')">
+                      <mat-card-content class="option-content">
+                        <div class="icon-container">
+                          <mat-icon class="material-icons-outlined">mail_outline</mat-icon>
+                        </div>
+                        <div class="text-container">
+                          <h3>Get a verification code</h3>
+                          <p>to registered e-Mail</p>
+                        </div>
+                        <mat-icon class="chevron">chevron_right</mat-icon>
+                      </mat-card-content>
+                    </mat-card>
+
+                    <!-- Support Option -->
+                    <mat-card class="option-card" (click)="selectOption('support')">
+                      <mat-card-content class="option-content">
+                        <div class="icon-container">
+                          <mat-icon class="material-icons-outlined">help_outline</mat-icon>
+                        </div>
+                        <div class="text-container">
+                          <h3>Contact Support</h3>
+                          <p>Get help from Site Administrator</p>
+                        </div>
+                        <mat-icon class="chevron">chevron_right</mat-icon>
+                      </mat-card-content>
+                    </mat-card>
+                  </div>
+                  <button mat-raised-button class="back-button" (click)="goToBackStep()">Back</button>
+                </mat-card-content>
+              </mat-card>
+            }
+
+            <!-- Pin Entry Step -->
+            @if (step === 3) {
+              <div>
+                <div class="reset-code-container">
+                  @for (field of pinFields; track pinFields; let i = $index) {
+                    <div>
+                      <mat-form-field appearance="outline">
+                        <input
+                          #pinInput
+                          matInput
+                          maxlength="6"
+                          [formControl]="pinFormControls[i]"
+                          (keyup)="onKeyup($event, i)"
+                          (keydown)="onKeydown($event, i)"
+                          (paste)="onPaste($event)"
+                          type="text"
+                          inputmode="numeric"
+                          pattern="[0-9]*">
+                      </mat-form-field>
+                    </div>
+                  }
+
+                </div>
+                <button mat-raised-button class="resend-button" [disabled]="!enableResend" (click)="startCountdown()">
+                  Resend code : {{ displayTime }}
+                </button>
+                <button mat-raised-button class="verify-button">Verify</button>
+                <button mat-raised-button class="back-button" [disabled]="!enableLastBack" (click)="goToBackStep()">
+                  Back
+                </button>
+              </div>
+            }
+
+            @if (step === 4) {
+              <mat-form-field appearance="outline">
+                <mat-label>Enter your problem</mat-label>
+                <textarea matInput></textarea>
+              </mat-form-field>
+              <button class="next-button" mat-raised-button>Send</button>
+              <button mat-raised-button class="back-button" (click)="goToBackStep()">
+                Back
+              </button>
+            }
+          </form>
+        }
+
+      </mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+</mat-grid-list>
