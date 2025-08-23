@@ -93,7 +93,7 @@ mysql --version
 ### Getting Started
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/Dileesha-Ekanayake/TravellionServer_Final-Project
+   git clone https://github.com/Dileesha-Ekanayake/TravellionClient_Final-Project
    cd travellion
    ```
 
